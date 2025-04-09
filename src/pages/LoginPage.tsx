@@ -39,17 +39,15 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
-      {/* Logo section removed */}
-      
       {/* Main content with gradient box */}
       <div className="w-full max-w-md bg-gradient-to-br from-purple-100 via-purple-50 to-white rounded-xl p-1 shadow-lg">
-        <div className="bg-white rounded-lg p-8 space-y-6">
+        <div className="bg-white rounded-lg p-6 space-y-4"> {/* Reduced padding and space */}
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900">Sign in to Hype Print</h1>
-            <p className="text-gray-600 mt-2">We suggest using the account credentials provided below.</p>
+            <h1 className="text-2xl font-bold text-gray-900">Sign in to Hype Print</h1>
+            <p className="text-gray-600 mt-1 text-sm">We suggest using the account credentials provided below.</p>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-3"> {/* Reduced vertical spacing */}
             {/* Google Button */}
             <Button 
               type="button" 
@@ -82,7 +80,7 @@ const LoginPage = () => {
             </Button>
             
             {/* Separator */}
-            <div className="relative my-6">
+            <div className="relative my-4">
               <Separator />
               <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-sm text-gray-500">
                 OR
@@ -91,58 +89,58 @@ const LoginPage = () => {
             
             {/* Email Form */}
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
+              <div className="mb-3">
                 <Input
                   id="username"
                   type="text"
                   placeholder="name@work-email.com"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full py-6 border-gray-300 rounded-md focus:border-purple-500 focus:ring-purple-500"
+                  className="w-full py-5 border-gray-300 rounded-md focus:border-purple-500 focus:ring-purple-500"
                   required
                 />
               </div>
               
-              <div className="mb-4">
+              <div className="mb-3">
                 <Input
                   id="password"
                   type="password"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full py-6 border-gray-300 rounded-md focus:border-purple-500 focus:ring-purple-500"
+                  className="w-full py-5 border-gray-300 rounded-md focus:border-purple-500 focus:ring-purple-500"
                   required
                 />
               </div>
               
               <Button 
                 type="submit" 
-                className="w-full py-6 bg-purple-700 hover:bg-purple-800 flex items-center justify-center gap-2 text-white"
+                className="w-full py-5 bg-purple-700 hover:bg-purple-800 flex items-center justify-center gap-2 text-white"
               >
                 <Mail size={18} />
                 Sign In With Email
               </Button>
             </form>
             
-            <div className="text-center text-gray-500 text-sm mt-4 p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="text-center text-gray-500 text-sm mt-3 p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center justify-center gap-2 mb-1">
                 <span className="h-4 w-4 rounded-full bg-purple-100 flex items-center justify-center">
                   <span className="h-1 w-1 rounded-full bg-purple-500"></span>
                 </span>
-                <p>We'll email you a magic code for a password-free sign in.</p>
+                <p className="text-xs">We'll email you a magic code for a password-free sign in.</p>
               </div>
-              <p>Or, you can <span className="text-blue-500">sign in manually instead</span>.</p>
+              <p className="text-xs">Or, you can <span className="text-blue-500">sign in manually instead</span>.</p>
             </div>
             
-            <div className="text-center mt-8 text-gray-500 text-sm">
-              <p className="mb-2">Demo Credentials:</p>
+            <div className="text-center mt-4 text-gray-500 text-sm">
+              <p className="mb-1">Demo Credentials:</p>
               <p>Username: admin / Password: password123</p>
             </div>
           </div>
         </div>
       </div>
       
-      <div className="mt-8 text-sm text-gray-500 flex gap-4">
+      <div className="mt-4 text-sm text-gray-500 flex gap-4">
         <span>Privacy & Terms</span>
         <span>Contact Us</span>
       </div>
