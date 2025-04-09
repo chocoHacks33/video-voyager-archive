@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
+import Image from '@/components/ui/image'; // We'll create this component if the image upload works
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -23,7 +24,10 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
     <div className="min-h-screen bg-gray-bg">
       <header className="bg-white p-4 shadow-sm">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold text-navy">Video Voyager Archive</h1>
+          <div className="flex items-center gap-3">
+            {/* Logo will be added here once image is uploaded */}
+            <h1 className="text-xl font-bold text-navy">Hype Print</h1>
+          </div>
           <Button 
             variant="ghost" 
             size="sm" 
