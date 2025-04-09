@@ -1,4 +1,3 @@
-
 import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -27,7 +26,7 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
           <div className="flex items-center gap-3">
             <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center">
               <Image 
-                src="/lovable-uploads/cf60b9a1-c4d9-4889-899e-1e640b73e83a.png" 
+                src="/lovable-uploads/b6f9e0a6-2791-4deb-902b-452edbbd8ee7.png" 
                 alt="Hype Print Logo" 
                 className="h-8 w-8"
               />
@@ -58,4 +57,3 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
 };
 
 export default AppLayout;
-
