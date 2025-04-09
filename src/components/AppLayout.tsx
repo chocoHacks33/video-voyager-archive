@@ -18,7 +18,7 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
     logout();
     navigate('/login');
   };
-
+  
   return (
     <div className="min-h-screen bg-gray-bg">
       <header className="bg-white p-4 shadow-sm">
@@ -26,7 +26,7 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
           <div className="flex items-center gap-3">
             <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center">
               <Image 
-                src="/lovable-uploads/b6f9e0a6-2791-4deb-902b-452edbbd8ee7.png" 
+                src="/lovable-uploads/58e6d853-f703-47e3-9d69-340b6149ed8b.png" 
                 alt="Hype Print Logo" 
                 className="h-8 w-8"
               />
