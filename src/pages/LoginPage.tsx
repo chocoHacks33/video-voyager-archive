@@ -54,18 +54,18 @@ const LoginPage = () => {
       
       {/* Main content with gradient box */}
       <div className="w-full max-w-md bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 space-y-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 space-y-4"> {/* Reduced padding and spacing */}
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Sign in to ADMORPH.AI</h1>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">We suggest using the account credentials provided below.</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sign in to ADMORPH.AI</h1>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">We suggest using the account credentials provided below.</p>
           </div>
           
-          <div className="space-y-4">
+          <div className="space-y-3"> {/* Reduced spacing */}
             {/* Google Button */}
             <Button 
               type="button" 
               variant="outline"
-              className="w-full py-6 flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
+              className="w-full py-5 flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
               onClick={handleGoogleLogin}
             >
               <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -83,7 +83,7 @@ const LoginPage = () => {
             <Button 
               type="button" 
               variant="outline"
-              className="w-full py-6 flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
+              className="w-full py-5 flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
               onClick={handleAppleLogin}
             >
               <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg" className="dark:fill-white">
@@ -93,67 +93,67 @@ const LoginPage = () => {
             </Button>
             
             {/* Separator */}
-            <div className="relative my-6">
+            <div className="relative my-4"> {/* Slightly reduced margin */}
               <Separator className="dark:bg-gray-700" />
-              <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 px-2 text-sm text-gray-500 dark:text-gray-400">
+              <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 px-2 text-xs text-gray-500 dark:text-gray-400">
                 OR
               </span>
             </div>
             
             {/* Email Form */}
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
+              <div className="mb-3"> {/* Reduced margin */}
                 <Input
                   id="username"
                   type="text"
                   placeholder="name@work-email.com"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full py-6 border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md focus:border-purple-500 focus:ring-purple-500"
+                  className="w-full py-5 border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md focus:border-purple-500 focus:ring-purple-500"
                   required
                 />
               </div>
               
-              <div className="mb-4">
+              <div className="mb-3"> {/* Reduced margin */}
                 <Input
                   id="password"
                   type="password"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full py-6 border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md focus:border-purple-500 focus:ring-purple-500"
+                  className="w-full py-5 border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md focus:border-purple-500 focus:ring-purple-500"
                   required
                 />
               </div>
               
               <Button 
                 type="submit" 
-                className="w-full py-6 bg-purple-700 hover:bg-purple-800 flex items-center justify-center gap-2 text-white"
+                className="w-full py-5 bg-purple-700 hover:bg-purple-800 flex items-center justify-center gap-2 text-white"
               >
                 <Mail size={18} />
                 Sign In With Email
               </Button>
             </form>
             
-            <div className="text-center text-gray-500 dark:text-gray-400 text-sm mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <span className="h-4 w-4 rounded-full bg-purple-100 dark:bg-purple-800 flex items-center justify-center">
+            <div className="text-center text-gray-500 dark:text-gray-400 text-xs mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"> {/* Reduced text size and padding */}
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <span className="h-3 w-3 rounded-full bg-purple-100 dark:bg-purple-800 flex items-center justify-center">
                   <span className="h-1 w-1 rounded-full bg-purple-500"></span>
                 </span>
-                <p>We'll email you a magic code for a password-free sign in.</p>
+                <p className="text-xs">We'll email you a magic code for a password-free sign in.</p>
               </div>
-              <p>Or, you can <span className="text-blue-500 dark:text-blue-400">sign in manually instead</span>.</p>
+              <p className="text-xs">Or, you can <span className="text-blue-500 dark:text-blue-400">sign in manually instead</span>.</p>
             </div>
             
-            <div className="text-center mt-8 text-gray-500 dark:text-gray-400 text-sm">
-              <p className="mb-2">Demo Credentials:</p>
+            <div className="text-center mt-4 text-gray-500 dark:text-gray-400 text-xs"> {/* Reduced margin and text size */}
+              <p className="mb-1">Demo Credentials:</p>
               <p>Username: admin / Password: password123</p>
             </div>
           </div>
         </div>
       </div>
       
-      <div className="mt-8 text-sm text-gray-500 dark:text-gray-400 flex gap-4">
+      <div className="mt-4 text-xs text-gray-500 dark:text-gray-400 flex gap-4"> {/* Reduced margin and text size */}
         <span>Privacy & Terms</span>
         <span>Contact Us</span>
       </div>
@@ -162,3 +162,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
