@@ -1,3 +1,7 @@
 
-# This folder contains stock videos for the gallery
-# Replace these with your actual videos when ready
+# Placeholder Videos for Gallery
+# To use your own videos:
+# 1. Replace these files with your own MP4 videos
+# 2. Name them video1.mp4, video2.mp4, ..., video16.mp4
+# 3. Recommended: Short, 3-5 second clips
+# 4. Aspect ratio: 16:9 works best with the gallery layout
