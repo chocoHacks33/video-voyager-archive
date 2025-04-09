@@ -27,7 +27,7 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
           <div className="flex items-center gap-3">
             <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center">
               <Image 
-                src="/lovable-uploads/fe03c8fa-9760-4968-80dd-c1538e91e4be.png" 
+                src="/lovable-uploads/cf60b9a1-c4d9-4889-899e-1e640b73e83a.png" 
                 alt="Hype Print Logo" 
                 className="h-8 w-8"
               />
@@ -58,3 +58,4 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
 };
 
 export default AppLayout;
+
