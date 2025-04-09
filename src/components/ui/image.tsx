@@ -9,7 +9,7 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 const Image: React.FC<ImageProps> = ({ className, ...props }) => {
   return (
     <img 
-      className={cn('', className)} 
+      className={cn('object-contain', className)} 
       {...props} 
       alt={props.alt || 'Image'}
     />

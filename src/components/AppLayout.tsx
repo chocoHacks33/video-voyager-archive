@@ -25,11 +25,13 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
       <header className="bg-white p-4 shadow-sm">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <Image 
-              src="/lovable-uploads/0af91bfe-ecf5-49fb-b91f-3f2283e6f926.png" 
-              alt="Hype Print Logo" 
-              className="h-10 w-10"
-            />
+            <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center">
+              <Image 
+                src="/lovable-uploads/fe03c8fa-9760-4968-80dd-c1538e91e4be.png" 
+                alt="Hype Print Logo" 
+                className="h-8 w-8"
+              />
+            </div>
             <h1 className="text-xl font-bold text-navy">Hype Print</h1>
           </div>
           <Button 
