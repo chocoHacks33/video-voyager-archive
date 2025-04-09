@@ -10,22 +10,22 @@ interface VideoData {
 }
 
 const videosData: VideoData[] = [
-  { id: 1, source: '/output_video/output1.mp4', description: 'Standard version with enhanced colors' },
-  { id: 2, source: '/output_video/output2.mp4', description: 'Black and white artistic version' },
-  { id: 3, source: '/output_video/output3.mp4', description: 'Slow motion with dramatic effects' },
-  { id: 4, source: '/output_video/output4.mp4', description: 'Fast paced with upbeat transitions' },
-  { id: 5, source: '/output_video/output5.mp4', description: 'Cinematic wide screen format' },
-  { id: 6, source: '/output_video/output6.mp4', description: 'Vintage filter with film grain effect' },
-  { id: 7, source: '/output_video/output1.mp4', description: 'Neon color grading with vibrant highlights' },
-  { id: 8, source: '/output_video/output2.mp4', description: 'Retro VHS style with scan lines' },
-  { id: 9, source: '/output_video/output3.mp4', description: 'Sepia-toned nostalgic footage' },
-  { id: 10, source: '/output_video/output4.mp4', description: 'High contrast urban landscape' },
-  { id: 11, source: '/output_video/output5.mp4', description: 'Dreamlike soft focus effect' },
-  { id: 12, source: '/output_video/output6.mp4', description: 'Vibrant color pop animation' },
-  { id: 13, source: '/output_video/output1.mp4', description: 'Minimalist monochrome design' },
-  { id: 14, source: '/output_video/output2.mp4', description: 'Dynamic motion graphics' },
-  { id: 15, source: '/output_video/output3.mp4', description: 'Ethereal light leak overlay' },
-  { id: 16, source: '/output_video/output4.mp4', description: 'Cinematic lens flare effect' }
+  { id: 1, source: '/stock-videos/video1.mp4', description: 'Standard version with enhanced colors' },
+  { id: 2, source: '/stock-videos/video2.mp4', description: 'Black and white artistic version' },
+  { id: 3, source: '/stock-videos/video3.mp4', description: 'Slow motion with dramatic effects' },
+  { id: 4, source: '/stock-videos/video4.mp4', description: 'Fast paced with upbeat transitions' },
+  { id: 5, source: '/stock-videos/video5.mp4', description: 'Cinematic wide screen format' },
+  { id: 6, source: '/stock-videos/video6.mp4', description: 'Vintage filter with film grain effect' },
+  { id: 7, source: '/stock-videos/video7.mp4', description: 'Neon color grading with vibrant highlights' },
+  { id: 8, source: '/stock-videos/video8.mp4', description: 'Retro VHS style with scan lines' },
+  { id: 9, source: '/stock-videos/video9.mp4', description: 'Sepia-toned nostalgic footage' },
+  { id: 10, source: '/stock-videos/video10.mp4', description: 'High contrast urban landscape' },
+  { id: 11, source: '/stock-videos/video11.mp4', description: 'Dreamlike soft focus effect' },
+  { id: 12, source: '/stock-videos/video12.mp4', description: 'Vibrant color pop animation' },
+  { id: 13, source: '/stock-videos/video13.mp4', description: 'Minimalist monochrome design' },
+  { id: 14, source: '/stock-videos/video14.mp4', description: 'Dynamic motion graphics' },
+  { id: 15, source: '/stock-videos/video15.mp4', description: 'Ethereal light leak overlay' },
+  { id: 16, source: '/stock-videos/video16.mp4', description: 'Cinematic lens flare effect' }
 ];
 
 const VideoCard = ({ video }: { video: VideoData }) => {
