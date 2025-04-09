@@ -45,7 +45,7 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 
   return (
     <div 
-      className="bg-navy rounded-lg overflow-hidden shadow-md relative group"
+      className="bg-navy rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -77,7 +77,7 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 const GalleryPage = () => {
   return (
     <AppLayout title="GENERATED VIDEO FORMATS">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {videosData.map(video => (
           <VideoCard key={video.id} video={video} />
         ))}
