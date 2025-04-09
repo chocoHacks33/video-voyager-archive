@@ -1,10 +1,9 @@
 
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import AppLayout from '@/components/AppLayout';
-import { Upload, Upload as UploadIcon } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
 const UploadPage = () => {
@@ -53,7 +52,9 @@ const UploadPage = () => {
       return;
     }
 
-    toast.success('Upload started');
+    toast.success('Upload started', {
+      style: { background: '#4CAF50', color: 'white' }  // Green background with white text
+    });
     
     // Simulate uploading process
     setTimeout(() => {
