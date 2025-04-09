@@ -25,7 +25,11 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
       <header className="bg-white p-4 shadow-sm">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3">
-            {/* Logo will be added here once image is uploaded */}
+            <Image 
+              src="/lovable-uploads/0af91bfe-ecf5-49fb-b91f-3f2283e6f926.png" 
+              alt="Hype Print Logo" 
+              className="h-10 w-10"
+            />
             <h1 className="text-xl font-bold text-navy">Hype Print</h1>
           </div>
           <Button 
