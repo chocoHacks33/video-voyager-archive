@@ -64,7 +64,7 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				navy: '#445771',
-				'navy-dark': '#2A3952',
+				'navy-dark': '#394961',
 				'blue-app': '#3176C7',
 				'gray-bg': '#F4F5F7',
 			},

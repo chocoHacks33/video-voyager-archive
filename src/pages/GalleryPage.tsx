@@ -45,11 +45,11 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 
   return (
     <div 
-      className="rounded-xl overflow-hidden relative group transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl bg-gradient-to-br from-navy to-navy-dark dark:from-navy-dark dark:to-black"
+      className="bg-navy rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="aspect-video relative overflow-hidden rounded-t-xl">
+      <div className="aspect-video relative">
         <video 
           ref={videoRef}
           src={video.source}
@@ -59,15 +59,17 @@ const VideoCard = ({ video }: { video: VideoData }) => {
           playsInline
         />
         {!isHovered && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300">
-            <Play className="w-12 h-12 text-white opacity-80" />
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+            <Play className="w-12 h-12 text-white" />
           </div>
         )}
       </div>
       
-      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 text-white transform transition-transform duration-300 ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}>
-        <p className="text-sm font-medium">{video.description}</p>
-      </div>
+      {isHovered && (
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
+          <p className="text-sm">{video.description}</p>
+        </div>
+      )}
     </div>
   );
 };
