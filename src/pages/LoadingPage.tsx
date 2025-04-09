@@ -1,14 +1,26 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import { Progress } from "@/components/ui/progress";
 import { toast } from 'sonner';
+import { QwenAIService, VideoGenerationResponse } from '@/services/qwenAIService';
 
-// Mock function to simulate saving a video file to storage
-const saveVideoToStorage = async (text: string): Promise<string> => {
-  // In a real implementation, this would use the extracted text to generate
-  // a video with Qwen AI and save it to the specified path
-  return '/stock-videos/video1.mp4';
+// Function to extract text from video (mock implementation)
+const extractTextFromVideo = async (videoFile: File): Promise<string> => {
+  // In a real implementation, this would use speech-to-text or OCR services
+  console.log('Extracting text from video:', videoFile.name);
+  await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate processing time
+  
+  return "This is simulated text extracted from the uploaded video. In a real implementation, we would use speech-to-text or OCR services to extract actual content from the video.";
+};
+
+// Function to save video to storage (simplified implementation)
+const saveVideoToStorage = async (videoUrl: string, generatedPrompt: string): Promise<string> => {
+  console.log('Saving video to storage:', videoUrl, 'with prompt:', generatedPrompt);
+  
+  // In a real implementation, this would download the video and save it locally or to cloud storage
+  return videoUrl; // Return the path/URL where the video is stored
 };
 
 const LoadingPage = () => {
@@ -16,6 +28,7 @@ const LoadingPage = () => {
   const location = useLocation();
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState("Extracting text from video...");
+  const [videoGenerationId, setVideoGenerationId] = useState<string | null>(null);
   const videoFile = location.state?.videoFile;
   
   useEffect(() => {
@@ -25,32 +38,46 @@ const LoadingPage = () => {
       return;
     }
 
-    // Simulate video processing steps
+    // Process video and generate AI video
     const processVideo = async () => {
       try {
-        // Step 1: Extract text from video (simulation)
+        // Step 1: Extract text from video
         setCurrentStep("Extracting text from video...");
-        await simulateProcess(30);
-        
-        // Mock text extracted from video
-        const extractedText = "This is simulated text extracted from the uploaded video. In a real implementation, we would use speech-to-text or OCR services to extract actual content from the video. Qwen AI would then use this content to generate a creative video.";
+        await simulateProcess(20);
+        const extractedText = await extractTextFromVideo(videoFile);
         
         // Step 2: Generate AI prompt from text
         setCurrentStep("Generating AI prompt...");
-        await simulateProcess(30);
+        await simulateProcess(20);
+        const generatedPrompt = "Cinematic video with enhanced lighting and smooth transitions";
         
-        // Mock generated prompt
-        const generatedPrompt = "Cinematic version with enhanced lighting";
-        
-        // Step 3: Creating AI video
+        // Step 3: Creating AI video with Qwen
         setCurrentStep("Creating AI video with Qwen...");
         await simulateProcess(30);
         
-        // Step 4: Saving video to storage
-        setCurrentStep("Saving video to storage...");
+        // Call Qwen AI service to generate video
+        const videoResponse = await QwenAIService.generateVideo({
+          prompt: generatedPrompt,
+          text: extractedText,
+          style: 'cinematic',
+          duration: 5
+        });
         
-        // In a real implementation, we would create the video based on the prompt
-        const videoPath = await saveVideoToStorage(extractedText + " " + generatedPrompt);
+        setVideoGenerationId(videoResponse.id);
+        
+        // Step 4: Check video generation status
+        setCurrentStep("Processing video with Qwen AI...");
+        let videoResult = videoResponse;
+        
+        // Poll for status if necessary (simplified for demo)
+        if (videoResult.status === 'processing') {
+          await simulateProcess(20);
+          videoResult = await QwenAIService.getVideoStatus(videoResponse.id);
+        }
+        
+        // Step 5: Save video to storage
+        setCurrentStep("Saving video to storage...");
+        const videoPath = await saveVideoToStorage(videoResult.videoUrl, generatedPrompt);
         await simulateProcess(10);
         
         // Success! Navigate to gallery
@@ -107,17 +134,17 @@ const LoadingPage = () => {
           <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-100">
             <h3 className="font-medium mb-2">What's happening?</h3>
             <ol className="space-y-2 text-sm text-gray-600 list-decimal pl-5">
-              <li className={progress >= 30 ? "text-green-600 font-medium" : ""}>
+              <li className={progress >= 20 ? "text-green-600 font-medium" : ""}>
                 Converting your video to text transcripts
               </li>
-              <li className={progress >= 60 ? "text-green-600 font-medium" : ""}>
+              <li className={progress >= 40 ? "text-green-600 font-medium" : ""}>
                 Generating creative prompt from your content
               </li>
-              <li className={progress >= 90 ? "text-green-600 font-medium" : ""}>
+              <li className={progress >= 70 ? "text-green-600 font-medium" : ""}>
                 Creating AI video style with Qwen
               </li>
-              <li className={progress >= 100 ? "text-green-600 font-medium" : ""}>
-                Saving generated video to storage
+              <li className={progress >= 90 ? "text-green-600 font-medium" : ""}>
+                Processing and saving generated video
               </li>
             </ol>
           </div>

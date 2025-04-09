@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/components/AppLayout';
-import { Play, AlertTriangle, Download } from 'lucide-react';
+import { Play, AlertTriangle, Download, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
@@ -11,31 +11,37 @@ interface VideoData {
   description: string;
 }
 
-// Simulate AI-generated video data - just one video for now
+// Simplified to just one video for now
 const videoData: VideoData = { 
   id: 1, 
   source: '/stock-videos/video1.mp4', 
-  description: 'Qwen AI: Cinematic version with enhanced lighting' 
+  description: 'Qwen AI: Cinematic version with enhanced lighting and smooth transitions' 
 };
 
 const VideoCard = ({ video }: { video: VideoData }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     // Check if the video file actually exists
     const checkVideoFile = async () => {
       try {
+        setIsLoading(true);
         const response = await fetch(video.source);
         if (!response.ok) {
           console.error(`Video file not found: ${video.source}`);
           setVideoError(true);
+        } else {
+          setVideoError(false);
         }
       } catch (error) {
         console.error("Error checking video:", error);
         setVideoError(true);
+      } finally {
+        setIsLoading(false);
       }
     };
     
@@ -56,6 +62,13 @@ const VideoCard = ({ video }: { video: VideoData }) => {
           });
       }
     }
+  };
+
+  const handleRetry = () => {
+    setIsLoading(true);
+    setVideoError(false);
+    // Force reload the current page
+    window.location.reload();
   };
 
   React.useEffect(() => {
@@ -80,11 +93,21 @@ const VideoCard = ({ video }: { video: VideoData }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="aspect-video relative">
-        {videoError ? (
-          <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex flex-col items-center justify-center">
+        {isLoading ? (
+          <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : videoError ? (
+          <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex flex-col items-center justify-center p-4">
             <AlertTriangle className="w-10 h-10 text-amber-500 mb-2" />
-            <p className="text-sm text-center px-4">Video not found or still processing</p>
-            <Button variant="outline" size="sm" className="mt-4" onClick={() => window.location.reload()}>
+            <p className="text-sm text-center">Video not found or still processing</p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="mt-4 flex items-center gap-2"
+              onClick={handleRetry}
+            >
+              <RefreshCw className="w-4 h-4" />
               Refresh
             </Button>
           </div>
@@ -100,9 +123,11 @@ const VideoCard = ({ video }: { video: VideoData }) => {
           />
         )}
         
-        {!isHovered && !videoError && !isPlaying && (
+        {!isHovered && !videoError && !isPlaying && !isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-            <Play className="w-16 h-16 text-white" />
+            <button onClick={handlePlay} className="p-4 rounded-full bg-white/10 hover:bg-white/20 transition-all">
+              <Play className="w-12 h-12 text-white" />
+            </button>
           </div>
         )}
       </div>
@@ -116,8 +141,10 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 };
 
 const GalleryPage = () => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
   useEffect(() => {
-    // Check if the video exists at all
+    // Check if the video exists
     const checkVideoExists = async () => {
       try {
         const response = await fetch(videoData.source);
@@ -137,23 +164,40 @@ const GalleryPage = () => {
     checkVideoExists();
   }, []);
 
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    window.location.reload();
+  };
+
   return (
     <AppLayout title="QWEN AI GENERATED VIDEO">
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold mb-2">Your AI Video</h2>
-            <p className="text-gray-600 dark:text-gray-300">
-              This video is 5 seconds long and generated by Qwen AI based on the text extracted from your original video.
-            </p>
-            <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
-              Note: If video appears missing, it may still be processing. Try refreshing the page after a few minutes.
-            </p>
+          <div className="mb-6 flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold mb-2">Your AI Video</h2>
+              <p className="text-gray-600 dark:text-gray-300">
+                This video was generated by Qwen AI based on the text extracted from your original video.
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
           </div>
           
           <div className="max-w-2xl mx-auto">
             <VideoCard key={videoData.id} video={videoData} />
           </div>
+          
+          <p className="text-sm text-center text-amber-600 dark:text-amber-400 mt-6">
+            Note: If the video appears missing, it may still be processing. Try refreshing the page after a few minutes.
+          </p>
         </div>
       </div>
     </AppLayout>
