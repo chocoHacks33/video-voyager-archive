@@ -60,14 +60,14 @@ const VideoCard = ({ video }: { video: VideoData }) => {
         />
         {!isHovered && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-            <Play className="w-12 h-12 text-white" />
+            <Play className="w-16 h-16 text-white" />
           </div>
         )}
       </div>
       
       {isHovered && (
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
-          <p className="text-sm">{video.description}</p>
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white">
+          <p className="text-base">{video.description}</p>
         </div>
       )}
     </div>
@@ -77,7 +77,7 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 const GalleryPage = () => {
   return (
     <AppLayout title="GENERATED VIDEO FORMATS">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {videosData.map(video => (
           <VideoCard key={video.id} video={video} />
         ))}
