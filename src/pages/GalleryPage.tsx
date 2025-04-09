@@ -1,8 +1,6 @@
 
 import React, { useState } from 'react';
 import AppLayout from '@/components/AppLayout';
-import { Button } from "@/components/ui/button";
-import { useNavigate } from 'react-router-dom';
 import { Play } from 'lucide-react';
 
 interface VideoData {
@@ -18,6 +16,8 @@ const videosData: VideoData[] = [
   { id: 4, source: '/output_video/output4.mp4', description: 'Fast paced with upbeat transitions' },
   { id: 5, source: '/output_video/output5.mp4', description: 'Cinematic wide screen format' },
   { id: 6, source: '/output_video/output6.mp4', description: 'Vintage filter with film grain effect' },
+  { id: 7, source: '/output_video/output6.mp4', description: 'Neon color grading with vibrant highlights' },
+  { id: 8, source: '/output_video/output5.mp4', description: 'Retro VHS style with scan lines' },
 ];
 
 const VideoCard = ({ video }: { video: VideoData }) => {
@@ -67,23 +67,12 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 };
 
 const GalleryPage = () => {
-  const navigate = useNavigate();
-  
   return (
     <AppLayout title="GENERATED VIDEO FORMATS">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {videosData.map(video => (
           <VideoCard key={video.id} video={video} />
         ))}
-      </div>
-      
-      <div className="mt-8 flex justify-center">
-        <Button 
-          onClick={() => navigate('/upload')}
-          className="bg-blue-app hover:bg-blue-500"
-        >
-          Upload New Video
-        </Button>
       </div>
     </AppLayout>
   );
