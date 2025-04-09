@@ -32,7 +32,7 @@ const LoginPage = () => {
     }
   };
 
-  const handleAppleLogin = () => {.
+  const handleAppleLogin = () => {
     // In a real implementation, this would connect to Apple OAuth
     const success = login('admin', 'password123');
     if (success) {
