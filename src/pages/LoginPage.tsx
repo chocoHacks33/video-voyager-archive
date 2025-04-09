@@ -45,7 +45,7 @@ const LoginPage = () => {
       <div className="w-full max-w-md bg-gradient-to-br from-purple-100 via-purple-50 to-white rounded-xl p-1 shadow-lg">
         <div className="bg-white rounded-lg p-8 space-y-6">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900">Sign in to Hype Print</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Sign in to AdMorph.AI</h1>
             <p className="text-gray-600 mt-2">We suggest using the account credentials provided below.</p>
           </div>
           
