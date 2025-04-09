@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import AppLayout from '@/components/AppLayout';
 import { Play } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 interface VideoData {
   id: number;
@@ -29,7 +30,7 @@ const videosData: VideoData[] = [
   { id: 16, source: '/stock-videos/video16.mp4', description: 'Cinematic lens flare effect' }
 ];
 
-const VideoCard = ({ video }: { video: VideoData }) => {
+const VideoCard = ({ video, onClick }: { video: VideoData; onClick: () => void }) => {
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
@@ -46,9 +47,10 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 
   return (
     <div 
-      className="bg-navy rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl"
+      className="bg-navy rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
     >
       <div className="aspect-video relative">
         <video 
@@ -75,16 +77,78 @@ const VideoCard = ({ video }: { video: VideoData }) => {
   );
 };
 
+const VideoPopup = ({ video, isOpen, onClose }: { video: VideoData | null; isOpen: boolean; onClose: () => void }) => {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  React.useEffect(() => {
+    if (isOpen && videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.error("Error playing popup video:", error);
+      });
+    }
+  }, [isOpen]);
+
+  if (!video) return null;
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="bg-white p-0 rounded-lg shadow-xl max-w-3xl mx-auto overflow-hidden border-0">
+        <div className="relative">
+          <video 
+            ref={videoRef}
+            src={video.source}
+            className="w-full h-auto aspect-video"
+            controls
+            autoPlay
+            playsInline
+          />
+        </div>
+        <div className="p-4 bg-white">
+          <h3 className="text-lg font-medium text-gray-900">Video Details</h3>
+          <div className="mt-2 space-y-2">
+            <div className="h-2 bg-gray-200 rounded-full w-3/4"></div>
+            <div className="h-2 bg-gray-200 rounded-full w-1/2"></div>
+          </div>
+          <p className="mt-3 text-sm text-gray-700">{video.description}</p>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const GalleryPage = () => {
+  const [selectedVideo, setSelectedVideo] = useState<VideoData | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const handleVideoClick = (video: VideoData) => {
+    setSelectedVideo(video);
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setTimeout(() => setSelectedVideo(null), 300); // Clear selected video after close animation
+  };
+
   return (
     <AppLayout title="GENERATED VIDEO FORMATS">
       <ScrollArea className="h-[calc(100vh-140px)]">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-8">
           {videosData.map(video => (
-            <VideoCard key={video.id} video={video} />
+            <VideoCard 
+              key={video.id} 
+              video={video} 
+              onClick={() => handleVideoClick(video)}
+            />
           ))}
         </div>
       </ScrollArea>
+
+      <VideoPopup 
+        video={selectedVideo} 
+        isOpen={isPopupOpen} 
+        onClose={handleClosePopup} 
+      />
     </AppLayout>
   );
 };
