@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
-import Image from '@/components/ui/image'; // We'll create this component if the image upload works
+import Image from '@/components/ui/image';
 
 interface AppLayoutProps {
   children: ReactNode;
