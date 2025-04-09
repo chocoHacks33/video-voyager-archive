@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Mail, LogIn } from 'lucide-react';
-import Image from '@/components/ui/image';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -40,14 +39,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
-      {/* Logo */}
-      <div className="mb-8">
-        <Image 
-          src="/lovable-uploads/58e6d853-f703-47e3-9d69-340b6149ed8b.png" 
-          alt="Hype Print Logo" 
-          className="h-10 w-auto"
-        />
-      </div>
+      {/* Logo section removed */}
       
       {/* Main content with gradient box */}
       <div className="w-full max-w-md bg-gradient-to-br from-purple-100 via-purple-50 to-white rounded-xl p-1 shadow-lg">
