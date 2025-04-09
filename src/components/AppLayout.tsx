@@ -1,3 +1,4 @@
+
 import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -27,11 +28,11 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
             <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center">
               <Image 
                 src="/lovable-uploads/58e6d853-f703-47e3-9d69-340b6149ed8b.png" 
-                alt="AdMorph.AI Logo" 
+                alt="ADMORPH.AI Logo" 
                 className="h-8 w-8"
               />
             </div>
-            <h1 className="text-xl font-bold text-navy">AdMorph.AI</h1>
+            <h1 className="text-xl font-bold text-navy">ADMORPH.AI</h1>
           </div>
           <Button 
             variant="ghost" 
