@@ -56,10 +56,8 @@ const UploadPage = () => {
       style: { background: '#4CAF50', color: 'white' }  // Green background with white text
     });
     
-    // Simulate uploading process
-    setTimeout(() => {
-      navigate('/loading');
-    }, 1500);
+    // Navigate to loading page with the file as state
+    navigate('/loading', { state: { videoFile: file } });
   };
   
   return (
@@ -90,6 +88,12 @@ const UploadPage = () => {
           {!file && (
             <p className="text-sm text-gray-500 mt-2">
               Drag and drop or click to browse
+            </p>
+          )}
+          
+          {file && (
+            <p className="text-sm text-gray-500 mt-2">
+              Your video will be processed by Qwen AI to create multiple styles
             </p>
           )}
         </div>
