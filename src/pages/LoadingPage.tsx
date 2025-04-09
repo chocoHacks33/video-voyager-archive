@@ -5,6 +5,13 @@ import AppLayout from '@/components/AppLayout';
 import { Progress } from "@/components/ui/progress";
 import { toast } from 'sonner';
 
+// Mock function to simulate saving a video file to storage
+const saveVideoToStorage = async (id: number, text: string): Promise<string> => {
+  // In a real implementation, this would use the extracted text to generate
+  // a video with Qwen AI and save it to the specified path
+  return `/stock-videos/video${id}.mp4`;
+};
+
 const LoadingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,9 +33,32 @@ const LoadingPage = () => {
         setCurrentStep("Extracting text from video...");
         await simulateProcess(20);
         
+        // Mock text extracted from video
+        const extractedText = "This is simulated text extracted from the uploaded video. In a real implementation, we would use speech-to-text or OCR services to extract actual content from the video. Qwen AI would then use this content to generate creative videos in different styles.";
+        
         // Step 2: Generate AI prompts from text
         setCurrentStep("Generating AI prompts...");
         await simulateProcess(30);
+        
+        // Mock generated prompts
+        const generatedPrompts = [
+          "Cinematic version with enhanced lighting",
+          "Black and white artistic rendition",
+          "Slow motion with dramatic effects",
+          "Fast-paced with upbeat transitions",
+          "Cinematic widescreen format",
+          "Vintage filter with grain effect",
+          "Neon color grading with vibrant highlights",
+          "Retro VHS style with scan lines",
+          "Sepia-toned nostalgic footage",
+          "High contrast urban landscape",
+          "Dreamlike soft focus effect",
+          "Vibrant color pop animation",
+          "Minimalist monochrome design",
+          "Dynamic motion graphics",
+          "Ethereal light leak overlay",
+          "Cinematic lens flare effect"
+        ];
         
         // Step 3: Creating AI videos
         setCurrentStep("Creating AI videos with Qwen...");
@@ -36,12 +66,21 @@ const LoadingPage = () => {
         
         // Step 4: Saving videos to storage
         setCurrentStep("Saving videos to storage...");
+        
+        // In a real implementation, we would create multiple videos based on the prompts
+        const videoSavePromises = generatedPrompts.map((prompt, index) => 
+          saveVideoToStorage(index + 1, extractedText + " " + prompt)
+        );
+        
+        // Wait for all videos to be saved
+        await Promise.all(videoSavePromises);
         await simulateProcess(20);
         
         // Success! Navigate to gallery
-        toast.success("Video processing complete");
+        toast.success("Video processing complete! Videos saved to storage.");
         navigate('/gallery');
       } catch (error) {
+        console.error("Video processing error:", error);
         toast.error("Error processing video");
         navigate('/upload');
       }
