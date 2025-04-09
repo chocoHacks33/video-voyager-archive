@@ -16,8 +16,16 @@ const videosData: VideoData[] = [
   { id: 4, source: '/output_video/output4.mp4', description: 'Fast paced with upbeat transitions' },
   { id: 5, source: '/output_video/output5.mp4', description: 'Cinematic wide screen format' },
   { id: 6, source: '/output_video/output6.mp4', description: 'Vintage filter with film grain effect' },
-  { id: 7, source: '/output_video/output6.mp4', description: 'Neon color grading with vibrant highlights' },
-  { id: 8, source: '/output_video/output5.mp4', description: 'Retro VHS style with scan lines' },
+  { id: 7, source: '/output_video/output1.mp4', description: 'Neon color grading with vibrant highlights' },
+  { id: 8, source: '/output_video/output2.mp4', description: 'Retro VHS style with scan lines' },
+  { id: 9, source: '/output_video/output3.mp4', description: 'Sepia-toned nostalgic footage' },
+  { id: 10, source: '/output_video/output4.mp4', description: 'High contrast urban landscape' },
+  { id: 11, source: '/output_video/output5.mp4', description: 'Dreamlike soft focus effect' },
+  { id: 12, source: '/output_video/output6.mp4', description: 'Vibrant color pop animation' },
+  { id: 13, source: '/output_video/output1.mp4', description: 'Minimalist monochrome design' },
+  { id: 14, source: '/output_video/output2.mp4', description: 'Dynamic motion graphics' },
+  { id: 15, source: '/output_video/output3.mp4', description: 'Ethereal light leak overlay' },
+  { id: 16, source: '/output_video/output4.mp4', description: 'Cinematic lens flare effect' }
 ];
 
 const VideoCard = ({ video }: { video: VideoData }) => {
@@ -69,7 +77,7 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 const GalleryPage = () => {
   return (
     <AppLayout title="GENERATED VIDEO FORMATS">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {videosData.map(video => (
           <VideoCard key={video.id} video={video} />
         ))}
