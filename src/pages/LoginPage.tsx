@@ -1,17 +1,20 @@
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Mail, LogIn } from 'lucide-react';
+import { Mail, LogIn, Moon, Sun } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { useTheme } from '@/hooks/useTheme';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +32,7 @@ const LoginPage = () => {
     }
   };
 
-  const handleAppleLogin = () => {
+  const handleAppleLogin = () => {.
     // In a real implementation, this would connect to Apple OAuth
     const success = login('admin', 'password123');
     if (success) {
@@ -38,15 +41,23 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
-      {/* Logo section removed */}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 px-4">
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <Sun size={16} className="text-gray-600 dark:text-gray-400" />
+        <Switch 
+          checked={theme === 'dark'}
+          onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+          className="data-[state=checked]:bg-blue-600"
+        />
+        <Moon size={16} className="text-gray-600 dark:text-gray-300" />
+      </div>
       
       {/* Main content with gradient box */}
-      <div className="w-full max-w-md bg-gradient-to-br from-purple-100 via-purple-50 to-white rounded-xl p-1 shadow-lg">
-        <div className="bg-white rounded-lg p-8 space-y-6">
+      <div className="w-full max-w-md bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-8 space-y-6">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900">Sign in to ADMORPH.AI</h1>
-            <p className="text-gray-600 mt-2">We suggest using the account credentials provided below.</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Sign in to ADMORPH.AI</h1>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">We suggest using the account credentials provided below.</p>
           </div>
           
           <div className="space-y-4">
@@ -54,7 +65,7 @@ const LoginPage = () => {
             <Button 
               type="button" 
               variant="outline"
-              className="w-full py-6 flex items-center justify-center gap-2 border-gray-300 hover:bg-gray-50 text-gray-700"
+              className="w-full py-6 flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
               onClick={handleGoogleLogin}
             >
               <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
@@ -72,10 +83,10 @@ const LoginPage = () => {
             <Button 
               type="button" 
               variant="outline"
-              className="w-full py-6 flex items-center justify-center gap-2 border-gray-300 hover:bg-gray-50 text-gray-700"
+              className="w-full py-6 flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
               onClick={handleAppleLogin}
             >
-              <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg" className="dark:fill-white">
                 <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701z"/>
               </svg>
               Sign In With Apple
@@ -83,8 +94,8 @@ const LoginPage = () => {
             
             {/* Separator */}
             <div className="relative my-6">
-              <Separator />
-              <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-sm text-gray-500">
+              <Separator className="dark:bg-gray-700" />
+              <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 px-2 text-sm text-gray-500 dark:text-gray-400">
                 OR
               </span>
             </div>
@@ -98,7 +109,7 @@ const LoginPage = () => {
                   placeholder="name@work-email.com"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full py-6 border-gray-300 rounded-md focus:border-purple-500 focus:ring-purple-500"
+                  className="w-full py-6 border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md focus:border-purple-500 focus:ring-purple-500"
                   required
                 />
               </div>
@@ -110,7 +121,7 @@ const LoginPage = () => {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full py-6 border-gray-300 rounded-md focus:border-purple-500 focus:ring-purple-500"
+                  className="w-full py-6 border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md focus:border-purple-500 focus:ring-purple-500"
                   required
                 />
               </div>
@@ -124,17 +135,17 @@ const LoginPage = () => {
               </Button>
             </form>
             
-            <div className="text-center text-gray-500 text-sm mt-4 p-4 bg-gray-50 rounded-lg">
+            <div className="text-center text-gray-500 dark:text-gray-400 text-sm mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <span className="h-4 w-4 rounded-full bg-purple-100 flex items-center justify-center">
+                <span className="h-4 w-4 rounded-full bg-purple-100 dark:bg-purple-800 flex items-center justify-center">
                   <span className="h-1 w-1 rounded-full bg-purple-500"></span>
                 </span>
                 <p>We'll email you a magic code for a password-free sign in.</p>
               </div>
-              <p>Or, you can <span className="text-blue-500">sign in manually instead</span>.</p>
+              <p>Or, you can <span className="text-blue-500 dark:text-blue-400">sign in manually instead</span>.</p>
             </div>
             
-            <div className="text-center mt-8 text-gray-500 text-sm">
+            <div className="text-center mt-8 text-gray-500 dark:text-gray-400 text-sm">
               <p className="mb-2">Demo Credentials:</p>
               <p>Username: admin / Password: password123</p>
             </div>
@@ -142,7 +153,7 @@ const LoginPage = () => {
         </div>
       </div>
       
-      <div className="mt-8 text-sm text-gray-500 flex gap-4">
+      <div className="mt-8 text-sm text-gray-500 dark:text-gray-400 flex gap-4">
         <span>Privacy & Terms</span>
         <span>Contact Us</span>
       </div>
