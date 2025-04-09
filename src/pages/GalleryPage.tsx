@@ -77,10 +77,14 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 const GalleryPage = () => {
   return (
     <AppLayout title="GENERATED VIDEO FORMATS">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {videosData.map(video => (
-          <VideoCard key={video.id} video={video} />
-        ))}
+      <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {videosData.map(video => (
+              <VideoCard key={video.id} video={video} />
+            ))}
+          </div>
+        </div>
       </div>
     </AppLayout>
   );
