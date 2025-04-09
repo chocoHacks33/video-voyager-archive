@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import AppLayout from '@/components/AppLayout';
 import { Play } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface VideoData {
   id: number;
@@ -77,11 +78,13 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 const GalleryPage = () => {
   return (
     <AppLayout title="GENERATED VIDEO FORMATS">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {videosData.map(video => (
-          <VideoCard key={video.id} video={video} />
-        ))}
-      </div>
+      <ScrollArea className="h-[calc(100vh-140px)]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-8">
+          {videosData.map(video => (
+            <VideoCard key={video.id} video={video} />
+          ))}
+        </div>
+      </ScrollArea>
     </AppLayout>
   );
 };
