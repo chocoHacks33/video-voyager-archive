@@ -28,11 +28,15 @@ const LoadingPage = () => {
         
         // Step 2: Generate AI prompts from text
         setCurrentStep("Generating AI prompts...");
-        await simulateProcess(40);
+        await simulateProcess(30);
         
         // Step 3: Creating AI videos
         setCurrentStep("Creating AI videos with Qwen...");
-        await simulateProcess(40);
+        await simulateProcess(30);
+        
+        // Step 4: Saving videos to storage
+        setCurrentStep("Saving videos to storage...");
+        await simulateProcess(20);
         
         // Success! Navigate to gallery
         toast.success("Video processing complete");
@@ -90,11 +94,14 @@ const LoadingPage = () => {
               <li className={progress >= 20 ? "text-green-600 font-medium" : ""}>
                 Converting your video to text transcripts
               </li>
-              <li className={progress >= 60 ? "text-green-600 font-medium" : ""}>
+              <li className={progress >= 50 ? "text-green-600 font-medium" : ""}>
                 Generating creative prompts from your content
               </li>
-              <li className={progress >= 100 ? "text-green-600 font-medium" : ""}>
+              <li className={progress >= 80 ? "text-green-600 font-medium" : ""}>
                 Creating various AI video styles with Qwen
+              </li>
+              <li className={progress >= 100 ? "text-green-600 font-medium" : ""}>
+                Saving generated videos to storage
               </li>
             </ol>
           </div>
