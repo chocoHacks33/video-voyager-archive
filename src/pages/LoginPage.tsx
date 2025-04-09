@@ -24,24 +24,24 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-bg to-navy/10">
-      <Card className="w-full max-w-md overflow-hidden shadow-xl border-0">
-        <div className="bg-navy text-white p-6 flex flex-col items-center">
-          <div className="bg-white rounded-full h-16 w-16 flex items-center justify-center mb-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-bg via-gray-100 to-gray-bg">
+      <Card className="w-full max-w-md overflow-hidden shadow-2xl border-0 rounded-xl">
+        <div className="bg-gradient-to-r from-blue-app to-navy p-8 flex flex-col items-center">
+          <div className="bg-white rounded-full h-20 w-20 flex items-center justify-center mb-4 shadow-md">
             <Image 
               src="/lovable-uploads/58e6d853-f703-47e3-9d69-340b6149ed8b.png" 
               alt="Hype Print Logo" 
-              className="h-12 w-12"
+              className="h-14 w-14"
             />
           </div>
-          <h1 className="text-2xl font-bold">Welcome to Hype Print</h1>
-          <p className="text-white/70 text-sm mt-1">Sign in to your account</p>
+          <h1 className="text-2xl font-bold text-white">Hype Print</h1>
+          <p className="text-white/80 text-sm mt-2">Access your account</p>
         </div>
         
         <CardContent className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-navy font-medium">Username</Label>
+              <Label htmlFor="username" className="text-navy font-medium text-sm">Username</Label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
                   <User size={18} />
@@ -52,14 +52,14 @@ const LoginPage = () => {
                   placeholder="Enter your username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="pl-10 border-gray-200 focus:border-blue-app focus:ring-blue-app"
+                  className="pl-10 bg-gray-50 border-gray-100 focus:border-blue-app focus:ring-blue-app rounded-lg"
                   required
                 />
               </div>
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-navy font-medium">Password</Label>
+              <Label htmlFor="password" className="text-navy font-medium text-sm">Password</Label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
                   <KeyRound size={18} />
@@ -70,7 +70,7 @@ const LoginPage = () => {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 border-gray-200 focus:border-blue-app focus:ring-blue-app"
+                  className="pl-10 bg-gray-50 border-gray-100 focus:border-blue-app focus:ring-blue-app rounded-lg"
                   required
                 />
               </div>
@@ -78,14 +78,14 @@ const LoginPage = () => {
             
             <Button 
               type="submit" 
-              className="w-full bg-blue-app hover:bg-blue-500 transition-colors flex items-center justify-center gap-2 py-6"
+              className="w-full bg-blue-app hover:bg-blue-600 transition-all duration-300 flex items-center justify-center gap-2 py-6 rounded-lg shadow-md"
             >
               <LogIn size={18} />
               Sign In
             </Button>
           </form>
           
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
+          <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-100">
             <p className="text-navy text-sm font-medium">Demo Credentials:</p>
             <p className="text-gray-500 text-sm">Username: admin / Password: password123</p>
           </div>
