@@ -1,8 +1,9 @@
+
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import AppLayout from '@/components/AppLayout';
-import { Upload, CircleCheck, CircleX } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
 const UploadPage = () => {
@@ -17,12 +18,7 @@ const UploadPage = () => {
       if (selectedFile.type.startsWith('video/')) {
         setFile(selectedFile);
       } else {
-        toast.custom((id) => (
-          <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-            <CircleX className="h-5 w-5 text-white" />
-            <span className="font-medium">Please select a valid video file</span>
-          </div>
-        ), { duration: 3000 });
+        toast.error('Please select a valid video file');
       }
     }
   };
@@ -45,40 +41,29 @@ const UploadPage = () => {
       if (droppedFile.type.startsWith('video/')) {
         setFile(droppedFile);
       } else {
-        toast.custom((id) => (
-          <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-            <CircleX className="h-5 w-5 text-white" />
-            <span className="font-medium">Please drop a valid video file</span>
-          </div>
-        ), { duration: 3000 });
+        toast.error('Please drop a valid video file');
       }
     }
   };
 
   const handleUpload = () => {
     if (!file) {
-      toast.custom((id) => (
-        <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-          <CircleX className="h-5 w-5 text-white" />
-          <span className="font-medium">Please select a video file first</span>
-        </div>
-      ), { duration: 3000 });
+      toast.error('Please select a video file first');
       return;
     }
 
-    toast.custom((id) => (
-      <div className="bg-green-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-        <CircleCheck className="h-5 w-5 text-white" />
-        <span className="font-medium">Upload started</span>
-      </div>
-    ), { duration: 3000 });
+    toast.success('Upload started', {
+      style: { background: '#4CAF50', color: 'white' }  // Green background with white text
+    });
     
-    // Navigate to loading page with the file as state
-    navigate('/loading', { state: { videoFile: file } });
+    // Simulate uploading process
+    setTimeout(() => {
+      navigate('/loading');
+    }, 1500);
   };
   
   return (
-    <AppLayout title="UPLOAD ORIGINAL ADVERTISEMENT">
+    <AppLayout title="UPLOAD VIDEO">
       <div className="flex flex-col items-center">
         <div 
           className={`w-full max-w-md border-2 border-dashed rounded-lg p-12 mb-6 flex flex-col items-center justify-center cursor-pointer ${
@@ -105,12 +90,6 @@ const UploadPage = () => {
           {!file && (
             <p className="text-sm text-gray-500 mt-2">
               Drag and drop or click to browse
-            </p>
-          )}
-          
-          {file && (
-            <p className="text-sm text-gray-500 mt-2">
-              Your video will be processed by Qwen AI to create multiple styles
             </p>
           )}
         </div>
