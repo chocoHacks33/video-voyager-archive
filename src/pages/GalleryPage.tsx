@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { CircleCheck } from 'lucide-react';
+import { CircleCheck, CircleX } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { Play, AlertTriangle, Download, RefreshCw, Rocket } from 'lucide-react';
 import { toast } from 'sonner';
@@ -150,15 +150,23 @@ const GalleryPage = () => {
       try {
         const response = await fetch(videoData.source);
         if (!response.ok) {
-          toast.info("Video is still being generated and saved. This may take some time.", {
-            duration: 5000
-          });
+          toast.custom(
+            <div className="bg-amber-100 text-amber-800 rounded-md p-4 flex items-center gap-2 shadow-md">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              <span>Video is still being generated and saved. This may take some time.</span>
+            </div>,
+            { duration: 5000 }
+          );
         }
       } catch (error) {
         console.error("Error checking video:", error);
-        toast.info("Video is still being generated and saved. This may take some time.", {
-          duration: 5000
-        });
+        toast.custom(
+          <div className="bg-amber-100 text-amber-800 rounded-md p-4 flex items-center gap-2 shadow-md">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            <span>Video is still being generated and saved. This may take some time.</span>
+          </div>,
+          { duration: 5000 }
+        );
       }
     };
     
@@ -171,13 +179,13 @@ const GalleryPage = () => {
   };
 
   const handleLaunch = () => {
-    toast.success(null, {
-      description: (
-        <span className="font-bold">Your Targeted Ad-Campaign is Launched!</span>
-      ),
-      duration: 3000,
-      icon: <CircleCheck className="h-5 w-5 text-green-500" />,
-    });
+    toast.custom(
+      <div className="bg-green-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
+        <CircleCheck className="h-5 w-5 text-white" />
+        <span className="font-medium">Your Targeted Ad-Campaign is Launched!</span>
+      </div>,
+      { duration: 3000 }
+    );
   };
 
   return (
