@@ -291,9 +291,9 @@ export class QwenAIService {
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         console.error("WAN AI Generation Error:", errorData);
-        throw new Error(`Failed to start video generation: ${response.statusText}`);
+        throw new Error(`Failed to start video generation: ${response.statusText || 'Network error'}`);
       }
       
       const data = await response.json();
@@ -303,6 +303,9 @@ export class QwenAIService {
       return taskId;
     } catch (error) {
       console.error('Error starting WAN AI video generation:', error);
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        throw new Error('Network error connecting to WAN AI service. Please check your internet connection.');
+      }
       throw error;
     }
   }
@@ -324,15 +327,18 @@ export class QwenAIService {
       
       if (!statusResponse.ok) {
         console.error(`Error checking task status: ${statusResponse.statusText}`);
-        throw new Error(`Failed to check task status: ${statusResponse.statusText}`);
+        throw new Error(`Failed to check task status: ${statusResponse.statusText || 'Network error'}`);
       }
       
-      const statusData = await statusResponse.json() as WanAITaskStatus;
+      const statusData = await statusResponse.json();
       console.log(`WAN AI Task Status:`, statusData);
       
       return statusData;
     } catch (error) {
       console.error('Error checking WAN AI task status:', error);
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        throw new Error('Network error connecting to WAN AI service. Please check your internet connection.');
+      }
       throw error;
     }
   }
@@ -353,7 +359,7 @@ export class QwenAIService {
       });
       
       if (!videoResponse.ok) {
-        throw new Error(`Failed to download video: ${videoResponse.statusText}`);
+        throw new Error(`Failed to download video: ${videoResponse.statusText || 'Network error'}`);
       }
       
       // Convert the response to a blob and create an object URL
@@ -365,6 +371,9 @@ export class QwenAIService {
       return videoUrl;
     } catch (error) {
       console.error('Error downloading WAN AI video:', error);
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        throw new Error('Network error downloading WAN AI video. Please check your internet connection.');
+      }
       throw error;
     }
   }
