@@ -112,30 +112,18 @@ const LoadingPage = () => {
             logProgress('WAN AI video generation completed! Downloading video...');
             setCurrentStep('Downloading WAN AI Video...');
             await simulateProcess(5);
-            try {
-              const videoUrl = await QwenAIService.downloadWanAiVideo(wanAiTaskId);
-              localStorage.setItem('wanAiVideoUrl', videoUrl);
-              logProgress('WAN AI video successfully downloaded!', { videoUrl });
-              toast.custom((id) => (
-                <div className="bg-green-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-                  <CircleCheck className="h-5 w-5 text-white" />
-                  <span className="font-medium">WAN AI video successfully generated!</span>
-                </div>
-              ), { duration: 3000 });
-              setProcessingComplete(true);
-              clearInterval(statusCheckInterval);
-            } catch (downloadError) {
-              console.error('Error downloading WAN AI video:', downloadError);
-              logProgress('WAN AI video download failed', downloadError);
-              toast.custom((id) => (
-                <div className="bg-amber-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-                  <AlertTriangle className="h-5 w-5 text-white" />
-                  <span className="font-medium">WAN AI video download failed.</span>
-                </div>
-              ), { duration: 3000 });
-              setProcessingComplete(true);
-              clearInterval(statusCheckInterval);
-            }
+            
+            const videoUrl = await QwenAIService.downloadWanAiVideo(wanAiTaskId);
+            localStorage.setItem('wanAiVideoUrl', videoUrl);
+            logProgress('WAN AI video successfully downloaded!', { videoUrl });
+            toast.custom((id) => (
+              <div className="bg-green-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
+                <CircleCheck className="h-5 w-5 text-white" />
+                <span className="font-medium">WAN AI video successfully generated!</span>
+              </div>
+            ), { duration: 3000 });
+            setProcessingComplete(true);
+            clearInterval(statusCheckInterval);
           } else if (status.status === 'failed') {
             const errorMsg = status.error || 'Unknown error';
             setWanAiError(errorMsg);
@@ -165,18 +153,15 @@ const LoadingPage = () => {
         } catch (error) {
           console.error('Error checking WAN AI status:', error);
           logProgress('Error checking WAN AI status', error);
-          setWanAiCheckCount(prev => prev + 1);
           
-          if (wanAiCheckCount >= maxWanAiChecks - 1) {
-            toast.custom((id) => (
-              <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-                <CircleX className="h-5 w-5 text-white" />
-                <span className="font-medium">WAN AI status check failed.</span>
-              </div>
-            ), { duration: 3000 });
-            setProcessingComplete(true);
-            clearInterval(statusCheckInterval);
-          }
+          toast.custom((id) => (
+            <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
+              <CircleX className="h-5 w-5 text-white" />
+              <span className="font-medium">WAN AI status check failed.</span>
+            </div>
+          ), { duration: 3000 });
+          setProcessingComplete(true);
+          clearInterval(statusCheckInterval);
         }
       }, 15000); // Check every 15 seconds for demo purposes
     }
@@ -234,47 +219,32 @@ const LoadingPage = () => {
         setCurrentStep("Creating WAN AI Video...");
         logProgress('Starting WAN AI video generation');
         await simulateProcess(10);
-        try {
-          // Start WAN AI video generation and get the task ID
-          const wanAiTaskId = await QwenAIService.startWanAiVideoGeneration(
-            generatedPrompt, 
-            extractedText
-          );
-          
-          logProgress('WAN AI video generation started', { taskId: wanAiTaskId });
-          console.log("WAN AI Video generation started, task ID:", wanAiTaskId);
-          setWanAiTaskId(wanAiTaskId);
-          setWanAiStatus('processing');
-          
-          // Save video description to storage
-          setCurrentStep("Saving Video Analysis to Gallery...");
-          logProgress('Saving video description');
-          await simulateProcess(10);
-          await saveVideoToStorage(
-            '/placeholder', // Placeholder until WAN AI video is ready
-            generatedPrompt,
-            videoAnalysis.description
-          );
-          logProgress('Video analysis saved successfully');
-          
-          // We'll now wait for the WAN AI video to complete via the useEffect
-          setCurrentStep("Waiting for WAN AI video generation to complete...");
-          logProgress('Waiting for WAN AI video generation to complete');
-          
-        } catch (error) {
-          console.error("WAN AI video generation failed:", error);
-          logProgress('WAN AI video generation failed', { error: error instanceof Error ? error.message : String(error) });
-          setWanAiError(error instanceof Error ? error.message : String(error));
-          toast.custom((id) => (
-            <div className="bg-amber-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-              <AlertTriangle className="h-5 w-5 text-white" />
-              <span className="font-medium">WAN AI video generation failed, check network settings</span>
-            </div>
-          ), { duration: 3000 });
-          
-          // Even if WAN AI fails to start, we still have the text analysis, mark as complete
-          setProcessingComplete(true);
-        }
+        
+        // Start WAN AI video generation and get the task ID
+        const wanAiTaskId = await QwenAIService.startWanAiVideoGeneration(
+          generatedPrompt, 
+          extractedText
+        );
+        
+        logProgress('WAN AI video generation started', { taskId: wanAiTaskId });
+        console.log("WAN AI Video generation started, task ID:", wanAiTaskId);
+        setWanAiTaskId(wanAiTaskId);
+        setWanAiStatus('processing');
+        
+        // Save video description to storage
+        setCurrentStep("Saving Video Analysis to Gallery...");
+        logProgress('Saving video description');
+        await simulateProcess(10);
+        await saveVideoToStorage(
+          '/placeholder', // Placeholder until WAN AI video is ready
+          generatedPrompt,
+          videoAnalysis.description
+        );
+        logProgress('Video analysis saved successfully');
+        
+        // We'll now wait for the WAN AI video to complete via the useEffect
+        setCurrentStep("Waiting for WAN AI video generation to complete...");
+        logProgress('Waiting for WAN AI video generation to complete');
       } catch (error) {
         console.error("Video processing error:", error);
         logProgress('Video processing error', { error: error instanceof Error ? error.message : String(error) });
@@ -334,7 +304,7 @@ const LoadingPage = () => {
               <div className="flex items-center gap-3">
                 <Clock className="h-5 w-5 text-amber-600 animate-pulse" />
                 <p className="text-sm text-amber-700">
-                  Waiting for WAN AI video generation to complete. This may take approximately 5 minutes...
+                  Waiting for WAN AI video generation to complete. This may take approximately 40 minutes...
                   <br />
                   <span className="text-xs">Check {wanAiCheckCount} of {maxWanAiChecks}</span>
                 </p>

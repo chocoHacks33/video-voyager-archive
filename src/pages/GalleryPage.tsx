@@ -96,7 +96,7 @@ const VideoCard = ({ video }: { video: VideoData }) => {
           <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex flex-col items-center justify-center p-4">
             <AlertTriangle className="w-10 h-10 text-amber-500 mb-2" />
             <p className="text-sm text-center">Video not found or still processing</p>
-            <p className="text-xs text-center mt-2 text-gray-500">WAN AI video generation can take up to 5 minutes to complete</p>
+            <p className="text-xs text-center mt-2 text-gray-500">WAN AI video generation can take up to 40 minutes to complete</p>
             <Button 
               variant="outline" 
               size="sm" 
@@ -161,18 +161,6 @@ const GalleryPage = () => {
       }
       
       setVideos(videoList);
-      
-      // Check if videos are accessible
-      if (videoList.length > 0) {
-        try {
-          const videoResponse = await fetch(videoList[0].source);
-          if (!videoResponse.ok) {
-            toast.info("Your video is still being generated. This may take a few minutes.");
-          }
-        } catch (error) {
-          console.error("Error checking videos:", error);
-        }
-      }
     };
     
     // Retrieve video description from localStorage
@@ -226,7 +214,7 @@ const GalleryPage = () => {
               <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">No Video Available</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-4">
-                Your video is still being generated. This may take up to 5 minutes. Please wait and refresh the page.
+                Your video is still being generated or could not be generated. Please refresh the page to check again.
               </p>
               <Button onClick={handleRefresh} className="flex items-center gap-2 mx-auto">
                 <RefreshCw className="w-4 h-4" />
@@ -236,7 +224,7 @@ const GalleryPage = () => {
           )}
           
           <p className="text-sm text-center text-amber-600 dark:text-amber-400 mt-6">
-            Note: WAN AI video generation typically takes around 5 minutes to complete in demonstration mode. If no video appears, please refresh after some time.
+            Note: WAN AI video generation typically takes around 40 minutes to complete in demonstration mode. If no video appears, refresh after some time.
           </p>
           
           {videoDescription && (
