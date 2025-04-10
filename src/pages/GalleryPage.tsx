@@ -171,8 +171,10 @@ const GalleryPage = () => {
   };
 
   const handleLaunch = () => {
-    toast.success("Video launch initiated!", {
-      description: "Your Targeted Ad-Campaign is Launched!",
+    toast.success(null, {
+      description: (
+        <span className="font-bold">Your Targeted Ad-Campaign is Launched!</span>
+      ),
       duration: 3000,
       icon: <CircleCheck className="h-5 w-5 text-green-500" />,
     });
