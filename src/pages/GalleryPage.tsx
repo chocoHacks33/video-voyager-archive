@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
-import { AlertTriangle, Play, RefreshCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { AlertTriangle, Play, RefreshCw, Rocket } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 interface VideoData {
   id: number;
@@ -140,11 +139,16 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 };
 
 const GalleryPage = () => {
+  const navigate = useNavigate();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
     window.location.reload();
+  };
+
+  const handleLaunchVideos = () => {
+    navigate('/upload');
   };
 
   return (
@@ -158,15 +162,24 @@ const GalleryPage = () => {
                 Browse through your collection of demo videos.
               </p>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-              Refresh
-            </Button>
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="outline" 
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="flex items-center gap-2"
+              >
+                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+              <Button 
+                className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2 group"
+                onClick={handleLaunchVideos}
+              >
+                <Rocket className="w-5 h-5 transition-transform group-hover:rotate-12" />
+                Launch Videos
+              </Button>
+            </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
