@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { useForm } from "react-hook-form";
 import { Progress } from "@/components/ui/progress";
 import Image from "@/components/ui/image";
+import { Card, CardContent } from "@/components/ui/card";
 
 // Audience data model
 interface AudienceItem {
@@ -364,29 +365,38 @@ const UploadPage = () => {
           </div>
         )}
 
-        {/* Audience checklist */}
+        {/* Modern Audience checklist */}
         {(loading || audiencesLoaded) && (
-          <div className="w-full max-w-md mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100 shadow-sm">
-            <ul className="space-y-3">
-              {audienceItems.map((item, index) => (
-                <li key={index} className="flex items-center gap-3 p-2 rounded-md transition-all duration-200" style={{
-                  background: item.completed ? 'linear-gradient(90deg, rgba(239,246,255,0.6) 0%, rgba(219,234,254,0.6) 100%)' : 'transparent'
-                }}>
-                  <div className={`flex-shrink-0 h-6 w-6 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    item.completed 
-                      ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-sm' 
-                      : 'bg-gray-200'
-                  }`}>
-                    {item.completed && <CheckCircle2 className="h-5 w-5" />}
-                  </div>
-                  <span className={`text-sm font-medium transition-all duration-200 ${
-                    item.completed ? 'text-gray-800' : 'text-gray-500'
-                  }`}>
-                    {item.name}
-                  </span>
-                </li>
-              ))}
-            </ul>
+          <div className="w-full max-w-lg mb-6">
+            <Card className="border border-blue-100 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 shadow-sm overflow-hidden">
+              <CardContent className="p-5">
+                <div className="grid grid-cols-2 gap-3">
+                  {audienceItems.map((item, index) => (
+                    <div 
+                      key={index} 
+                      className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${
+                        item.completed ? 'bg-white/60 shadow-sm' : 'bg-white/30'
+                      }`}
+                    >
+                      <div 
+                        className={`flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                          item.completed 
+                            ? 'bg-gradient-to-br from-green-400 to-emerald-500 shadow-md' 
+                            : 'bg-gray-200'
+                        }`}
+                      >
+                        {item.completed && <CheckCircle2 className="h-5 w-5 text-white" stroke="white" strokeWidth={2.5} />}
+                      </div>
+                      <span className={`text-sm font-medium transition-all duration-200 ${
+                        item.completed ? 'text-gray-800' : 'text-gray-500'
+                      }`}>
+                        {item.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
         
