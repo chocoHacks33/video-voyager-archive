@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 
 // API key would typically be stored in environment variables
@@ -183,57 +182,68 @@ export class QwenAIService {
 
   /**
    * Get a description of the video using Qwen VL model
-   * Note: This is mocked for demo purposes
+   * This implements the actual API call to the Qwen VL model
    */
   static async getVideoDescription(frames: string[]): Promise<VideoAnalysisResponse> {
     try {
       console.log(`Analyzing ${frames.length} video frames to generate description`);
       
-      // For demo purposes - simulate API call with a timeout
-      // In a real implementation, this would call the QwenVL API with the frames
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Format frames for API
+      const encoded_images = frames.map(frame => frame);
       
-      // Mock response with a plausible video description
-      return {
-        description: "The video shows a professional advertisement for a product. It begins with an establishing shot of a modern setting, then transitions to show the product in use. The lighting is bright and clean, with smooth camera movements that highlight key features. There are several close-up shots that demonstrate the product's quality and design. The advertisement appears to target young professionals and uses subtle branding elements throughout. The overall tone is upbeat and aspirational, with a clear call to action near the end."
-      };
+      // For security in client-side applications, this should typically be done on a server
+      // This implementation is for demonstration purposes only
+      // Users will need to provide their own API key in a real implementation
+      const apiKey = prompt("Please enter your Qwen API key to analyze the video:", "");
       
-      /* In a real implementation with OpenAI API, it would look like:
-      
-      const response = await fetch("https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: "qwen-vl-plus",
-          messages: [{
-            role: "user",
-            content: [
-              {type: "text", text: "Given these video frames in order, describe the video descriptively."},
-              ...frames.map(frame => ({
-                type: "image_url",
-                image_url: {url: frame}
-              }))
-            ]
-          }]
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to analyze video frames');
+      if (!apiKey) {
+        return {
+          description: "API key not provided. Unable to analyze video."
+        };
       }
       
-      const data = await response.json();
-      return {
-        description: data.choices[0].message.content
-      };
-      */
+      try {
+        const response = await fetch("https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: "qwen-vl-plus",
+            messages: [{
+              role: "user",
+              content: [
+                {type: "text", text: "Given these video frames in order, describe the video descriptively."},
+                ...encoded_images.map(frame => ({
+                  type: "image_url",
+                  image_url: {url: frame}
+                }))
+              ]
+            }]
+          })
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("API Error:", errorData);
+          throw new Error(`Failed to analyze video frames: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log("API Response:", data);
+        
+        return {
+          description: data.choices[0].message.content || "No description was generated."
+        };
+      } catch (error) {
+        console.error('Error calling Qwen VL API:', error);
+        throw error;
+      }
     } catch (error) {
       console.error('Error analyzing video:', error);
       return {
-        description: "Unable to analyze video content. Please try again later."
+        description: "Error analyzing video content: " + (error instanceof Error ? error.message : String(error))
       };
     }
   }

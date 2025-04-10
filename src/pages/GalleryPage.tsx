@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { CircleCheck, CircleX } from 'lucide-react';
+import { CircleCheck, CircleX, AlertTriangle } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
-import { Play, AlertTriangle, Download, RefreshCw, Rocket } from 'lucide-react';
+import { Play, Download, RefreshCw, Rocket } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
