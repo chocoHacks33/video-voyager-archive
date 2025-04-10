@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Info } from 'lucide-react';
@@ -37,7 +38,7 @@ const regularCampaignData = [
 
 // Data for the self-evolving ad campaign with plateaus followed by sharp increases after evolutions
 const selfEvolvingCampaignData = [
-  { day: 'Day 1', engagement: 32, version: 0 }, // Added version 0 on Day 1
+  { day: 'Day 1', engagement: 32, version: 0, videoId: 'video9.mp4' }, // Added videoId for Day 1
   { day: 'Day 2', engagement: 36 },
   { day: 'Day 3', engagement: 41 },
   { day: 'Day 4', engagement: 43 },
@@ -55,7 +56,7 @@ const selfEvolvingCampaignData = [
 
 // Evolution points for visual reference
 const evolutionPoints = [
-  { day: 'Day 1', engagement: 32, version: 0 }, // Added version 0 point
+  { day: 'Day 1', engagement: 32, version: 0, videoId: 'video9.mp4' }, // Added videoId for Day 1
   { day: 'Day 5', engagement: 44, version: 1, videoId: 'video10.mp4' },
   { day: 'Day 12', engagement: 48, version: 2, videoId: 'video11.mp4' },
   { day: 'Day 14', engagement: 95, version: 3, videoId: 'video12.mp4' }
