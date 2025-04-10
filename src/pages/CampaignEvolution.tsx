@@ -48,16 +48,16 @@ const selfEvolvingCampaignData = [
   { day: 'Day 9', engagement: 61 },
   { day: 'Day 10', engagement: 63 },
   { day: 'Day 11', engagement: 60 },
-  { day: 'Day 12', engagement: 55, version: 2, videoId: 'video11.mp4' }, // Second evolution point - dip before increase
+  { day: 'Day 12', engagement: 48, version: 2, videoId: 'video11.mp4' }, // More significant dip before increase
   { day: 'Day 13', engagement: 72 }, // Sharp increase after evolution
-  { day: 'Day 14', engagement: 81, version: 3, videoId: 'video12.mp4' } // Third evolution point
+  { day: 'Day 14', engagement: 95, version: 3, videoId: 'video12.mp4' } // More dramatic final evolution point
 ];
 
 // Evolution points for visual reference
 const evolutionPoints = [
   { day: 'Day 5', engagement: 44, version: 1, videoId: 'video10.mp4' },
-  { day: 'Day 12', engagement: 55, version: 2, videoId: 'video11.mp4' },
-  { day: 'Day 14', engagement: 81, version: 3, videoId: 'video12.mp4' }
+  { day: 'Day 12', engagement: 48, version: 2, videoId: 'video11.mp4' },
+  { day: 'Day 14', engagement: 95, version: 3, videoId: 'video12.mp4' }
 ];
 
 // Custom tooltip component for the self-evolving chart
