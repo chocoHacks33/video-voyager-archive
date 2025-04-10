@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 
 // API key would typically be stored in environment variables
@@ -8,7 +7,8 @@ const QWEN_API_ENDPOINT = 'https://api.qwen.ai/v1/video/generate';
 
 // WAN AI API details
 const WAN_AI_URL = "http://quickstart-deploy-20250410-g9hk.5158343315505498.ap-northeast-1.pai-eas.aliyuncs.com";
-const WAN_AI_TOKEN = "MWFjNDk4NDlkYTRjOTFhOTY4NjE0NDE1ZWFiZWVhMjhjMDFkN2VhNw==";
+// Fix: Update the token format - was likely in incorrect format
+const WAN_AI_TOKEN = "Bearer MWFjNDk4NDlkYTRjOTFhOTY4NjE0NDE1ZWFiZWVhMjhjMDFkN2VhNw==";
 
 export interface VideoGenerationOptions {
   prompt: string;
@@ -278,7 +278,7 @@ export class QwenAIService {
       const response = await fetch(`${WAN_AI_URL}/generate`, {
         method: 'POST',
         headers: {
-          'Authorization': WAN_AI_TOKEN,
+          'Authorization': WAN_AI_TOKEN, // Using the fixed token format
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
