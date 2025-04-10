@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -20,8 +19,7 @@ const extractTextFromVideo = async (videoFile: File): Promise<string> => {
 const saveVideoToStorage = async (videoUrl: string, generatedPrompt: string, videoDescription?: string, wanAiVideoUrl?: string): Promise<string> => {
   console.log('Saving video to storage:', videoUrl, 'with prompt:', generatedPrompt);
   
-  // In a real implementation, this would download the video and save it locally or to cloud storage
-  // Also save the video description to localStorage for the gallery page
+  // Save the video description to localStorage for the gallery page
   if (videoDescription) {
     localStorage.setItem('videoDescription', videoDescription);
   }
@@ -31,7 +29,7 @@ const saveVideoToStorage = async (videoUrl: string, generatedPrompt: string, vid
     localStorage.setItem('wanAiVideoUrl', wanAiVideoUrl);
   }
   
-  return videoUrl; // Return the path/URL where the video is stored
+  return videoUrl; 
 };
 
 // Helper function to log progress to console and toast
@@ -132,7 +130,7 @@ const LoadingPage = () => {
               toast.custom((id) => (
                 <div className="bg-amber-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
                   <AlertTriangle className="h-5 w-5 text-white" />
-                  <span className="font-medium">WAN AI video download failed. Proceeding with original video only.</span>
+                  <span className="font-medium">WAN AI video download failed.</span>
                 </div>
               ), { duration: 3000 });
               setProcessingComplete(true);
@@ -146,7 +144,7 @@ const LoadingPage = () => {
             toast.custom((id) => (
               <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
                 <CircleX className="h-5 w-5 text-white" />
-                <span className="font-medium">WAN AI video generation failed. Proceeding with original video only.</span>
+                <span className="font-medium">WAN AI video generation failed.</span>
               </div>
             ), { duration: 3000 });
             setProcessingComplete(true);
@@ -154,11 +152,11 @@ const LoadingPage = () => {
           } else if (wanAiCheckCount >= maxWanAiChecks - 1) {
             // Give up after max attempts
             logProgress('Maximum WAN AI check attempts reached', { attempts: maxWanAiChecks });
-            console.warn('Maximum WAN AI check attempts reached. Proceeding with original video.');
+            console.warn('Maximum WAN AI check attempts reached.');
             toast.custom((id) => (
               <div className="bg-amber-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
                 <AlertTriangle className="h-5 w-5 text-white" />
-                <span className="font-medium">WAN AI video is taking too long. Proceeding with original video only.</span>
+                <span className="font-medium">WAN AI video is taking too long.</span>
               </div>
             ), { duration: 3000 });
             setProcessingComplete(true);
@@ -173,14 +171,14 @@ const LoadingPage = () => {
             toast.custom((id) => (
               <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
                 <CircleX className="h-5 w-5 text-white" />
-                <span className="font-medium">WAN AI status check failed. Proceeding with original video only.</span>
+                <span className="font-medium">WAN AI status check failed.</span>
               </div>
             ), { duration: 3000 });
             setProcessingComplete(true);
             clearInterval(statusCheckInterval);
           }
         }
-      }, 30000); // Check every 30 seconds instead of 10 to reduce API calls
+      }, 15000); // Check every 15 seconds for demo purposes
     }
 
     return () => {
@@ -206,7 +204,7 @@ const LoadingPage = () => {
       try {
         // Step 1: Extract text from video
         logProgress('Starting video processing pipeline');
-        setCurrentStep("Decoding Brand Advertisement...");
+        setCurrentStep("Extracting text from video...");
         await simulateProcess(10);
         const extractedText = await extractTextFromVideo(videoFile);
         logProgress('Text extracted from video', { extractedText: extractedText.substring(0, 50) + '...' });
@@ -225,37 +223,21 @@ const LoadingPage = () => {
         const videoAnalysis = await QwenAIService.getVideoDescription(frames);
         logProgress('Video description generated', { description: videoAnalysis.description.substring(0, 50) + '...' });
         
-        // Step 4: Generate AI prompt from text
-        setCurrentStep("Studying Audience Demographics...");
-        logProgress('Studying audience demographics');
+        // Step 4: Generate AI prompt for WAN AI
+        setCurrentStep("Preparing for WAN AI video generation...");
+        logProgress('Preparing WAN AI request');
         await simulateProcess(10);
-        const generatedPrompt = "Cinematic video with enhanced lighting and smooth transitions";
-        logProgress('Generated prompt for video creation', { prompt: generatedPrompt });
+        const generatedPrompt = "Cinematic video based on source content with enhanced quality";
+        logProgress('Generated prompt for WAN AI video creation', { prompt: generatedPrompt });
         
-        // Step 5: Creating AI video with Qwen
-        setCurrentStep("Generating Audience-Specific Advertisements...");
-        logProgress('Generating video with Qwen AI');
-        await simulateProcess(20);
-        
-        // Call Qwen AI service to generate video
-        const videoResponse = await QwenAIService.generateVideo({
-          prompt: generatedPrompt,
-          text: extractedText,
-          style: 'cinematic',
-          duration: 5
-        });
-        
-        logProgress('Qwen AI video generated successfully', { videoId: videoResponse.id });
-        setVideoGenerationId(videoResponse.id);
-        
-        // Step 6: Generate WAN AI video using the extracted text
+        // Step 5: Generate WAN AI video using the extracted text
         setCurrentStep("Creating WAN AI Video...");
         logProgress('Starting WAN AI video generation');
         await simulateProcess(10);
         try {
           // Start WAN AI video generation and get the task ID
           const wanAiTaskId = await QwenAIService.startWanAiVideoGeneration(
-            "Cinematic advertisement based on brand context", 
+            generatedPrompt, 
             extractedText
           );
           
@@ -264,33 +246,19 @@ const LoadingPage = () => {
           setWanAiTaskId(wanAiTaskId);
           setWanAiStatus('processing');
           
-          // We'll now wait for the WAN AI video to complete via the useEffect
-          setCurrentStep("Waiting for WAN AI video generation to complete...");
-          
-          // Step 7: Check video generation status for Qwen video
-          setCurrentStep("Processing Qwen Video...");
-          logProgress('Processing Qwen video');
-          let videoResult = videoResponse;
-          
-          // Poll for status if necessary (simplified for demo)
-          if (videoResult.status === 'processing') {
-            await simulateProcess(10);
-            videoResult = await QwenAIService.getVideoStatus(videoResponse.id);
-            logProgress('Qwen video status update', { status: videoResult.status });
-          }
-          
-          // Step 8: Save Qwen video to storage
-          setCurrentStep("Saving Qwen Video to Gallery...");
-          logProgress('Saving Qwen video to gallery');
-          const videoPath = await saveVideoToStorage(
-            videoResult.videoUrl, 
+          // Save video description to storage
+          setCurrentStep("Saving Video Analysis to Gallery...");
+          logProgress('Saving video description');
+          await simulateProcess(10);
+          await saveVideoToStorage(
+            '/placeholder', // Placeholder until WAN AI video is ready
             generatedPrompt,
             videoAnalysis.description
           );
-          logProgress('Qwen video saved successfully', { path: videoPath });
-          await simulateProcess(5);
+          logProgress('Video analysis saved successfully');
           
-          // Don't set processing complete yet - we're waiting for WAN AI
+          // We'll now wait for the WAN AI video to complete via the useEffect
+          setCurrentStep("Waiting for WAN AI video generation to complete...");
           logProgress('Waiting for WAN AI video generation to complete');
           
         } catch (error) {
@@ -300,11 +268,11 @@ const LoadingPage = () => {
           toast.custom((id) => (
             <div className="bg-amber-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
               <AlertTriangle className="h-5 w-5 text-white" />
-              <span className="font-medium">WAN AI video generation failed, proceeding with original video only</span>
+              <span className="font-medium">WAN AI video generation failed, check network settings</span>
             </div>
           ), { duration: 3000 });
           
-          // Even if WAN AI fails, we still have the Qwen video, so mark processing as complete
+          // Even if WAN AI fails to start, we still have the text analysis, mark as complete
           setProcessingComplete(true);
         }
       } catch (error) {
@@ -366,7 +334,7 @@ const LoadingPage = () => {
               <div className="flex items-center gap-3">
                 <Clock className="h-5 w-5 text-amber-600 animate-pulse" />
                 <p className="text-sm text-amber-700">
-                  Waiting for WAN AI video generation to complete. This may take approximately 40 minutes...
+                  Waiting for WAN AI video generation to complete. This may take approximately 5 minutes...
                   <br />
                   <span className="text-xs">Check {wanAiCheckCount} of {maxWanAiChecks}</span>
                 </p>
@@ -393,7 +361,7 @@ const LoadingPage = () => {
               <div className="text-sm text-red-700">
                 <p className="font-medium">WAN AI video generation failed</p>
                 <p className="text-xs truncate max-w-full">Error: {wanAiError}</p>
-                <p className="mt-1">Proceeding with original video only</p>
+                <p className="mt-1">Please check network connection and CORS settings</p>
               </div>
             </div>
           )}
@@ -402,22 +370,19 @@ const LoadingPage = () => {
             <h3 className="font-medium mb-2">What's happening?</h3>
             <ol className="space-y-2 text-sm text-gray-600 list-decimal pl-5">
               <li className={progress >= 10 ? "text-green-600 font-medium" : ""}>
-                Processing your Brand Advertisement
+                Extracting text from your uploaded video
               </li>
               <li className={progress >= 20 ? "text-green-600 font-medium" : ""}>
                 Analyzing Video Content and Extracting Frames
               </li>
               <li className={progress >= 30 ? "text-green-600 font-medium" : ""}>
-                Generating Video Description
+                Generating Video Description with Qwen
               </li>
               <li className={progress >= 40 ? "text-green-600 font-medium" : ""}>
-                Analyzing User Demographics
+                Preparing for WAN AI video generation
               </li>
-              <li className={progress >= 60 ? "text-green-600 font-medium" : ""}>
-                Generating Audience-Specific Advertisement with Qwen AI
-              </li>
-              <li className={progress >= 80 ? "text-green-600 font-medium" : ""}>
-                Creating WAN AI Video Alternative
+              <li className={progress >= 70 ? "text-green-600 font-medium" : ""}>
+                Creating WAN AI Video
                 {wanAiStatus === 'processing' && !wanAiError && (
                   <span className="text-amber-600 ml-2">(in progress... {wanAiProgress}%)</span>
                 )}
@@ -429,7 +394,7 @@ const LoadingPage = () => {
                 )}
               </li>
               <li className={progress >= 90 ? "text-green-600 font-medium" : ""}>
-                Preparing Gallery of Advertisement Variations
+                Preparing Gallery with WAN AI Video
               </li>
             </ol>
           </div>
