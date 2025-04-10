@@ -4,16 +4,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Mail, LogIn, Moon, Sun } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
-import { useTheme } from '@/hooks/useTheme';
+import { Mail, LogIn } from 'lucide-react';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,38 +38,12 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 px-4">
-      <div className="absolute top-4 right-4 flex items-center gap-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-purple-100 dark:bg-purple-900 rounded-full h-8 w-8 flex items-center justify-center">
-            <img
-              src="/lovable-uploads/58e6d853-f703-47e3-9d69-340b6149ed8b.png"
-              alt="ADMORPH.AI Logo"
-              className="h-6 w-6"
-            />
-          </div>
-          <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-            ADMORPH.AI
-          </h1>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Sun size={16} className="text-gray-600 dark:text-gray-400" />
-          <Switch 
-            checked={theme === 'dark'}
-            onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
-            className="data-[state=checked]:bg-blue-600"
-          />
-          <Moon size={16} className="text-gray-600 dark:text-gray-300" />
-        </div>
-      </div>
-      
-      {/* Rest of the existing code remains the same */}
       <div className="w-full max-w-md bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 space-y-4">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Sign in to{' '}
-              <span className="bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-sidebar-primary to-sidebar-primary-foreground bg-clip-text text-transparent">
                 ADMORPH.AI
               </span>
             </h1>
