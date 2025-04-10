@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { CircleCheck, CircleX } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
@@ -142,6 +143,7 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 
 const GalleryPage = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [videoDescription, setVideoDescription] = useState<string | null>(null);
   
   useEffect(() => {
     // Check if the video exists
@@ -166,6 +168,12 @@ const GalleryPage = () => {
         ), { duration: 5000 });
       }
     };
+    
+    // Retrieve video description from localStorage
+    const storedDescription = localStorage.getItem('videoDescription');
+    if (storedDescription) {
+      setVideoDescription(storedDescription);
+    }
     
     checkVideoExists();
   }, []);
@@ -213,6 +221,15 @@ const GalleryPage = () => {
           <p className="text-sm text-center text-amber-600 dark:text-amber-400 mt-6">
             Note: If the video appears missing, it may still be processing. Try refreshing the page after a few minutes.
           </p>
+          
+          {videoDescription && (
+            <div className="mt-8 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <h3 className="text-lg font-semibold mb-3">Video Analysis</h3>
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                {videoDescription}
+              </p>
+            </div>
+          )}
           
           <div className="flex justify-center mt-8">
             <Button 

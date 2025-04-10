@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -16,10 +17,15 @@ const extractTextFromVideo = async (videoFile: File): Promise<string> => {
 };
 
 // Function to save video to storage (simplified implementation)
-const saveVideoToStorage = async (videoUrl: string, generatedPrompt: string): Promise<string> => {
+const saveVideoToStorage = async (videoUrl: string, generatedPrompt: string, videoDescription?: string): Promise<string> => {
   console.log('Saving video to storage:', videoUrl, 'with prompt:', generatedPrompt);
   
   // In a real implementation, this would download the video and save it locally or to cloud storage
+  // Also save the video description to localStorage for the gallery page
+  if (videoDescription) {
+    localStorage.setItem('videoDescription', videoDescription);
+  }
+  
   return videoUrl; // Return the path/URL where the video is stored
 };
 
@@ -73,17 +79,27 @@ const LoadingPage = () => {
       try {
         // Step 1: Extract text from video
         setCurrentStep("Decoding Brand Advertisement...");
-        await simulateProcess(20);
+        await simulateProcess(15);
         const extractedText = await extractTextFromVideo(videoFile);
         
-        // Step 2: Generate AI prompt from text
+        // Step 2: Extract frames and analyze video content
+        setCurrentStep("Analyzing Video Content...");
+        await simulateProcess(15);
+        const frames = await QwenAIService.extractFramesFromVideo(videoFile);
+        
+        // Step 3: Get video description from Qwen VL
+        setCurrentStep("Generating Video Description...");
+        await simulateProcess(15);
+        const videoAnalysis = await QwenAIService.getVideoDescription(frames);
+        
+        // Step 4: Generate AI prompt from text
         setCurrentStep("Studying Audience Demographics...");
-        await simulateProcess(20);
+        await simulateProcess(15);
         const generatedPrompt = "Cinematic video with enhanced lighting and smooth transitions";
         
-        // Step 3: Creating AI video with Qwen
+        // Step 5: Creating AI video with Qwen
         setCurrentStep("Generating Audience-Specific Advertisements...");
-        await simulateProcess(30);
+        await simulateProcess(20);
         
         // Call Qwen AI service to generate video
         const videoResponse = await QwenAIService.generateVideo({
@@ -95,22 +111,26 @@ const LoadingPage = () => {
         
         setVideoGenerationId(videoResponse.id);
         
-        // Step 4: Check video generation status
+        // Step 6: Check video generation status
         setCurrentStep("Processing Video...");
         let videoResult = videoResponse;
         
         // Poll for status if necessary (simplified for demo)
         if (videoResult.status === 'processing') {
-          await simulateProcess(20);
+          await simulateProcess(10);
           videoResult = await QwenAIService.getVideoStatus(videoResponse.id);
         }
         
-        // Step 5: Save video to storage
+        // Step 7: Save video to storage
         setCurrentStep("Saving Video to Gallery...");
-        const videoPath = await saveVideoToStorage(videoResult.videoUrl, generatedPrompt);
+        const videoPath = await saveVideoToStorage(
+          videoResult.videoUrl, 
+          generatedPrompt,
+          videoAnalysis.description
+        );
         await simulateProcess(10);
         
-        // Success! Set processing complete flag instead of immediate navigation
+        // Success! Set processing complete flag
         setProcessingComplete(true);
       } catch (error) {
         console.error("Video processing error:", error);
@@ -168,13 +188,19 @@ const LoadingPage = () => {
           <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-100">
             <h3 className="font-medium mb-2">What's happening?</h3>
             <ol className="space-y-2 text-sm text-gray-600 list-decimal pl-5">
-              <li className={progress >= 20 ? "text-green-600 font-medium" : ""}>
+              <li className={progress >= 15 ? "text-green-600 font-medium" : ""}>
                 Processing your Brand Advertisement
               </li>
-              <li className={progress >= 40 ? "text-green-600 font-medium" : ""}>
+              <li className={progress >= 30 ? "text-green-600 font-medium" : ""}>
+                Analyzing Video Content and Extracting Frames
+              </li>
+              <li className={progress >= 45 ? "text-green-600 font-medium" : ""}>
+                Generating Video Description
+              </li>
+              <li className={progress >= 60 ? "text-green-600 font-medium" : ""}>
                 Analyzing User Demographics
               </li>
-              <li className={progress >= 70 ? "text-green-600 font-medium" : ""}>
+              <li className={progress >= 80 ? "text-green-600 font-medium" : ""}>
                 Generating Unique Advertisement for Specific Users
               </li>
               <li className={progress >= 90 ? "text-green-600 font-medium" : ""}>
