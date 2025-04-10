@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Check } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { Play, AlertTriangle, Download, RefreshCw, Rocket } from 'lucide-react';
 import { toast } from 'sonner';
@@ -172,7 +173,8 @@ const GalleryPage = () => {
   const handleLaunch = () => {
     toast.success("Video launch initiated!", {
       description: "Your Targeted Ad-Campaign is Launched!",
-      duration: 3000
+      duration: 3000,
+      icon: <Check color="green" />,
     });
   };
 
