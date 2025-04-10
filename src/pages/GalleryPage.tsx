@@ -223,7 +223,7 @@ const GalleryPage = () => {
               onClick={handleLaunchVideos}
             >
               <Rocket className="w-5 h-5 transition-transform group-hover:rotate-12" />
-              Launch Videos {selectedVideos.length > 0 && `(${selectedVideos.length})`}
+              Launch Campaigns {selectedVideos.length > 0 && `(${selectedVideos.length})`}
             </Button>
           </div>
           
