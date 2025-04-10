@@ -56,8 +56,8 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
               </div>
             </div>
           </header>
-          <main className="flex-1 py-8 px-4 md:px-8">
-            <div className="max-w-4xl mx-auto">
+          <main className="flex-1 py-8 px-4 md:px-8 flex items-center justify-center">
+            <div className="w-full max-w-4xl">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-8">
                 <h2 className="text-2xl font-bold text-center mb-8 dark:text-white">{title}</h2>
                 {children}

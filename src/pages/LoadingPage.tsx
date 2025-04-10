@@ -182,7 +182,7 @@ const LoadingPage = () => {
   
   return (
     <AppLayout title="">
-      <div className="flex flex-col items-center justify-center p-4 max-w-3xl mx-auto min-h-[50vh]">
+      <div className="flex flex-col items-center justify-center p-4 max-w-3xl mx-auto min-h-[60vh]">
         <Card className="w-full p-6 md:p-8 shadow-md rounded-lg">
           <div className="w-full space-y-8">
             {/* Main circular progress indicator */}
