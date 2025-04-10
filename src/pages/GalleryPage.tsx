@@ -203,25 +203,10 @@ const GalleryPage = () => {
   };
 
   return (
-    <AppLayout title="Video Gallery">
+    <AppLayout title="Choose Your Ads">
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-8">
-          <div className="mb-6 flex justify-between items-center">
-            <div>
-              {/* Title removed as requested */}
-            </div>
-            <div className="flex items-center">
-              <Button 
-                className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2 group"
-                onClick={handleLaunchVideos}
-              >
-                <Rocket className="w-5 h-5 transition-transform group-hover:rotate-12" />
-                Launch Videos {selectedVideos.length > 0 && `(${selectedVideos.length})`}
-              </Button>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {videosData.map(video => (
               <VideoCard 
                 key={video.id} 
@@ -230,6 +215,16 @@ const GalleryPage = () => {
                 onSelect={() => handleSelectVideo(video.id)}
               />
             ))}
+          </div>
+          
+          <div className="flex justify-center">
+            <Button 
+              className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2 group"
+              onClick={handleLaunchVideos}
+            >
+              <Rocket className="w-5 h-5 transition-transform group-hover:rotate-12" />
+              Launch Videos {selectedVideos.length > 0 && `(${selectedVideos.length})`}
+            </Button>
           </div>
           
           <p className="text-sm text-center text-amber-600 dark:text-amber-400 mt-6">
