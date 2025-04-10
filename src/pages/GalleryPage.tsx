@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/components/AppLayout';
-import { Play, AlertTriangle, Download, RefreshCw } from 'lucide-react';
+import { Play, AlertTriangle, Download, RefreshCw, Rocket } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
@@ -169,6 +169,13 @@ const GalleryPage = () => {
     window.location.reload();
   };
 
+  const handleLaunch = () => {
+    toast.success("Video launch initiated!", {
+      description: "Your AI-generated video is ready to use.",
+      duration: 3000
+    });
+  };
+
   return (
     <AppLayout title="QWEN AI GENERATED VIDEO">
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
@@ -198,6 +205,17 @@ const GalleryPage = () => {
           <p className="text-sm text-center text-amber-600 dark:text-amber-400 mt-6">
             Note: If the video appears missing, it may still be processing. Try refreshing the page after a few minutes.
           </p>
+          
+          <div className="flex justify-center mt-8">
+            <Button 
+              onClick={handleLaunch}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-6 rounded-md font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+              size="lg"
+            >
+              <Rocket className="mr-2 h-5 w-5" />
+              Launch Video
+            </Button>
+          </div>
         </div>
       </div>
     </AppLayout>
