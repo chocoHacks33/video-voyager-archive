@@ -33,16 +33,30 @@ const LoadingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [progress, setProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState("Extracting text from video...");
+  const [currentStep, setCurrentStep] = useState("Understanding Ad...");
   const [videoGenerationId, setVideoGenerationId] = useState<string | null>(null);
   const [processingComplete, setProcessingComplete] = useState(false);
   const videoFile = location.state?.videoFile;
   
+  // Track completion of each major phase
+  const [phases, setPhases] = useState({
+    decoded: false,
+    mapped: false,
+    generated: false
+  });
+
   // Handle navigation after processing is complete
   useEffect(() => {
     let navigateTimeout: number;
     
     if (processingComplete) {
+      // Set all phases to complete
+      setPhases({
+        decoded: true,
+        mapped: true,
+        generated: true
+      });
+      
       // Ensure progress reaches 100% and wait a moment before navigating
       setProgress(100);
       navigateTimeout = window.setTimeout(() => {
@@ -53,7 +67,7 @@ const LoadingPage = () => {
           </div>
         ), { duration: 3000 });
         navigate('/gallery');
-      }, 500); // Short delay to ensure progress bar animation completes
+      }, 2500); // Wait 2.5 seconds before redirecting
     }
     
     return () => {
@@ -77,29 +91,28 @@ const LoadingPage = () => {
 
     const processVideo = async () => {
       try {
-        // Step 1: Extract text from video
-        setCurrentStep("Decoding Brand Advertisement...");
+        // Phase 1: Decode Advertisement
+        setCurrentStep("Understanding Ad...");
         await simulateProcess(15);
         const extractedText = await extractTextFromVideo(videoFile);
+        await simulateProcess(15);
+        // Mark first phase as complete
+        setPhases(prev => ({ ...prev, decoded: true }));
         
-        // Step 2: Extract frames and analyze video content
-        setCurrentStep("Analyzing Video Content...");
+        // Phase 2: Map Demographics
+        setCurrentStep("Mapping Demographics...");
         await simulateProcess(15);
         const frames = await QwenAIService.extractFramesFromVideo(videoFile);
-        
-        // Step 3: Get video description from Qwen VL
-        setCurrentStep("Generating Video Description...");
         await simulateProcess(15);
         const videoAnalysis = await QwenAIService.getVideoDescription(frames);
+        // Mark second phase as complete
+        setPhases(prev => ({ ...prev, mapped: true }));
         
-        // Step 4: Generate AI prompt from text
-        setCurrentStep("Studying Audience Demographics...");
+        // Phase 3: Generate Advertisement
+        setCurrentStep("Morphing Ad...");
         await simulateProcess(15);
         const generatedPrompt = "Cinematic video with enhanced lighting and smooth transitions";
-        
-        // Step 5: Creating AI video with Qwen
-        setCurrentStep("Generating Audience-Specific Advertisements...");
-        await simulateProcess(20);
+        await simulateProcess(10);
         
         // Call Qwen AI service to generate video
         const videoResponse = await QwenAIService.generateVideo({
@@ -111,24 +124,28 @@ const LoadingPage = () => {
         
         setVideoGenerationId(videoResponse.id);
         
-        // Step 6: Check video generation status
-        setCurrentStep("Processing Video...");
+        // Check video generation status
         let videoResult = videoResponse;
         
         // Poll for status if necessary (simplified for demo)
         if (videoResult.status === 'processing') {
-          await simulateProcess(10);
+          await simulateProcess(5);
           videoResult = await QwenAIService.getVideoStatus(videoResponse.id);
         }
         
-        // Step 7: Save video to storage
-        setCurrentStep("Saving Video to Gallery...");
+        // Save video to storage
         const videoPath = await saveVideoToStorage(
           videoResult.videoUrl, 
           generatedPrompt,
           videoAnalysis.description
         );
         await simulateProcess(10);
+        
+        // Mark third phase as complete
+        setPhases(prev => ({ ...prev, generated: true }));
+        
+        // Wait a moment before completing
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
         // Success! Set processing complete flag
         setProcessingComplete(true);
@@ -174,7 +191,7 @@ const LoadingPage = () => {
   };
   
   return (
-    <AppLayout title="PROCESSING VIDEO">
+    <AppLayout title="MORPHING ADVERTISEMENT">
       <div className="flex flex-col items-center justify-center p-8 max-w-3xl mx-auto">
         <div className="w-full space-y-6">
           <h2 className="text-xl font-semibold text-center">{currentStep}</h2>
@@ -186,27 +203,32 @@ const LoadingPage = () => {
           </p>
           
           <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-100">
-            <h3 className="font-medium mb-2">What's happening?</h3>
-            <ol className="space-y-2 text-sm text-gray-600 list-decimal pl-5">
-              <li className={progress >= 15 ? "text-green-600 font-medium" : ""}>
-                Processing your Brand Advertisement
+            <h3 className="font-medium mb-4">What's Happening?</h3>
+            <ul className="space-y-4">
+              <li className={`flex items-center gap-2 p-3 rounded-md transition-colors ${phases.decoded ? 'bg-green-50 text-green-700' : ''}`}>
+                {phases.decoded ? 
+                  <CircleCheck className="h-5 w-5 text-green-500" /> : 
+                  <div className={`w-5 h-5 rounded-full border ${currentStep === "Understanding Ad..." ? 'border-blue-500 animate-pulse' : 'border-gray-300'}`} />
+                }
+                <span className={`font-medium ${phases.decoded ? 'text-green-700' : ''}`}>Advertisement Decoded</span>
               </li>
-              <li className={progress >= 30 ? "text-green-600 font-medium" : ""}>
-                Analyzing Video Content and Extracting Frames
+              
+              <li className={`flex items-center gap-2 p-3 rounded-md transition-colors ${phases.mapped ? 'bg-green-50 text-green-700' : ''}`}>
+                {phases.mapped ? 
+                  <CircleCheck className="h-5 w-5 text-green-500" /> : 
+                  <div className={`w-5 h-5 rounded-full border ${currentStep === "Mapping Demographics..." ? 'border-blue-500 animate-pulse' : 'border-gray-300'}`} />
+                }
+                <span className={`font-medium ${phases.mapped ? 'text-green-700' : ''}`}>Advertisement Demographic Mapping</span>
               </li>
-              <li className={progress >= 45 ? "text-green-600 font-medium" : ""}>
-                Generating Video Description
+              
+              <li className={`flex items-center gap-2 p-3 rounded-md transition-colors ${phases.generated ? 'bg-green-50 text-green-700' : ''}`}>
+                {phases.generated ? 
+                  <CircleCheck className="h-5 w-5 text-green-500" /> : 
+                  <div className={`w-5 h-5 rounded-full border ${currentStep === "Morphing Ad..." ? 'border-blue-500 animate-pulse' : 'border-gray-300'}`} />
+                }
+                <span className={`font-medium ${phases.generated ? 'text-green-700' : ''}`}>Advertisement Generated</span>
               </li>
-              <li className={progress >= 60 ? "text-green-600 font-medium" : ""}>
-                Analyzing User Demographics
-              </li>
-              <li className={progress >= 80 ? "text-green-600 font-medium" : ""}>
-                Generating Unique Advertisement for Specific Users
-              </li>
-              <li className={progress >= 90 ? "text-green-600 font-medium" : ""}>
-                Displaying Gallery of Advertisement Spinoffs
-              </li>
-            </ol>
+            </ul>
           </div>
         </div>
       </div>
