@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, Play, Rocket, Check } from 'lucide-react';
@@ -204,7 +203,7 @@ const GalleryPage = () => {
   };
 
   return (
-    <AppLayout>
+    <AppLayout title="Video Gallery">
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-8">
           <div className="mb-6 flex justify-between items-center">
