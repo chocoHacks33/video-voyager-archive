@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -70,21 +69,20 @@ const LoadingPage = () => {
       return;
     }
 
-    // Process video and generate AI video
     const processVideo = async () => {
       try {
         // Step 1: Extract text from video
-        setCurrentStep("Extracting text from video...");
+        setCurrentStep("Decoding Brand Advertisement...");
         await simulateProcess(20);
         const extractedText = await extractTextFromVideo(videoFile);
         
         // Step 2: Generate AI prompt from text
-        setCurrentStep("Generating AI prompt...");
+        setCurrentStep("Studying Audience Demographics...");
         await simulateProcess(20);
         const generatedPrompt = "Cinematic video with enhanced lighting and smooth transitions";
         
         // Step 3: Creating AI video with Qwen
-        setCurrentStep("Creating AI video with Qwen...");
+        setCurrentStep("Generating Audience-Specific Advertisements...");
         await simulateProcess(30);
         
         // Call Qwen AI service to generate video
@@ -98,7 +96,7 @@ const LoadingPage = () => {
         setVideoGenerationId(videoResponse.id);
         
         // Step 4: Check video generation status
-        setCurrentStep("Processing video with Qwen AI...");
+        setCurrentStep("Processing Video...");
         let videoResult = videoResponse;
         
         // Poll for status if necessary (simplified for demo)
@@ -108,7 +106,7 @@ const LoadingPage = () => {
         }
         
         // Step 5: Save video to storage
-        setCurrentStep("Saving video to storage...");
+        setCurrentStep("Saving Video to Gallery...");
         const videoPath = await saveVideoToStorage(videoResult.videoUrl, generatedPrompt);
         await simulateProcess(10);
         
