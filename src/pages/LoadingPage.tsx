@@ -186,50 +186,105 @@ const LoadingPage = () => {
   
   return (
     <AppLayout title="MORPHING ADVERTISEMENT">
-      <div className="flex flex-col items-center justify-center p-8 max-w-3xl mx-auto">
-        <div className="w-full space-y-8">
-          <h2 className="text-2xl font-bold text-center mb-2">{currentStep}</h2>
-          
+      <div className="flex flex-col items-center justify-center p-8 max-w-4xl mx-auto">
+        <div className="w-full space-y-10">
           <div className="relative">
-            <Progress 
-              value={progress} 
-              className="h-3 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden" 
-            />
-            <div className="mt-2 text-right text-sm font-medium text-gray-600 dark:text-gray-300">
-              {progress.toFixed(0)}%
+            <div className="mb-6">
+              <h3 className="text-xl font-medium text-center text-gray-700 dark:text-gray-300 mb-2">{currentStep}</h3>
+              <div className="relative h-3 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                <Progress 
+                  value={progress} 
+                  className="h-3 transition-all ease-in-out duration-300 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full" 
+                />
+              </div>
+              <div className="mt-2 text-right text-sm font-medium text-gray-600 dark:text-gray-400">
+                {progress.toFixed(0)}%
+              </div>
             </div>
           </div>
           
-          <div className="mt-10 py-6 px-8 bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200 dark:border-gray-700">
-            <div className="grid grid-cols-1 gap-6">
-              <div className={`transition-all duration-300 p-4 rounded-lg ${
+          <div className="grid grid-cols-1 gap-6 mx-auto max-w-3xl">
+            <div className={`transition-all duration-500 transform ${phases.decoded ? 'scale-100' : 'scale-95'} p-6 rounded-xl shadow-sm border flex items-center space-x-4 ${
+              phases.decoded 
+                ? 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800' 
+                : 'bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
+            }`}>
+              <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
                 phases.decoded 
-                  ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800' 
-                  : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'
+                  ? 'bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400' 
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
               }`}>
-                <div className="text-lg font-medium text-center">
+                <span className="text-xl font-bold">1</span>
+              </div>
+              <div>
+                <div className={`text-lg font-medium ${
+                  phases.decoded 
+                    ? 'text-green-700 dark:text-green-400' 
+                    : 'text-gray-700 dark:text-gray-300'
+                }`}>
                   Advertisement Decoded
                 </div>
+                <p className={`text-sm ${
+                  phases.decoded 
+                    ? 'text-green-600/80 dark:text-green-500/80' 
+                    : 'text-gray-500 dark:text-gray-400'
+                }`}>Understanding audience and content</p>
               </div>
-              
-              <div className={`transition-all duration-300 p-4 rounded-lg ${
+            </div>
+            
+            <div className={`transition-all duration-500 transform ${phases.mapped ? 'scale-100' : 'scale-95'} p-6 rounded-xl shadow-sm border flex items-center space-x-4 ${
+              phases.mapped 
+                ? 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800' 
+                : 'bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
+            }`}>
+              <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
                 phases.mapped 
-                  ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800' 
-                  : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'
+                  ? 'bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400' 
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
               }`}>
-                <div className="text-lg font-medium text-center">
+                <span className="text-xl font-bold">2</span>
+              </div>
+              <div>
+                <div className={`text-lg font-medium ${
+                  phases.mapped 
+                    ? 'text-green-700 dark:text-green-400' 
+                    : 'text-gray-700 dark:text-gray-300'
+                }`}>
                   Advertisement Demographic Mapping
                 </div>
+                <p className={`text-sm ${
+                  phases.mapped 
+                    ? 'text-green-600/80 dark:text-green-500/80' 
+                    : 'text-gray-500 dark:text-gray-400'
+                }`}>Identifying target demographics</p>
               </div>
-              
-              <div className={`transition-all duration-300 p-4 rounded-lg ${
+            </div>
+            
+            <div className={`transition-all duration-500 transform ${phases.generated ? 'scale-100' : 'scale-95'} p-6 rounded-xl shadow-sm border flex items-center space-x-4 ${
+              phases.generated 
+                ? 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800' 
+                : 'bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
+            }`}>
+              <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
                 phases.generated 
-                  ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800' 
-                  : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'
+                  ? 'bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400' 
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
               }`}>
-                <div className="text-lg font-medium text-center">
+                <span className="text-xl font-bold">3</span>
+              </div>
+              <div>
+                <div className={`text-lg font-medium ${
+                  phases.generated 
+                    ? 'text-green-700 dark:text-green-400' 
+                    : 'text-gray-700 dark:text-gray-300'
+                }`}>
                   Advertisement Generated
                 </div>
+                <p className={`text-sm ${
+                  phases.generated 
+                    ? 'text-green-600/80 dark:text-green-500/80' 
+                    : 'text-gray-500 dark:text-gray-400'
+                }`}>Creating targeted advertisement</p>
               </div>
             </div>
           </div>
