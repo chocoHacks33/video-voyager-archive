@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import AppLayout from '@/components/AppLayout';
-import { Upload, CircleCheck, CircleX, CheckCircle2 } from 'lucide-react';
+import { Upload, CircleCheck, CircleX, CheckCircle2, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
@@ -204,7 +204,7 @@ const UploadPage = () => {
   };
   
   return (
-    <AppLayout title="UPLOAD ADVERTISEMENT">
+    <AppLayout title="Upload Your Advertisement">
       <div className="flex flex-col items-center">
         <div 
           className={`w-full max-w-md border-2 border-dashed rounded-lg p-12 mb-6 flex flex-col items-center justify-center cursor-pointer ${
@@ -400,12 +400,13 @@ const UploadPage = () => {
           </div>
         )}
         
-        {/* Morph AD button appears after audiences are loaded */}
+        {/* Morph AD button */}
         {audiencesLoaded && (
           <Button 
-            className="bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white font-medium px-10 py-2.5 rounded-md shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
+            className="bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white font-medium px-10 py-2.5 rounded-md shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 flex items-center gap-2"
             onClick={handleMorphAd}
           >
+            <Zap className="h-5 w-5" />
             Morph Your Ad!
           </Button>
         )}
