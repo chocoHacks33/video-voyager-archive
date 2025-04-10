@@ -35,6 +35,8 @@ const toastVariants = cva(
           "success group border-green-500 bg-green-500 text-white",
         logger:
           "logger group border-blue-500 bg-blue-500 text-white",
+        warning:
+          "warning group border-yellow-500 bg-yellow-500 text-white",
       },
     },
     defaultVariants: {
