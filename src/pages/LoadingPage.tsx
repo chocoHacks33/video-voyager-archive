@@ -87,26 +87,43 @@ const LoadingPage = () => {
       try {
         // Phase 1: Decode Advertisement
         setCurrentStep("Understanding Ad...");
-        await simulateProcess(15);
+        setProgress(0); // Start at 0%
+        
+        // Gradually increase to 95% during this phase
+        await simulateProcessToCompletion(95);
+        
         const extractedText = await extractTextFromVideo(videoFile);
-        await simulateProcess(15);
+        
+        // Reach 100% for this phase
+        await simulateProcessToCompletion(100);
+        
         // Mark first phase as complete
         setPhases(prev => ({ ...prev, decoded: true }));
         
         // Phase 2: Map Demographics
         setCurrentStep("Mapping Demographics...");
-        await simulateProcess(15);
+        setProgress(0); // Reset progress for next phase
+        
+        // Gradually increase to 95% during this phase
+        await simulateProcessToCompletion(95);
+        
         const frames = await QwenAIService.extractFramesFromVideo(videoFile);
-        await simulateProcess(15);
         const videoAnalysis = await QwenAIService.getVideoDescription(frames);
+        
+        // Reach 100% for this phase
+        await simulateProcessToCompletion(100);
+        
         // Mark second phase as complete
         setPhases(prev => ({ ...prev, mapped: true }));
         
         // Phase 3: Generate Advertisement
         setCurrentStep("Morphing Ad...");
-        await simulateProcess(15);
+        setProgress(0); // Reset progress for next phase
+        
+        // Gradually increase to 95% during this phase
+        await simulateProcessToCompletion(95);
+        
         const generatedPrompt = "Cinematic video with enhanced lighting and smooth transitions";
-        await simulateProcess(10);
         
         // Call Qwen AI service to generate video
         const videoResponse = await QwenAIService.generateVideo({
@@ -123,7 +140,6 @@ const LoadingPage = () => {
         
         // Poll for status if necessary (simplified for demo)
         if (videoResult.status === 'processing') {
-          await simulateProcess(5);
           videoResult = await QwenAIService.getVideoStatus(videoResponse.id);
         }
         
@@ -133,13 +149,15 @@ const LoadingPage = () => {
           generatedPrompt,
           videoAnalysis.description
         );
-        await simulateProcess(10);
+        
+        // Reach 100% for this phase
+        await simulateProcessToCompletion(100);
         
         // Mark third phase as complete
         setPhases(prev => ({ ...prev, generated: true }));
         
         // Wait a moment before completing
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500));
         
         // Success! Set processing complete flag
         setProcessingComplete(true);
@@ -158,22 +176,22 @@ const LoadingPage = () => {
     processVideo();
   }, [navigate, videoFile, location.state]);
   
-  // Simulate a processing step with progress updates
-  const simulateProcess = (percentage: number) => {
+  // Simulate a processing step that completes to the target percentage
+  const simulateProcessToCompletion = (targetPercentage: number) => {
     return new Promise<void>((resolve) => {
       const startValue = progress;
-      const endValue = Math.min(startValue + percentage, 99); // Cap at 99% to allow for final jump to 100%
-      const duration = percentage * 100; // Adjust speed based on percentage
+      const endValue = targetPercentage;
+      const duration = 1500; // 1.5 seconds to reach the target
       const startTime = Date.now();
       
       const updateProgress = () => {
         const elapsed = Date.now() - startTime;
-        const progressDelta = Math.min(elapsed / duration, 1) * percentage;
-        const newProgress = startValue + progressDelta;
+        const progressPercent = Math.min(elapsed / duration, 1);
+        const newProgress = startValue + (endValue - startValue) * progressPercent;
         
         setProgress(Math.min(newProgress, endValue));
         
-        if (newProgress < endValue) {
+        if (progressPercent < 1) {
           requestAnimationFrame(updateProgress);
         } else {
           resolve();
@@ -183,6 +201,8 @@ const LoadingPage = () => {
       updateProgress();
     });
   };
+  
+  // We no longer need the old simulateProcess function and can remove it
   
   return (
     <AppLayout title="MORPHING ADVERTISEMENT">
