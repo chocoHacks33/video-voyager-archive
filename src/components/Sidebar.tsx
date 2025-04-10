@@ -63,9 +63,9 @@ const Sidebar = () => {
           <div className="flex items-center gap-3">
             <div className="bg-purple-100 dark:bg-purple-900 rounded-full h-8 w-8 flex items-center justify-center">
               <img
-                src="/lovable-uploads/58e6d853-f703-47e3-9d69-340b6149ed8b.png"
+                src="/lovable-uploads/d8943401-0113-4c61-affd-6a12aae85ea0.png"
                 alt="ADMORPH.AI Logo"
-                className="h-6 w-6"
+                className="h-6 w-6 object-contain"
               />
             </div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">ADMORPH.AI</h1>
