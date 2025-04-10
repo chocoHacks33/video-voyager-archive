@@ -229,13 +229,13 @@ const UploadPage = () => {
             {file ? file.name : "Select a video file"}
           </p>
           {!file && (
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-gray-500 mt-2 text-center">
               Drag and drop or click to browse
             </p>
           )}
           
           {file && (
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-gray-500 mt-2 text-center">
               Your video will be processed and subsequently morphed into demographic specific variations
             </p>
           )}
