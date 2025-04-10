@@ -1,9 +1,20 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Play, Rocket } from 'lucide-react';
+import { AlertTriangle, Play, Rocket, Check } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { Button } from "@/components/ui/button";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface VideoData {
   id: number;
@@ -18,7 +29,15 @@ const videosData: VideoData[] = Array.from({ length: 9 }, (_, index) => ({
   description: `Demo Video ${index + 1}`
 }));
 
-const VideoCard = ({ video }: { video: VideoData }) => {
+const VideoCard = ({ 
+  video, 
+  isSelected, 
+  onSelect 
+}: { 
+  video: VideoData; 
+  isSelected: boolean;
+  onSelect: () => void;
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -48,7 +67,9 @@ const VideoCard = ({ video }: { video: VideoData }) => {
     checkVideoFile();
   }, [video.source]);
 
-  const handlePlay = () => {
+  const handlePlay = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent selection when clicking play button
+    
     if (videoRef.current && !videoError) {
       if (isPlaying) {
         videoRef.current.pause();
@@ -64,7 +85,8 @@ const VideoCard = ({ video }: { video: VideoData }) => {
     }
   };
 
-  const handleRetry = () => {
+  const handleRetry = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent selection when clicking retry button
     setIsLoading(true);
     setVideoError(false);
     // Force reload the current page
@@ -88,12 +110,14 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 
   return (
     <div 
-      className="bg-navy rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl"
+      className={`bg-navy rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl cursor-pointer ${
+        isSelected ? 'ring-4 ring-green-500' : ''
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ height: '280px' }} // Increased height for larger videos
+      onClick={onSelect}
     >
-      <div className="aspect-video relative h-full">
+      <AspectRatio ratio={16/9} className="w-full">
         {isLoading ? (
           <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -131,29 +155,61 @@ const VideoCard = ({ video }: { video: VideoData }) => {
             </button>
           </div>
         )}
-      </div>
+      </AspectRatio>
       
       <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
         <p className="text-base">{video.description}</p>
       </div>
+      
+      {isSelected && (
+        <div className="absolute top-2 right-2 bg-green-500 rounded-full p-1">
+          <Check className="w-5 h-5 text-white" />
+        </div>
+      )}
     </div>
   );
 };
 
 const GalleryPage = () => {
   const navigate = useNavigate();
+  const [selectedVideos, setSelectedVideos] = useState<number[]>([]);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+
+  const handleSelectVideo = (videoId: number) => {
+    setSelectedVideos(prev => {
+      if (prev.includes(videoId)) {
+        return prev.filter(id => id !== videoId);
+      } else {
+        return [...prev, videoId];
+      }
+    });
+  };
 
   const handleLaunchVideos = () => {
+    if (selectedVideos.length > 0) {
+      setShowSuccessDialog(true);
+    } else {
+      toast.warning("Please select at least one ad before launching", {
+        description: "Click on one or more videos to select them"
+      });
+    }
+  };
+
+  const handleConfirmLaunch = () => {
+    setShowSuccessDialog(false);
+    toast.success("Ad campaign launched successfully!", {
+      description: `Launched ${selectedVideos.length} ad${selectedVideos.length > 1 ? 's' : ''}`
+    });
     navigate('/upload');
   };
 
   return (
-    <AppLayout title="CHOOSE YOUR ADS">
+    <AppLayout>
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-8">
           <div className="mb-6 flex justify-between items-center">
             <div>
-              {/* No heading or description as requested */}
+              {/* Title removed as requested */}
             </div>
             <div className="flex items-center">
               <Button 
@@ -161,14 +217,19 @@ const GalleryPage = () => {
                 onClick={handleLaunchVideos}
               >
                 <Rocket className="w-5 h-5 transition-transform group-hover:rotate-12" />
-                Launch Videos
+                Launch Videos {selectedVideos.length > 0 && `(${selectedVideos.length})`}
               </Button>
             </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {videosData.map(video => (
-              <VideoCard key={video.id} video={video} />
+              <VideoCard 
+                key={video.id} 
+                video={video} 
+                isSelected={selectedVideos.includes(video.id)}
+                onSelect={() => handleSelectVideo(video.id)}
+              />
             ))}
           </div>
           
@@ -177,6 +238,23 @@ const GalleryPage = () => {
           </p>
         </div>
       </div>
+
+      <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Launch Ad Campaign</AlertDialogTitle>
+            <AlertDialogDescription>
+              You've selected {selectedVideos.length} video{selectedVideos.length > 1 ? 's' : ''} for your campaign. 
+              Launch now to start showing these ads to your audience.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={handleConfirmLaunch} className="bg-green-600 hover:bg-green-700">
+              Confirm Launch
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AppLayout>
   );
 };
