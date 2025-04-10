@@ -1,4 +1,3 @@
-
 import { toast } from 'sonner';
 
 // API key would typically be stored in environment variables
@@ -300,12 +299,8 @@ export class QwenAIService {
       const taskId = `simulated-task-${Date.now()}`;
       console.log("Simulated WAN AI Task Created:", taskId);
       
-      // Log progress for visibility
-      toast.custom((id) => (
-        <div className="bg-blue-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-          <span className="font-medium">WAN AI request sent (CORS bypass mode)</span>
-        </div>
-      ), { duration: 3000 });
+      // Log progress with non-JSX toast
+      toast.info("WAN AI request sent (CORS bypass mode)");
       
       return taskId;
     } catch (error) {
@@ -376,11 +371,7 @@ export class QwenAIService {
       // For simulated tasks in no-cors mode, return a stock video
       if (taskId.startsWith('simulated-task-')) {
         console.log("Using simulated video for no-cors mode request");
-        toast.custom((id) => (
-          <div className="bg-blue-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-            <span className="font-medium">Using alternative video due to CORS restrictions</span>
-          </div>
-        ), { duration: 3000 });
+        toast.info("Using alternative video due to CORS restrictions");
         
         return '/stock-videos/video1.mp4';
       }
