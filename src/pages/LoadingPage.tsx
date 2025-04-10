@@ -2,10 +2,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
-import { Progress } from "@/components/ui/progress";
 import { toast } from 'sonner';
-import { QwenAIService, VideoGenerationResponse } from '@/services/qwenAIService';
-import { CircleX } from 'lucide-react';
+import { QwenAIService } from '@/services/qwenAIService';
+import { CircleX, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 // Function to extract text from video (mock implementation)
 const extractTextFromVideo = async (videoFile: File): Promise<string> => {
@@ -202,111 +202,148 @@ const LoadingPage = () => {
     });
   };
   
-  // We no longer need the old simulateProcess function and can remove it
+  // Calculate stroke dasharray for circle animation
+  const calculateStrokeDasharray = (percent: number) => {
+    const circumference = 2 * Math.PI * 45; // Circle with r=45
+    return `${(percent / 100) * circumference} ${circumference}`;
+  };
   
   return (
     <AppLayout title="MORPHING ADVERTISEMENT">
-      <div className="flex flex-col items-center justify-center p-8 max-w-4xl mx-auto">
-        <div className="w-full space-y-10">
-          <div className="relative">
-            <div className="mb-6">
-              <h3 className="text-xl font-medium text-center text-gray-700 dark:text-gray-300 mb-2">{currentStep}</h3>
-              <div className="relative h-3 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-                <Progress 
-                  value={progress} 
-                  className="h-3 transition-all ease-in-out duration-300 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full" 
+      <div className="flex flex-col items-center justify-center p-8 max-w-4xl mx-auto min-h-[60vh]">
+        <div className="w-full space-y-12">
+          {/* Circular progress indicator */}
+          <div className="flex justify-center mb-8">
+            <div className="relative w-48 h-48">
+              {/* Background circle */}
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="45" 
+                  fill="none" 
+                  strokeWidth="8" 
+                  className="stroke-gray-200 dark:stroke-gray-700"
                 />
-              </div>
-              <div className="mt-2 text-right text-sm font-medium text-gray-600 dark:text-gray-400">
-                {progress.toFixed(0)}%
+                {/* Progress circle with gradient */}
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="45" 
+                  fill="none" 
+                  strokeWidth="8" 
+                  strokeLinecap="round" 
+                  strokeDasharray={calculateStrokeDasharray(progress)} 
+                  className="stroke-[url(#progress-gradient)] transition-all duration-300 ease-in-out"
+                />
+                {/* Define gradient for the circle */}
+                <defs>
+                  <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#4ade80" />
+                    <stop offset="100%" stopColor="#10b981" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              
+              {/* Show spinner in the center when processing */}
+              {!processingComplete && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loader2 className="h-10 w-10 text-green-500 animate-spin" />
+                </div>
+              )}
+              
+              {/* Progress percentage */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+                  {Math.round(progress)}%
+                </span>
               </div>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 gap-6 mx-auto max-w-3xl">
-            <div className={`transition-all duration-500 transform ${phases.decoded ? 'scale-100' : 'scale-95'} p-6 rounded-xl shadow-sm border flex items-center space-x-4 ${
+          {/* Phase cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mx-auto">
+            {/* Phase 1 Card */}
+            <div className={cn(
+              "transition-all duration-500 p-6 rounded-xl shadow-sm border flex flex-col items-center text-center space-y-3",
               phases.decoded 
-                ? 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800' 
-                : 'bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
-            }`}>
-              <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
+                ? "bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800" 
+                : "bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
+            )}>
+              <div className={cn(
+                "w-12 h-12 rounded-full flex items-center justify-center",
                 phases.decoded 
-                  ? 'bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400' 
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-              }`}>
+                  ? "bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400" 
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+              )}>
                 <span className="text-xl font-bold">1</span>
               </div>
-              <div>
-                <div className={`text-lg font-medium ${
-                  phases.decoded 
-                    ? 'text-green-700 dark:text-green-400' 
-                    : 'text-gray-700 dark:text-gray-300'
-                }`}>
-                  Advertisement Decoded
-                </div>
-                <p className={`text-sm ${
-                  phases.decoded 
-                    ? 'text-green-600/80 dark:text-green-500/80' 
-                    : 'text-gray-500 dark:text-gray-400'
-                }`}>Understanding audience and content</p>
+              <div className={cn(
+                "text-lg font-medium",
+                phases.decoded 
+                  ? "text-green-700 dark:text-green-400" 
+                  : "text-gray-700 dark:text-gray-300"
+              )}>
+                Advertisement Decoded
               </div>
             </div>
             
-            <div className={`transition-all duration-500 transform ${phases.mapped ? 'scale-100' : 'scale-95'} p-6 rounded-xl shadow-sm border flex items-center space-x-4 ${
+            {/* Phase 2 Card */}
+            <div className={cn(
+              "transition-all duration-500 p-6 rounded-xl shadow-sm border flex flex-col items-center text-center space-y-3",
               phases.mapped 
-                ? 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800' 
-                : 'bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
-            }`}>
-              <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
+                ? "bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800" 
+                : "bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
+            )}>
+              <div className={cn(
+                "w-12 h-12 rounded-full flex items-center justify-center",
                 phases.mapped 
-                  ? 'bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400' 
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-              }`}>
+                  ? "bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400" 
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+              )}>
                 <span className="text-xl font-bold">2</span>
               </div>
-              <div>
-                <div className={`text-lg font-medium ${
-                  phases.mapped 
-                    ? 'text-green-700 dark:text-green-400' 
-                    : 'text-gray-700 dark:text-gray-300'
-                }`}>
-                  Advertisement Demographic Mapping
-                </div>
-                <p className={`text-sm ${
-                  phases.mapped 
-                    ? 'text-green-600/80 dark:text-green-500/80' 
-                    : 'text-gray-500 dark:text-gray-400'
-                }`}>Identifying target demographics</p>
+              <div className={cn(
+                "text-lg font-medium",
+                phases.mapped 
+                  ? "text-green-700 dark:text-green-400" 
+                  : "text-gray-700 dark:text-gray-300"
+              )}>
+                Demographics Mapped
               </div>
             </div>
             
-            <div className={`transition-all duration-500 transform ${phases.generated ? 'scale-100' : 'scale-95'} p-6 rounded-xl shadow-sm border flex items-center space-x-4 ${
+            {/* Phase 3 Card */}
+            <div className={cn(
+              "transition-all duration-500 p-6 rounded-xl shadow-sm border flex flex-col items-center text-center space-y-3",
               phases.generated 
-                ? 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800' 
-                : 'bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
-            }`}>
-              <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
+                ? "bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800" 
+                : "bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
+            )}>
+              <div className={cn(
+                "w-12 h-12 rounded-full flex items-center justify-center",
                 phases.generated 
-                  ? 'bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400' 
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-              }`}>
+                  ? "bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400" 
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+              )}>
                 <span className="text-xl font-bold">3</span>
               </div>
-              <div>
-                <div className={`text-lg font-medium ${
-                  phases.generated 
-                    ? 'text-green-700 dark:text-green-400' 
-                    : 'text-gray-700 dark:text-gray-300'
-                }`}>
-                  Advertisement Generated
-                </div>
-                <p className={`text-sm ${
-                  phases.generated 
-                    ? 'text-green-600/80 dark:text-green-500/80' 
-                    : 'text-gray-500 dark:text-gray-400'
-                }`}>Creating targeted advertisement</p>
+              <div className={cn(
+                "text-lg font-medium",
+                phases.generated 
+                  ? "text-green-700 dark:text-green-400" 
+                  : "text-gray-700 dark:text-gray-300"
+              )}>
+                Advertisement Generated
               </div>
             </div>
+          </div>
+          
+          {/* Current step text */}
+          <div className="text-center">
+            <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300">
+              {currentStep}
+            </h3>
           </div>
         </div>
       </div>
