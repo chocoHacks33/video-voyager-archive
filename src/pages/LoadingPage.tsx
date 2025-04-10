@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -170,16 +171,16 @@ const LoadingPage = () => {
             <h3 className="font-medium mb-2">What's happening?</h3>
             <ol className="space-y-2 text-sm text-gray-600 list-decimal pl-5">
               <li className={progress >= 20 ? "text-green-600 font-medium" : ""}>
-                Converting your video to text transcripts
+                Processing your Brand Advertisement
               </li>
               <li className={progress >= 40 ? "text-green-600 font-medium" : ""}>
-                Generating creative prompt from your content
+                Analyzing User Demographics
               </li>
               <li className={progress >= 70 ? "text-green-600 font-medium" : ""}>
-                Creating AI video style with Qwen
+                Generating Unique Advertisement for Specific Users
               </li>
               <li className={progress >= 90 ? "text-green-600 font-medium" : ""}>
-                Processing and saving generated video
+                Displaying Gallery of Advertisement Spinoffs
               </li>
             </ol>
           </div>
