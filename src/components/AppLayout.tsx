@@ -27,12 +27,12 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
   
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen bg-gray-bg dark:bg-background">
+      <div className="flex min-h-screen w-full bg-gray-bg dark:bg-background">
         <Sidebar />
         <SidebarRail />
         
-        <div className="flex-1 flex flex-col">
-          <header className="bg-white dark:bg-gray-900 p-4 shadow-sm dark:shadow-gray-800">
+        <div className="flex-1 flex flex-col w-full">
+          <header className="bg-white dark:bg-gray-900 p-4 shadow-sm dark:shadow-gray-800 w-full">
             <div className="container mx-auto flex justify-end items-center">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
@@ -56,9 +56,9 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
               </div>
             </div>
           </header>
-          <main className="flex-1 py-8 px-4 md:px-8 flex items-center justify-center">
-            <div className="w-full max-w-4xl">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-8">
+          <main className="flex-1 flex items-center justify-center p-4 md:p-8 w-full">
+            <div className="w-full max-w-full">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900 p-8 w-full">
                 <h2 className="text-2xl font-bold text-center mb-8 dark:text-white">{title}</h2>
                 {children}
               </div>

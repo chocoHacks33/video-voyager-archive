@@ -182,12 +182,12 @@ const LoadingPage = () => {
   
   return (
     <AppLayout title="">
-      <div className="flex flex-col items-center justify-center p-4 max-w-3xl mx-auto min-h-[60vh]">
-        <Card className="w-full p-6 md:p-8 shadow-md rounded-lg">
+      <div className="flex flex-col items-center justify-center p-4 w-full mx-auto min-h-[60vh]">
+        <Card className="w-full max-w-4xl p-6 md:p-8 shadow-md rounded-lg mx-auto">
           <div className="w-full space-y-8">
             {/* Main circular progress indicator */}
             <div className="flex justify-center mb-6">
-              <div className="relative w-72 h-72"> {/* Increased from w-56 h-56 to w-72 h-72 */}
+              <div className="relative w-72 h-72">
                 {/* Background circle */}
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                   <circle 
@@ -228,8 +228,7 @@ const LoadingPage = () => {
             </div>
             
             {/* Phase cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mx-auto">
-              {/* Phase cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mx-auto max-w-4xl">
               {[
                 { id: 'decoded', label: 'Advertisement Decoded' },
                 { id: 'mapped', label: 'Demographics Mapped' },
