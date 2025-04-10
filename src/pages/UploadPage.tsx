@@ -3,12 +3,13 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import AppLayout from '@/components/AppLayout';
-import { Upload, CircleCheck, CircleX, Facebook, Instagram, Youtube, CheckCircle2 } from 'lucide-react';
+import { Upload, CircleCheck, CircleX, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Progress } from "@/components/ui/progress";
+import Image from "@/components/ui/image";
 
 // Audience data model
 interface AudienceItem {
@@ -250,13 +251,23 @@ const UploadPage = () => {
                 render={({ field }) => (
                   <FormItem className="relative">
                     <div className="flex flex-col items-center">
-                      <div className="h-16 w-16 bg-blue-100 rounded-lg flex items-center justify-center relative hover:bg-blue-200 transition-colors duration-200">
-                        <Facebook className="h-10 w-10 text-blue-600" />
+                      <div 
+                        className={`h-16 w-16 rounded-lg flex items-center justify-center relative hover:bg-blue-50 transition-colors duration-200 cursor-pointer overflow-hidden ${
+                          field.value ? 'ring-2 ring-green-500' : 'border border-gray-200'
+                        }`}
+                        onClick={() => field.onChange(!field.value)}
+                      >
+                        <Image 
+                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Facebook_Logo_%282019%29.svg/1024px-Facebook_Logo_%282019%29.svg.png"
+                          alt="Facebook"
+                          className="h-full w-full object-contain p-2"
+                        />
                         <FormControl>
-                          <Checkbox 
+                          <input 
+                            type="checkbox" 
+                            className="sr-only"
                             checked={field.value}
-                            onCheckedChange={field.onChange}
-                            className="absolute top-1 right-1 h-5 w-5 data-[state=checked]:bg-green-500 data-[state=checked]:text-white"
+                            onChange={(e) => field.onChange(e.target.checked)}
                           />
                         </FormControl>
                       </div>
@@ -272,13 +283,23 @@ const UploadPage = () => {
                 render={({ field }) => (
                   <FormItem className="relative">
                     <div className="flex flex-col items-center">
-                      <div className="h-16 w-16 bg-purple-100 rounded-lg flex items-center justify-center relative hover:bg-purple-200 transition-colors duration-200">
-                        <Instagram className="h-10 w-10 text-purple-600" />
+                      <div 
+                        className={`h-16 w-16 rounded-lg flex items-center justify-center relative hover:bg-purple-50 transition-colors duration-200 cursor-pointer overflow-hidden ${
+                          field.value ? 'ring-2 ring-green-500' : 'border border-gray-200'
+                        }`}
+                        onClick={() => field.onChange(!field.value)}
+                      >
+                        <Image 
+                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1024px-Instagram_logo_2016.svg.png"
+                          alt="Instagram"
+                          className="h-full w-full object-contain p-2"
+                        />
                         <FormControl>
-                          <Checkbox 
+                          <input 
+                            type="checkbox" 
+                            className="sr-only"
                             checked={field.value}
-                            onCheckedChange={field.onChange}
-                            className="absolute top-1 right-1 h-5 w-5 data-[state=checked]:bg-green-500 data-[state=checked]:text-white"
+                            onChange={(e) => field.onChange(e.target.checked)}
                           />
                         </FormControl>
                       </div>
@@ -294,13 +315,23 @@ const UploadPage = () => {
                 render={({ field }) => (
                   <FormItem className="relative">
                     <div className="flex flex-col items-center">
-                      <div className="h-16 w-16 bg-red-100 rounded-lg flex items-center justify-center relative hover:bg-red-200 transition-colors duration-200">
-                        <Youtube className="h-10 w-10 text-red-600" />
+                      <div 
+                        className={`h-16 w-16 rounded-lg flex items-center justify-center relative hover:bg-red-50 transition-colors duration-200 cursor-pointer overflow-hidden ${
+                          field.value ? 'ring-2 ring-green-500' : 'border border-gray-200'
+                        }`}
+                        onClick={() => field.onChange(!field.value)}
+                      >
+                        <Image 
+                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/YouTube_social_white_square_%282017%29.svg/1024px-YouTube_social_white_square_%282017%29.svg.png"
+                          alt="YouTube"
+                          className="h-full w-full object-contain p-2 bg-red-600"
+                        />
                         <FormControl>
-                          <Checkbox 
+                          <input 
+                            type="checkbox" 
+                            className="sr-only"
                             checked={field.value}
-                            onCheckedChange={field.onChange}
-                            className="absolute top-1 right-1 h-5 w-5 data-[state=checked]:bg-green-500 data-[state=checked]:text-white"
+                            onChange={(e) => field.onChange(e.target.checked)}
                           />
                         </FormControl>
                       </div>
@@ -316,7 +347,7 @@ const UploadPage = () => {
         {/* Audience loading section */}
         {file && platformsSelected && !loading && !audiencesLoaded && (
           <Button 
-            className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium px-8 py-2 rounded-md shadow-md hover:shadow-lg transition-all duration-200 mb-6"
+            className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium px-8 py-2 rounded-md shadow-md hover:shadow-lg transition-all duration-200 mb-6 transform hover:scale-105"
             onClick={startAudienceLoading}
           >
             Fetch Audiences
@@ -366,7 +397,7 @@ const UploadPage = () => {
             className="bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white font-medium px-10 py-2.5 rounded-md shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
             onClick={handleMorphAd}
           >
-            Morph AD
+            Morph Your Ad!
           </Button>
         )}
       </div>
