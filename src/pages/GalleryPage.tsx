@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { CircleCheck } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
@@ -173,7 +174,7 @@ const GalleryPage = () => {
     toast.success("Video launch initiated!", {
       description: "Your Targeted Ad-Campaign is Launched!",
       duration: 3000,
-      icon: <CircleCheck color="green" />,
+      icon: <CircleCheck color="green" className="mr-2" />,
     });
   };
 
