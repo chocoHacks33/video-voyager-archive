@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Info } from 'lucide-react';
@@ -40,25 +39,25 @@ const regularCampaignData = [
 const selfEvolvingCampaignData = [
   { day: 'Day 1', engagement: 32 },
   { day: 'Day 2', engagement: 36 },
-  { day: 'Day 3', engagement: 40 },
-  { day: 'Day 4', engagement: 42 },
-  { day: 'Day 5', engagement: 42, version: 1, videoId: 'video10.mp4' }, // First evolution point
-  { day: 'Day 6', engagement: 55 }, // Sharp increase after evolution
-  { day: 'Day 7', engagement: 58 },
-  { day: 'Day 8', engagement: 59 }, // Plateau
-  { day: 'Day 9', engagement: 60, version: 2, videoId: 'video11.mp4' }, // Second evolution point
-  { day: 'Day 10', engagement: 75 }, // Sharp increase after evolution
-  { day: 'Day 11', engagement: 78 },
-  { day: 'Day 12', engagement: 79 }, // Plateau
-  { day: 'Day 13', engagement: 80 },
-  { day: 'Day 14', engagement: 82, version: 3, videoId: 'video12.mp4' } // Third evolution point
+  { day: 'Day 3', engagement: 41 },
+  { day: 'Day 4', engagement: 43 },
+  { day: 'Day 5', engagement: 44, version: 1, videoId: 'video10.mp4' }, // First evolution point
+  { day: 'Day 6', engagement: 58 }, // Sharp increase after evolution
+  { day: 'Day 7', engagement: 59 },
+  { day: 'Day 8', engagement: 57 }, // Some natural variation
+  { day: 'Day 9', engagement: 61, version: 2, videoId: 'video11.mp4' }, // Second evolution point
+  { day: 'Day 10', engagement: 74 }, // Sharp increase after evolution
+  { day: 'Day 11', engagement: 76 },
+  { day: 'Day 12', engagement: 73 }, // Some natural variation
+  { day: 'Day 13', engagement: 75 },
+  { day: 'Day 14', engagement: 81, version: 3, videoId: 'video12.mp4' } // Third evolution point
 ];
 
 // Evolution points for visual reference
 const evolutionPoints = [
-  { day: 'Day 5', engagement: 42, version: 1, videoId: 'video10.mp4' },
-  { day: 'Day 9', engagement: 60, version: 2, videoId: 'video11.mp4' },
-  { day: 'Day 14', engagement: 82, version: 3, videoId: 'video12.mp4' }
+  { day: 'Day 5', engagement: 44, version: 1, videoId: 'video10.mp4' },
+  { day: 'Day 9', engagement: 61, version: 2, videoId: 'video11.mp4' },
+  { day: 'Day 14', engagement: 81, version: 3, videoId: 'video12.mp4' }
 ];
 
 // Custom tooltip component for the self-evolving chart
