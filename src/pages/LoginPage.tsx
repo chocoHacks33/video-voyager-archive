@@ -43,7 +43,7 @@ const LoginPage = () => {
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               Sign in to{' '}
-              <span className="bg-gradient-to-r from-sidebar-primary to-sidebar-primary-foreground bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
                 ADMORPH.AI
               </span>
             </h1>
