@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Info } from 'lucide-react';
@@ -63,7 +62,7 @@ const evolutionPoints = [
 ];
 
 // Custom tooltip component for the self-evolving chart
-const VideoTooltip = ({ active, payload, label, coord }) => {
+const VideoTooltip = ({ active, payload, label }) => {
   const [videoError, setVideoError] = useState(false);
   
   if (!active || !payload || !payload.length) return null;
@@ -71,7 +70,7 @@ const VideoTooltip = ({ active, payload, label, coord }) => {
   const data = payload[0].payload;
   
   // Only show video for evolution points
-  if (!data.version) {
+  if (data.version === undefined) {
     return (
       <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
         <p className="font-medium">{label}</p>
@@ -218,14 +217,10 @@ const CampaignEvolution = () => {
                             style: { textAnchor: 'middle' }
                           }} 
                         />
-                        <Tooltip content={({ active, payload, label, ...rest }) => (
-                          <VideoTooltip 
-                            active={active} 
-                            payload={payload} 
-                            label={label} 
-                            coord={rest} 
-                          />
-                        )} />
+                        <Tooltip 
+                          content={(props) => <VideoTooltip {...props} />}
+                          cursor={{ stroke: '#ccc', strokeDasharray: '5 5' }}
+                        />
                         <Line 
                           type="monotone" 
                           dataKey="engagement" 
