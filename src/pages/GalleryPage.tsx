@@ -21,12 +21,54 @@ interface VideoData {
   description: string;
 }
 
-// Sample data for 9 videos
-const videosData: VideoData[] = Array.from({ length: 9 }, (_, index) => ({
-  id: index + 1,
-  source: `/stock-videos/video${index + 1}.mp4`,
-  description: `Demo Video ${index + 1}`
-}));
+// Sample data for 9 videos with specific descriptions
+const videosData: VideoData[] = [
+  {
+    id: 1,
+    source: '/stock-videos/video1.mp4',
+    description: 'Female Chinese Fashion Model'
+  },
+  {
+    id: 2,
+    source: '/stock-videos/video2.mp4',
+    description: 'Married Couple Casual Model'
+  },
+  {
+    id: 3,
+    source: '/stock-videos/video3.mp4',
+    description: 'Female Western Fashion Model'
+  },
+  {
+    id: 4,
+    source: '/stock-videos/video4.mp4',
+    description: 'Male Black Fashion Model'
+  },
+  {
+    id: 5,
+    source: '/stock-videos/video5.mp4',
+    description: 'Chinese Traditional Model'
+  },
+  {
+    id: 6,
+    source: '/stock-videos/video6.mp4',
+    description: 'All Male Basketball Model'
+  },
+  {
+    id: 7,
+    source: '/stock-videos/video7.mp4',
+    description: 'Female Black Fashion Model'
+  },
+  {
+    id: 8,
+    source: '/stock-videos/video8.mp4',
+    description: 'Kids Fashion Models'
+  },
+  {
+    id: 9,
+    source: '/stock-videos/video9.mp4',
+    description: 'Female Black Fashion Model'
+  }
+];
 
 const VideoCard = ({ 
   video, 
