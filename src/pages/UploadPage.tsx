@@ -323,7 +323,7 @@ const UploadPage = () => {
                         <Image 
                           src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/YouTube_social_white_square_%282017%29.svg/1024px-YouTube_social_white_square_%282017%29.svg.png"
                           alt="YouTube"
-                          className="h-full w-full object-contain p-2 bg-red-600"
+                          className="h-full w-full object-contain p-2"
                         />
                         <FormControl>
                           <input 
