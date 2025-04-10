@@ -11,18 +11,22 @@ import {
   SidebarProvider,
   SidebarGroup,
   SidebarGroupLabel,
-  SidebarGroupContent
+  SidebarGroupContent,
+  SidebarTrigger,
+  useSidebar
 } from "@/components/ui/sidebar";
-import { Plus, FolderOpen, User } from "lucide-react";
+import { Plus, FolderOpen, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 const Sidebar = () => {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [activePath, setActivePath] = useState("/upload");
+  const { state, toggleSidebar } = useSidebar();
   
   // Update active path when location changes
   useEffect(() => {
@@ -55,15 +59,30 @@ const Sidebar = () => {
   return (
     <ShadcnSidebar>
       <SidebarHeader className="py-6">
-        <div className="px-4 flex items-center gap-3">
-          <div className="bg-purple-100 dark:bg-purple-900 rounded-full h-8 w-8 flex items-center justify-center">
-            <img
-              src="/lovable-uploads/58e6d853-f703-47e3-9d69-340b6149ed8b.png"
-              alt="ADMORPH.AI Logo"
-              className="h-6 w-6"
-            />
+        <div className="px-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-purple-100 dark:bg-purple-900 rounded-full h-8 w-8 flex items-center justify-center">
+              <img
+                src="/lovable-uploads/58e6d853-f703-47e3-9d69-340b6149ed8b.png"
+                alt="ADMORPH.AI Logo"
+                className="h-6 w-6"
+              />
+            </div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">ADMORPH.AI</h1>
           </div>
-          <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">ADMORPH.AI</h1>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleSidebar} 
+            className="h-8 w-8 transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label="Toggle sidebar"
+          >
+            {state === "expanded" ? (
+              <ChevronLeft className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+          </Button>
         </div>
       </SidebarHeader>
       
