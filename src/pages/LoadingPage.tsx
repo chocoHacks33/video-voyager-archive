@@ -181,100 +181,98 @@ const LoadingPage = () => {
   };
   
   return (
-    <AppLayout title="">
-      <div className="flex flex-col items-center justify-center p-4 max-w-3xl mx-auto min-h-[50vh]">
-        <Card className="w-full p-6 md:p-8 shadow-md rounded-lg">
-          <div className="w-full space-y-8">
-            {/* Main circular progress indicator */}
-            <div className="flex justify-center mb-6">
-              <div className="relative w-72 h-72"> {/* Increased from w-56 h-56 to w-72 h-72 */}
-                {/* Background circle */}
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    strokeWidth="6" 
-                    className="stroke-gray-200 dark:stroke-gray-700"
-                  />
-                  {/* Progress circle with gradient */}
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    strokeWidth="6" 
-                    strokeLinecap="round" 
-                    strokeDasharray={calculateStrokeDasharray(progress)} 
-                    className="stroke-[url(#progress-gradient)] transition-all duration-300 ease-in-out"
-                  />
-                  {/* Define gradient for the circle */}
-                  <defs>
-                    <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#4ade80" />
-                      <stop offset="100%" stopColor="#10b981" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                
-                {/* Progress percentage in center */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-4xl font-bold text-gray-800 dark:text-gray-200">
-                    {Math.round(progress)}%
-                  </span>
-                </div>
+    <div className="flex items-center justify-center p-4 min-h-screen">
+      <Card className="w-full max-w-md p-6 md:p-8 shadow-md rounded-lg">
+        <div className="w-full space-y-8">
+          {/* Main circular progress indicator */}
+          <div className="flex justify-center mb-6">
+            <div className="relative w-72 h-72">
+              {/* Background circle */}
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="45" 
+                  fill="none" 
+                  strokeWidth="6" 
+                  className="stroke-gray-200 dark:stroke-gray-700"
+                />
+                {/* Progress circle with gradient */}
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="45" 
+                  fill="none" 
+                  strokeWidth="6" 
+                  strokeLinecap="round" 
+                  strokeDasharray={calculateStrokeDasharray(progress)} 
+                  className="stroke-[url(#progress-gradient)] transition-all duration-300 ease-in-out"
+                />
+                {/* Define gradient for the circle */}
+                <defs>
+                  <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#4ade80" />
+                    <stop offset="100%" stopColor="#10b981" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              
+              {/* Progress percentage in center */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-4xl font-bold text-gray-800 dark:text-gray-200">
+                  {Math.round(progress)}%
+                </span>
               </div>
             </div>
-            
+          </div>
+          
+          {/* Phase cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mx-auto">
             {/* Phase cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mx-auto">
-              {/* Phase cards */}
-              {[
-                { id: 'decoded', label: 'Advertisement Decoded' },
-                { id: 'mapped', label: 'Demographics Mapped' },
-                { id: 'generated', label: 'Advertisement Generated' }
-              ].map((phase, index) => (
-                <Card
-                  key={phase.id}
-                  className={cn(
-                    "transition-all duration-500 shadow-md overflow-hidden",
-                    phases[phase.id as keyof typeof phases]
-                      ? "bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800" 
-                      : "bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-                  )}
-                >
-                  <div className="p-6 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className={cn(
-                        "w-10 h-10 rounded-full flex items-center justify-center",
-                        phases[phase.id as keyof typeof phases] 
-                          ? "bg-green-100 dark:bg-green-800/30" 
-                          : "bg-gray-100 dark:bg-gray-700"
-                      )}>
-                        {phases[phase.id as keyof typeof phases] ? (
-                          <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                        ) : (
-                          <span className="text-lg font-bold text-gray-500 dark:text-gray-400">{index + 1}</span>
-                        )}
-                      </div>
-                      <div className={cn(
-                        "font-medium",
-                        phases[phase.id as keyof typeof phases] 
-                          ? "text-green-700 dark:text-green-400" 
-                          : "text-gray-700 dark:text-gray-300"
-                      )}>
-                        {phase.label}
-                      </div>
+            {[
+              { id: 'decoded', label: 'Advertisement Decoded' },
+              { id: 'mapped', label: 'Demographics Mapped' },
+              { id: 'generated', label: 'Advertisement Generated' }
+            ].map((phase, index) => (
+              <Card
+                key={phase.id}
+                className={cn(
+                  "transition-all duration-500 shadow-md overflow-hidden",
+                  phases[phase.id as keyof typeof phases]
+                    ? "bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800" 
+                    : "bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
+                )}
+              >
+                <div className="p-6 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className={cn(
+                      "w-10 h-10 rounded-full flex items-center justify-center",
+                      phases[phase.id as keyof typeof phases] 
+                        ? "bg-green-100 dark:bg-green-800/30" 
+                        : "bg-gray-100 dark:bg-gray-700"
+                    )}>
+                      {phases[phase.id as keyof typeof phases] ? (
+                        <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      ) : (
+                        <span className="text-lg font-bold text-gray-500 dark:text-gray-400">{index + 1}</span>
+                      )}
+                    </div>
+                    <div className={cn(
+                      "font-medium",
+                      phases[phase.id as keyof typeof phases] 
+                        ? "text-green-700 dark:text-green-400" 
+                        : "text-gray-700 dark:text-gray-300"
+                    )}>
+                      {phase.label}
                     </div>
                   </div>
-                </Card>
-              ))}
-            </div>
+                </div>
+              </Card>
+            ))}
           </div>
-        </Card>
-      </div>
-    </AppLayout>
+        </div>
+      </Card>
+    </div>
   );
 };
 
