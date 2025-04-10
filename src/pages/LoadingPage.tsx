@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -43,7 +44,7 @@ const LoadingPage = () => {
   const [wanAiTaskId, setWanAiTaskId] = useState<string | null>(null);
   const [wanAiStatus, setWanAiStatus] = useState<string>('waiting');
   const [wanAiCheckCount, setWanAiCheckCount] = useState(0);
-  const [maxWanAiChecks] = useState(20); // Maximum number of status checks
+  const [maxWanAiChecks] = useState(300); // Changed from 20 to 300 checks
   const videoFile = location.state?.videoFile;
   
   // Handle navigation after processing is complete
