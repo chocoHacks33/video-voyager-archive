@@ -11,6 +11,7 @@ import LoginPage from "@/pages/LoginPage";
 import UploadPage from "@/pages/UploadPage";
 import LoadingPage from "@/pages/LoadingPage";
 import GalleryPage from "@/pages/GalleryPage";
+import CampaignEvolution from "@/pages/CampaignEvolution";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/upload" element={<ProtectedRoute><UploadPage /></ProtectedRoute>} />
               <Route path="/loading" element={<ProtectedRoute><LoadingPage /></ProtectedRoute>} />
               <Route path="/gallery" element={<ProtectedRoute><GalleryPage /></ProtectedRoute>} />
+              <Route path="/campaign-evolution" element={<ProtectedRoute><CampaignEvolution /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

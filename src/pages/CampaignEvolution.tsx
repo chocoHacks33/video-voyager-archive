@@ -1,0 +1,322 @@
+
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Info } from 'lucide-react';
+import AppLayout from '@/components/AppLayout';
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  ReferenceDot 
+} from 'recharts';
+
+// Data for the regular ad campaign (no self-evolution)
+const regularCampaignData = [
+  { day: 'Day 1', engagement: 32 },
+  { day: 'Day 2', engagement: 38 },
+  { day: 'Day 3', engagement: 42 },
+  { day: 'Day 4', engagement: 45 },
+  { day: 'Day 5', engagement: 48 },
+  { day: 'Day 6', engagement: 50 },
+  { day: 'Day 7', engagement: 51 },
+  { day: 'Day 8', engagement: 53 },
+  { day: 'Day 9', engagement: 52 },
+  { day: 'Day 10', engagement: 54 },
+  { day: 'Day 11', engagement: 53 },
+  { day: 'Day 12', engagement: 56 },
+  { day: 'Day 13', engagement: 55 },
+  { day: 'Day 14', engagement: 57 }
+];
+
+// Data for the self-evolving ad campaign with higher engagement over time
+const selfEvolvingCampaignData = [
+  { day: 'Day 1', engagement: 32 },
+  { day: 'Day 2', engagement: 36 },
+  { day: 'Day 3', engagement: 42 },
+  { day: 'Day 4', engagement: 45 },
+  { day: 'Day 5', engagement: 49, version: 1, videoId: 'video10.mp4' }, // First evolution point
+  { day: 'Day 6', engagement: 54 },
+  { day: 'Day 7', engagement: 58 },
+  { day: 'Day 8', engagement: 63 },
+  { day: 'Day 9', engagement: 68, version: 2, videoId: 'video11.mp4' }, // Second evolution point
+  { day: 'Day 10', engagement: 72 },
+  { day: 'Day 11', engagement: 78 },
+  { day: 'Day 12', engagement: 83 },
+  { day: 'Day 13', engagement: 89 },
+  { day: 'Day 14', engagement: 95, version: 3, videoId: 'video12.mp4' } // Third evolution point
+];
+
+// Evolution points for visual reference
+const evolutionPoints = [
+  { day: 'Day 5', engagement: 49, version: 1, videoId: 'video10.mp4' },
+  { day: 'Day 9', engagement: 68, version: 2, videoId: 'video11.mp4' },
+  { day: 'Day 14', engagement: 95, version: 3, videoId: 'video12.mp4' }
+];
+
+// Custom tooltip component for the self-evolving chart
+const VideoTooltip = ({ active, payload, label, coord }) => {
+  const [videoError, setVideoError] = useState(false);
+  
+  if (!active || !payload || !payload.length) return null;
+  
+  const data = payload[0].payload;
+  
+  // Only show video for evolution points
+  if (!data.version) {
+    return (
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+        <p className="font-medium">{label}</p>
+        <p className="text-sm text-purple-600 dark:text-purple-400">
+          Engagement Rate: {data.engagement}%
+        </p>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 min-w-[300px]">
+      <p className="font-medium mb-2">Evolution Version {data.version}</p>
+      <p className="text-sm text-purple-600 dark:text-purple-400 mb-3">
+        Engagement Rate: {data.engagement}%
+      </p>
+      <div className="w-full overflow-hidden rounded-md">
+        <AspectRatio ratio={16/9} className="bg-gray-100 dark:bg-gray-700">
+          {videoError ? (
+            <div className="w-full h-full flex items-center justify-center text-amber-500">
+              <Info className="w-5 h-5 mr-2" />
+              <span className="text-sm">Video unavailable</span>
+            </div>
+          ) : (
+            <video 
+              src={`/stock-videos/${data.videoId}`}
+              className="w-full h-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+              onError={() => setVideoError(true)}
+            />
+          )}
+        </AspectRatio>
+      </div>
+      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+        AI-optimized ad variation based on audience engagement
+      </p>
+    </div>
+  );
+};
+
+const CampaignEvolution = () => {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("comparison");
+  const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(null);
+  
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
+  
+  const chartConfig = {
+    regular: {
+      label: "Regular Campaign",
+      theme: { 
+        light: "#9b87f5", 
+        dark: "#9b87f5" 
+      }
+    },
+    self: {
+      label: "Self-Evolving Campaign",
+      theme: { 
+        light: "#1EAEDB", 
+        dark: "#1EAEDB" 
+      }
+    }
+  };
+
+  return (
+    <AppLayout title="Campaign Evolution">
+      <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
+          <Tabs defaultValue="comparison" value={activeTab} onValueChange={handleTabChange} className="w-full">
+            <div className="flex justify-between items-center mb-6">
+              <TabsList className="grid w-[400px] grid-cols-2">
+                <TabsTrigger value="comparison">Campaign Comparison</TabsTrigger>
+                <TabsTrigger value="evolution">Evolution Timeline</TabsTrigger>
+              </TabsList>
+            </div>
+            
+            <TabsContent value="comparison" className="space-y-6">
+              <div className="mb-8">
+                <h3 className="text-lg font-medium mb-2">Regular Campaign</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                  Standard ad campaign without AI-powered evolution
+                </p>
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 h-[300px]">
+                  <ChartContainer config={chartConfig}>
+                    <LineChart data={regularCampaignData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#eaeaea" />
+                      <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                      <YAxis 
+                        domain={[0, 100]} 
+                        label={{ 
+                          value: 'Engagement (%)', 
+                          angle: -90, 
+                          position: 'insideLeft',
+                          style: { textAnchor: 'middle' }
+                        }} 
+                      />
+                      <Tooltip
+                        content={({ active, payload, label }) => {
+                          if (!active || !payload?.length) return null;
+                          return (
+                            <div className="bg-white dark:bg-gray-800 p-2 rounded shadow-md border border-gray-200 dark:border-gray-700">
+                              <p className="font-medium">{label}</p>
+                              <p className="text-sm text-purple-600 dark:text-purple-400">
+                                Engagement: {payload[0].value}%
+                              </p>
+                            </div>
+                          );
+                        }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="engagement" 
+                        name="regular" 
+                        strokeWidth={3} 
+                        dot={{ strokeWidth: 2, r: 4 }}
+                        activeDot={{ r: 6, stroke: "#9b87f5", strokeWidth: 2 }}
+                      />
+                    </LineChart>
+                  </ChartContainer>
+                </div>
+              </div>
+              
+              <div className="mt-8">
+                <h3 className="text-lg font-medium mb-2">Self-Evolving Campaign</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                  AI-optimized campaign that evolves based on audience engagement
+                </p>
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 h-[300px]">
+                  <ChartContainer config={chartConfig}>
+                    <LineChart data={selfEvolvingCampaignData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#eaeaea" />
+                      <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                      <YAxis 
+                        domain={[0, 100]} 
+                        label={{ 
+                          value: 'Engagement (%)', 
+                          angle: -90, 
+                          position: 'insideLeft',
+                          style: { textAnchor: 'middle' }
+                        }} 
+                      />
+                      <Tooltip content={({ active, payload, label, ...rest }) => (
+                        <VideoTooltip 
+                          active={active} 
+                          payload={payload} 
+                          label={label} 
+                          coord={rest} 
+                        />
+                      )} />
+                      <Line 
+                        type="monotone" 
+                        dataKey="engagement" 
+                        name="self" 
+                        strokeWidth={3} 
+                        dot={{ strokeWidth: 2, r: 4 }}
+                        activeDot={{ r: 6, stroke: "#1EAEDB", strokeWidth: 2 }}
+                      />
+                      {evolutionPoints.map((point, index) => (
+                        <ReferenceDot
+                          key={index}
+                          x={point.day}
+                          y={point.engagement}
+                          r={8}
+                          fill="#1EAEDB"
+                          stroke="#ffffff"
+                          strokeWidth={2}
+                        />
+                      ))}
+                    </LineChart>
+                  </ChartContainer>
+                </div>
+                <p className="text-xs text-center text-amber-600 dark:text-amber-400 mt-4">
+                  Hover over the highlighted points to see the evolved ad versions
+                </p>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="evolution" className="h-[650px]">
+              <div className="flex flex-col h-full">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  Track how your AI-powered ad campaign evolved over time, with key evolution points highlighted
+                </p>
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 flex-1">
+                  <ChartContainer config={chartConfig}>
+                    <LineChart data={selfEvolvingCampaignData} margin={{ top: 20, right: 50, left: 20, bottom: 20 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#eaeaea" />
+                      <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                      <YAxis 
+                        domain={[0, 100]} 
+                        label={{ 
+                          value: 'Engagement (%)', 
+                          angle: -90, 
+                          position: 'insideLeft',
+                          style: { textAnchor: 'middle' }
+                        }} 
+                      />
+                      <Tooltip content={({ active, payload, label, ...rest }) => (
+                        <VideoTooltip 
+                          active={active} 
+                          payload={payload} 
+                          label={label} 
+                          coord={rest} 
+                        />
+                      )} />
+                      <Line 
+                        type="monotone" 
+                        dataKey="engagement" 
+                        strokeWidth={3} 
+                        dot={false}
+                        activeDot={{ r: 6, stroke: "#1EAEDB", strokeWidth: 2 }}
+                      />
+                      {evolutionPoints.map((point, index) => (
+                        <ReferenceDot
+                          key={index}
+                          x={point.day}
+                          y={point.engagement}
+                          r={8}
+                          fill="#1EAEDB"
+                          stroke="#ffffff"
+                          strokeWidth={2}
+                        />
+                      ))}
+                    </LineChart>
+                  </ChartContainer>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+          
+          <div className="mt-8 flex justify-center">
+            <Button 
+              onClick={() => navigate("/upload")}
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              Create New Campaign
+            </Button>
+          </div>
+        </div>
+      </div>
+    </AppLayout>
+  );
+};
+
+export default CampaignEvolution;

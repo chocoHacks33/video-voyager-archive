@@ -15,7 +15,7 @@ import {
   SidebarTrigger,
   useSidebar
 } from "@/components/ui/sidebar";
-import { Plus, FolderOpen, User, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, ChartLineUp, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useEffect } from "react";
@@ -40,9 +40,9 @@ const Sidebar = () => {
       icon: Plus,
     },
     {
-      title: "Your Campaigns",
-      path: "", // Empty path to prevent navigation
-      icon: FolderOpen,
+      title: "Campaign Evolution",
+      path: "/campaign-evolution",
+      icon: ChartLineUp,
     }
   ];
 
