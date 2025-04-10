@@ -1,17 +1,35 @@
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import AppLayout from '@/components/AppLayout';
-import { Upload, CircleCheck, CircleX, Facebook, Instagram, Youtube } from 'lucide-react';
+import { Upload, CircleCheck, CircleX, Facebook, Instagram, Youtube, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { Progress } from "@/components/ui/progress";
+
+// Audience data model
+interface AudienceItem {
+  name: string;
+  completed: boolean;
+}
 
 const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [audienceItems, setAudienceItems] = useState<AudienceItem[]>([
+    { name: "Age Groups", completed: false },
+    { name: "Career", completed: false },
+    { name: "Interests", completed: false },
+    { name: "Life Events", completed: false },
+    { name: "Income", completed: false },
+    { name: "Location", completed: false },
+  ]);
+  const [audiencesLoaded, setAudiencesLoaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -25,6 +43,51 @@ const UploadPage = () => {
       }
     }
   });
+
+  // Track when platforms are selected
+  const platformsSelected = Object.values(form.watch().platforms).some(value => value);
+
+  // Effect to handle audience items loading
+  useEffect(() => {
+    if (loading) {
+      // Start progress bar
+      const interval = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 98) {
+            clearInterval(interval);
+            return 100;
+          }
+          return prev + 2;
+        });
+      }, 900);
+
+      // Complete audience items sequentially
+      let index = 0;
+      const itemInterval = setInterval(() => {
+        if (index < audienceItems.length) {
+          setAudienceItems(prev => 
+            prev.map((item, i) => 
+              i === index ? { ...item, completed: true } : item
+            )
+          );
+          index++;
+        } else {
+          clearInterval(itemInterval);
+          
+          // Delay setting audiences loaded to show completion
+          setTimeout(() => {
+            setAudiencesLoaded(true);
+            setLoading(false);
+          }, 1000);
+        }
+      }, 7500); // ~45 seconds total divided by 6 items
+
+      return () => {
+        clearInterval(interval);
+        clearInterval(itemInterval);
+      };
+    }
+  }, [loading]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -70,7 +133,30 @@ const UploadPage = () => {
     }
   };
 
-  const handleUpload = () => {
+  const startAudienceLoading = () => {
+    // Verify platform selection
+    const selectedPlatforms = Object.entries(form.getValues().platforms)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([platform]) => platform);
+
+    if (selectedPlatforms.length === 0) {
+      toast.custom((id) => (
+        <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
+          <CircleX className="h-5 w-5 text-white" />
+          <span className="font-medium">Please select at least one platform</span>
+        </div>
+      ), { duration: 3000 });
+      return;
+    }
+
+    // Start loading process
+    setLoading(true);
+    setProgress(0);
+    setAudienceItems(prev => prev.map(item => ({ ...item, completed: false })));
+    setAudiencesLoaded(false);
+  };
+
+  const handleMorphAd = () => {
     if (!file) {
       toast.custom((id) => (
         <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
@@ -100,7 +186,7 @@ const UploadPage = () => {
     toast.custom((id) => (
       <div className="bg-green-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
         <CircleCheck className="h-5 w-5 text-white" />
-        <span className="font-medium">Upload started</span>
+        <span className="font-medium">Morphing started</span>
       </div>
     ), { duration: 3000 });
     
@@ -146,7 +232,7 @@ const UploadPage = () => {
           
           {file && (
             <p className="text-sm text-gray-500 mt-2">
-              Your video will be processed by Qwen AI to create multiple styles
+              Your video will be processed and subsequently morphed into demographic specific variations
             </p>
           )}
         </div>
@@ -224,13 +310,55 @@ const UploadPage = () => {
           </div>
         </Form>
         
-        <Button 
-          className="bg-blue-app hover:bg-blue-500 px-12"
-          disabled={!file}
-          onClick={handleUpload}
-        >
-          Upload
-        </Button>
+        {/* Audience loading section */}
+        {file && platformsSelected && !loading && !audiencesLoaded && (
+          <Button 
+            className="bg-blue-app hover:bg-blue-500 px-12 mb-6"
+            onClick={startAudienceLoading}
+          >
+            Fetch Audiences
+          </Button>
+        )}
+
+        {/* Loading progress */}
+        {loading && (
+          <div className="w-full max-w-md mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium text-gray-700">Fetching Audiences...</span>
+              <span className="text-sm text-gray-500">{Math.round(progress)}%</span>
+            </div>
+            <Progress value={progress} className="h-2 mb-6" />
+          </div>
+        )}
+
+        {/* Audience checklist */}
+        {(loading || audiencesLoaded) && (
+          <div className="w-full max-w-md mb-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <h4 className="text-sm font-medium text-gray-700 mb-3">Audience Segmentation</h4>
+            <ul className="space-y-2">
+              {audienceItems.map((item, index) => (
+                <li key={index} className="flex items-center gap-3">
+                  <div className={`flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center ${item.completed ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>
+                    {item.completed && <CheckCircle2 className="h-5 w-5" />}
+                  </div>
+                  <span className={`text-sm ${item.completed ? 'text-gray-700' : 'text-gray-500'}`}>
+                    {item.name}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
+        {/* Morph AD button appears after audiences are loaded */}
+        {audiencesLoaded && (
+          <Button 
+            className="bg-blue-app hover:bg-blue-500 px-12"
+            onClick={handleMorphAd}
+          >
+            Morph AD
+          </Button>
+        )}
       </div>
     </AppLayout>
   );
