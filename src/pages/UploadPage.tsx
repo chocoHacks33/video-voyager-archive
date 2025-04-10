@@ -358,7 +358,7 @@ const UploadPage = () => {
         {loading && (
           <div className="w-full max-w-md mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700">Fetching Target Audience...</span>
+              <span className="text-sm font-medium text-gray-700">Fetching Interests & Demographics...</span>
               <span className="text-sm text-gray-500">{Math.round(progress)}%</span>
             </div>
             <Progress value={progress} className="h-2 mb-6 bg-gray-200" />
