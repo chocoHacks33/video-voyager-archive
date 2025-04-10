@@ -258,9 +258,121 @@ export class QwenAIService {
   }
   
   /**
-   * Generate a video using WAN AI API based on the extracted text from the original video
+   * Start a video generation task with WAN AI and return the task ID
    * @param prompt The prompt to use for video generation
    * @param extractedText Text extracted from the original video
+   * @returns Task ID for checking status
+   */
+  static async startWanAiVideoGeneration(prompt: string, extractedText: string): Promise<string> {
+    try {
+      console.log('Starting WAN AI video generation:', { prompt, extractedText });
+      
+      // Create a combined prompt using the extracted text
+      const enhancedPrompt = extractedText ? 
+        `${prompt} - Based on this context: ${extractedText}` : 
+        prompt;
+      
+      // Step 1: Create a generation task
+      const response = await fetch(`${WAN_AI_URL}/generate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': WAN_AI_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          prompt: enhancedPrompt,
+          seed: Math.floor(Math.random() * 1000), // Random seed for variety
+          neg_prompt: "low quality, blurry, distorted",
+          infer_steps: 50,
+          cfg_scale: 7.5,
+          height: 720,
+          width: 1280
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("WAN AI Generation Error:", errorData);
+        throw new Error(`Failed to start video generation: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      const taskId = data.task_id;
+      console.log("WAN AI Task Created:", taskId);
+      
+      return taskId;
+    } catch (error) {
+      console.error('Error starting WAN AI video generation:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Check the status of a WAN AI video generation task
+   * @param taskId The task ID to check
+   * @returns Status object with task status
+   */
+  static async checkWanAiTaskStatus(taskId: string): Promise<WanAITaskStatus> {
+    try {
+      console.log(`Checking WAN AI task status for: ${taskId}`);
+      
+      const statusResponse = await fetch(`${WAN_AI_URL}/tasks/${taskId}/status`, {
+        headers: {
+          'Authorization': WAN_AI_TOKEN
+        }
+      });
+      
+      if (!statusResponse.ok) {
+        console.error(`Error checking task status: ${statusResponse.statusText}`);
+        throw new Error(`Failed to check task status: ${statusResponse.statusText}`);
+      }
+      
+      const statusData = await statusResponse.json() as WanAITaskStatus;
+      console.log(`WAN AI Task Status:`, statusData);
+      
+      return statusData;
+    } catch (error) {
+      console.error('Error checking WAN AI task status:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Download the video from a completed WAN AI task
+   * @param taskId The task ID for the completed video
+   * @returns URL to the downloaded video
+   */
+  static async downloadWanAiVideo(taskId: string): Promise<string> {
+    try {
+      console.log(`Downloading WAN AI video for task: ${taskId}`);
+      
+      const videoResponse = await fetch(`${WAN_AI_URL}/tasks/${taskId}/video`, {
+        headers: {
+          'Authorization': WAN_AI_TOKEN
+        }
+      });
+      
+      if (!videoResponse.ok) {
+        throw new Error(`Failed to download video: ${videoResponse.statusText}`);
+      }
+      
+      // Convert the response to a blob and create an object URL
+      const videoBlob = await videoResponse.blob();
+      const videoUrl = URL.createObjectURL(videoBlob);
+      
+      console.log(`WAN AI video downloaded successfully, URL: ${videoUrl}`);
+      
+      return videoUrl;
+    } catch (error) {
+      console.error('Error downloading WAN AI video:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Generate a video using WAN AI API based on the extracted text from the original video
+   * This method is now deprecated in favor of the task-based approach
+   * @deprecated Use startWanAiVideoGeneration, checkWanAiTaskStatus, and downloadWanAiVideo instead
    */
   static async generateVideoWithWanAI(prompt: string, extractedText: string): Promise<string> {
     try {
