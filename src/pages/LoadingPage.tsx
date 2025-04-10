@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -182,9 +181,9 @@ const LoadingPage = () => {
   };
   
   return (
-    <AppLayout title="MORPHING ADVERTISEMENT">
+    <AppLayout title="">
       <div className="flex flex-col items-center justify-center p-8 max-w-4xl mx-auto min-h-[60vh]">
-        <div className="w-full space-y-16">
+        <div className="w-full space-y-8"> {/* Reduced space-y from 16 to 8 */}
           {/* Main circular progress indicator */}
           <div className="flex justify-center mb-8">
             <div className="relative w-56 h-56">
