@@ -100,10 +100,10 @@ const GalleryPage = () => {
           <div className="flex justify-center mt-8">
             <Button 
               onClick={handleLaunchVideo}
-              className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white hover:from-[#7E69AB] hover:to-[#9b87f5] transition-all duration-300 px-6 py-3 rounded-lg flex items-center gap-2"
+              className="bg-gradient-to-r from-[#8B5CF6] to-[#6E59A5] text-white hover:from-[#6E59A5] hover:to-[#8B5CF6] transition-all duration-300 px-8 py-3 rounded-xl shadow-lg shadow-purple-300/50 hover:shadow-purple-400/60 transform hover:-translate-y-1 active:scale-95 flex items-center gap-3"
             >
-              <Rocket className="w-5 h-5" />
-              Launch Videos
+              <Rocket className="w-6 h-6 animate-pulse" />
+              <span className="font-semibold text-base tracking-wider">Launch Videos</span>
             </Button>
           </div>
         </div>
@@ -113,3 +113,4 @@ const GalleryPage = () => {
 };
 
 export default GalleryPage;
+
