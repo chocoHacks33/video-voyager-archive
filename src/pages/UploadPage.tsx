@@ -1,4 +1,3 @@
-
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -18,13 +17,12 @@ const UploadPage = () => {
       if (selectedFile.type.startsWith('video/')) {
         setFile(selectedFile);
       } else {
-        toast.custom(
+        toast.custom((id) => (
           <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
             <CircleX className="h-5 w-5 text-white" />
             <span className="font-medium">Please select a valid video file</span>
-          </div>,
-          { duration: 3000 }
-        );
+          </div>
+        ), { duration: 3000 });
       }
     }
   };
@@ -47,36 +45,33 @@ const UploadPage = () => {
       if (droppedFile.type.startsWith('video/')) {
         setFile(droppedFile);
       } else {
-        toast.custom(
+        toast.custom((id) => (
           <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
             <CircleX className="h-5 w-5 text-white" />
             <span className="font-medium">Please drop a valid video file</span>
-          </div>,
-          { duration: 3000 }
-        );
+          </div>
+        ), { duration: 3000 });
       }
     }
   };
 
   const handleUpload = () => {
     if (!file) {
-      toast.custom(
+      toast.custom((id) => (
         <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
           <CircleX className="h-5 w-5 text-white" />
           <span className="font-medium">Please select a video file first</span>
-        </div>,
-        { duration: 3000 }
-      );
+        </div>
+      ), { duration: 3000 });
       return;
     }
 
-    toast.custom(
+    toast.custom((id) => (
       <div className="bg-green-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
         <CircleCheck className="h-5 w-5 text-white" />
         <span className="font-medium">Upload started</span>
-      </div>,
-      { duration: 3000 }
-    );
+      </div>
+    ), { duration: 3000 });
     
     // Navigate to loading page with the file as state
     navigate('/loading', { state: { videoFile: file } });

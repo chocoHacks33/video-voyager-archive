@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { CircleCheck, CircleX } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
@@ -150,23 +149,21 @@ const GalleryPage = () => {
       try {
         const response = await fetch(videoData.source);
         if (!response.ok) {
-          toast.custom(
+          toast.custom((id) => (
             <div className="bg-amber-100 text-amber-800 rounded-md p-4 flex items-center gap-2 shadow-md">
               <AlertTriangle className="h-5 w-5 text-amber-500" />
               <span>Video is still being generated and saved. This may take some time.</span>
-            </div>,
-            { duration: 5000 }
-          );
+            </div>
+          ), { duration: 5000 });
         }
       } catch (error) {
         console.error("Error checking video:", error);
-        toast.custom(
+        toast.custom((id) => (
           <div className="bg-amber-100 text-amber-800 rounded-md p-4 flex items-center gap-2 shadow-md">
             <AlertTriangle className="h-5 w-5 text-amber-500" />
             <span>Video is still being generated and saved. This may take some time.</span>
-          </div>,
-          { duration: 5000 }
-        );
+          </div>
+        ), { duration: 5000 });
       }
     };
     
@@ -179,13 +176,12 @@ const GalleryPage = () => {
   };
 
   const handleLaunch = () => {
-    toast.custom(
+    toast.custom((id) => (
       <div className="bg-green-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
         <CircleCheck className="h-5 w-5 text-white" />
         <span className="font-medium">Your Targeted Ad-Campaign is Launched!</span>
-      </div>,
-      { duration: 3000 }
-    );
+      </div>
+    ), { duration: 3000 });
   };
 
   return (
