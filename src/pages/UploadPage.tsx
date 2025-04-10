@@ -1,5 +1,4 @@
-
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import AppLayout from '@/components/AppLayout';
@@ -258,7 +257,7 @@ const UploadPage = () => {
                         onClick={() => field.onChange(!field.value)}
                       >
                         <Image 
-                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Facebook_Logo_%282019%29.svg/1024px-Facebook_Logo_%282019%29.svg.png"
+                          src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png"
                           alt="Facebook"
                           className="h-full w-full object-contain p-2"
                         />
