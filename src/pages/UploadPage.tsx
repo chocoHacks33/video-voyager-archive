@@ -78,7 +78,7 @@ const UploadPage = () => {
   };
   
   return (
-    <AppLayout title="UPLOAD ORIGINAL BRAND ADVERTISEMENT">
+    <AppLayout title="UPLOAD ORIGINAL ADVERTISEMENT">
       <div className="flex flex-col items-center">
         <div 
           className={`w-full max-w-md border-2 border-dashed rounded-lg p-12 mb-6 flex flex-col items-center justify-center cursor-pointer ${
