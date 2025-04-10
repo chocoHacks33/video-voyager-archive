@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Play, RefreshCw, Rocket } from 'lucide-react';
+import { AlertTriangle, Play, Rocket } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { Button } from "@/components/ui/button";
 
@@ -10,8 +11,8 @@ interface VideoData {
   description: string;
 }
 
-// Sample data for 16 videos
-const videosData: VideoData[] = Array.from({ length: 16 }, (_, index) => ({
+// Sample data for 9 videos
+const videosData: VideoData[] = Array.from({ length: 9 }, (_, index) => ({
   id: index + 1,
   source: `/stock-videos/video${index + 1}.mp4`,
   description: `Demo Video ${index + 1}`
@@ -90,8 +91,9 @@ const VideoCard = ({ video }: { video: VideoData }) => {
       className="bg-navy rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 hover:shadow-xl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={{ height: '280px' }} // Increased height for larger videos
     >
-      <div className="aspect-video relative">
+      <div className="aspect-video relative h-full">
         {isLoading ? (
           <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -106,8 +108,8 @@ const VideoCard = ({ video }: { video: VideoData }) => {
               className="mt-4 flex items-center gap-2"
               onClick={handleRetry}
             >
-              <RefreshCw className="w-4 h-4" />
-              Refresh
+              <AlertTriangle className="w-4 h-4" />
+              Retry
             </Button>
           </div>
         ) : (
@@ -140,38 +142,20 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 
 const GalleryPage = () => {
   const navigate = useNavigate();
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    window.location.reload();
-  };
 
   const handleLaunchVideos = () => {
     navigate('/upload');
   };
 
   return (
-    <AppLayout title="VIDEO GALLERY">
+    <AppLayout title="CHOOSE YOUR ADS">
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-8">
           <div className="mb-6 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold mb-2">Your Video Gallery</h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Browse through your collection of demo videos.
-              </p>
+              {/* No heading or description as requested */}
             </div>
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="outline" 
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-                className="flex items-center gap-2"
-              >
-                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
+            <div className="flex items-center">
               <Button 
                 className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2 group"
                 onClick={handleLaunchVideos}
@@ -182,14 +166,14 @@ const GalleryPage = () => {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {videosData.map(video => (
               <VideoCard key={video.id} video={video} />
             ))}
           </div>
           
           <p className="text-sm text-center text-amber-600 dark:text-amber-400 mt-6">
-            Note: To add your own videos, place MP4 files named video1.mp4 through video16.mp4 in the /public/stock-videos/ folder.
+            Note: To add your own videos, place MP4 files named video1.mp4 through video9.mp4 in the /public/stock-videos/ folder.
           </p>
         </div>
       </div>

@@ -1,3 +1,4 @@
+
 import { toast } from 'sonner';
 
 // API key would typically be stored in environment variables
@@ -47,30 +48,6 @@ export class QwenAIService {
       } else {
         throw new Error('Video generation failed');
       }
-      
-      // Real implementation would look something like this:
-      /*
-      const response = await fetch(QWEN_API_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${QWEN_API_KEY}`
-        },
-        body: JSON.stringify({
-          prompt,
-          text,
-          style,
-          duration
-        })
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to generate video');
-      }
-      
-      return await response.json();
-      */
     } catch (error) {
       console.error('Error generating video:', error);
       toast.error('Video generation failed. Please try again.');
@@ -95,22 +72,6 @@ export class QwenAIService {
         videoUrl: '/stock-videos/video1.mp4',
         status: 'completed'
       };
-      
-      // Real implementation would look something like this:
-      /*
-      const response = await fetch(`${QWEN_API_ENDPOINT}/${videoId}`, {
-        headers: {
-          'Authorization': `Bearer ${QWEN_API_KEY}`
-        }
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to check video status');
-      }
-      
-      return await response.json();
-      */
     } catch (error) {
       console.error('Error checking video status:', error);
       throw error;
@@ -188,58 +149,10 @@ export class QwenAIService {
     try {
       console.log(`Analyzing ${frames.length} video frames to generate description`);
       
-      // Format frames for API
-      const encoded_images = frames.map(frame => frame);
-      
-      // For security in client-side applications, this should typically be done on a server
-      // This implementation is for demonstration purposes only
-      // Users will need to provide their own API key in a real implementation
-      const apiKey = prompt("Please enter your Qwen API key to analyze the video:", "");
-      
-      if (!apiKey) {
-        return {
-          description: "API key not provided. Unable to analyze video."
-        };
-      }
-      
-      try {
-        const response = await fetch("https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: "qwen-vl-plus",
-            messages: [{
-              role: "user",
-              content: [
-                {type: "text", text: "Given these video frames in order, describe the video descriptively."},
-                ...encoded_images.map(frame => ({
-                  type: "image_url",
-                  image_url: {url: frame}
-                }))
-              ]
-            }]
-          })
-        });
-        
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("API Error:", errorData);
-          throw new Error(`Failed to analyze video frames: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log("API Response:", data);
-        
-        return {
-          description: data.choices[0].message.content || "No description was generated."
-        };
-      } catch (error) {
-        console.error('Error calling Qwen VL API:', error);
-        throw error;
-      }
+      // Mock response - in production, this would be from the actual API
+      return {
+        description: "This is a demo video showcasing a product advertisement with dynamic transitions and visual effects."
+      };
     } catch (error) {
       console.error('Error analyzing video:', error);
       return {
