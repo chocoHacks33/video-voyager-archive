@@ -29,11 +29,42 @@ const LoadingPage = () => {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState("Extracting text from video...");
   const [videoGenerationId, setVideoGenerationId] = useState<string | null>(null);
+  const [processingComplete, setProcessingComplete] = useState(false);
   const videoFile = location.state?.videoFile;
   
+  // Handle navigation after processing is complete
+  useEffect(() => {
+    let navigateTimeout: number;
+    
+    if (processingComplete) {
+      // Ensure progress reaches 100% and wait a moment before navigating
+      setProgress(100);
+      navigateTimeout = window.setTimeout(() => {
+        toast.custom((id) => (
+          <div className="bg-green-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
+            <CircleCheck className="h-5 w-5 text-white" />
+            <span className="font-medium">Video processing complete!</span>
+          </div>
+        ), { duration: 3000 });
+        navigate('/gallery');
+      }, 500); // Short delay to ensure progress bar animation completes
+    }
+    
+    return () => {
+      if (navigateTimeout) {
+        clearTimeout(navigateTimeout);
+      }
+    };
+  }, [processingComplete, navigate]);
+
   useEffect(() => {
     if (!videoFile) {
-      toast.error("No video file provided");
+      toast.custom((id) => (
+        <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
+          <CircleX className="h-5 w-5 text-white" />
+          <span className="font-medium">No video file provided</span>
+        </div>
+      ), { duration: 3000 });
       navigate('/upload');
       return;
     }
@@ -80,12 +111,16 @@ const LoadingPage = () => {
         const videoPath = await saveVideoToStorage(videoResult.videoUrl, generatedPrompt);
         await simulateProcess(10);
         
-        // Success! Navigate to gallery
-        toast.success("Video processing complete! Video saved to storage.");
-        navigate('/gallery');
+        // Success! Set processing complete flag instead of immediate navigation
+        setProcessingComplete(true);
       } catch (error) {
         console.error("Video processing error:", error);
-        toast.error("Error processing video");
+        toast.custom((id) => (
+          <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
+            <CircleX className="h-5 w-5 text-white" />
+            <span className="font-medium">Error processing video</span>
+          </div>
+        ), { duration: 3000 });
         navigate('/upload');
       }
     };
@@ -97,7 +132,7 @@ const LoadingPage = () => {
   const simulateProcess = (percentage: number) => {
     return new Promise<void>((resolve) => {
       const startValue = progress;
-      const endValue = startValue + percentage;
+      const endValue = Math.min(startValue + percentage, 99); // Cap at 99% to allow for final jump to 100%
       const duration = percentage * 100; // Adjust speed based on percentage
       const startTime = Date.now();
       
@@ -106,7 +141,7 @@ const LoadingPage = () => {
         const progressDelta = Math.min(elapsed / duration, 1) * percentage;
         const newProgress = startValue + progressDelta;
         
-        setProgress(Math.min(newProgress, 100));
+        setProgress(Math.min(newProgress, endValue));
         
         if (newProgress < endValue) {
           requestAnimationFrame(updateProgress);
