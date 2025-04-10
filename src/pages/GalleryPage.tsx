@@ -1,7 +1,8 @@
-
 import React, { useState } from 'react';
 import AppLayout from '@/components/AppLayout';
-import { Play } from 'lucide-react';
+import { Play, Rocket } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface VideoData {
   id: number;
@@ -75,6 +76,16 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 };
 
 const GalleryPage = () => {
+  const handleLaunchVideo = () => {
+    toast.success('Meta Ad Campaign launched successfully!', {
+      description: 'Your video is now ready for distribution.',
+      style: {
+        background: 'linear-gradient(90deg, #9b87f5, #7E69AB)',
+        color: 'white',
+      },
+    });
+  };
+
   return (
     <AppLayout title="GENERATED VIDEO FORMATS">
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
@@ -83,6 +94,16 @@ const GalleryPage = () => {
             {videosData.map(video => (
               <VideoCard key={video.id} video={video} />
             ))}
+          </div>
+          
+          <div className="flex justify-center mt-8">
+            <Button 
+              onClick={handleLaunchVideo}
+              className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white hover:from-[#7E69AB] hover:to-[#9b87f5] transition-all duration-300 px-6 py-3 rounded-lg flex items-center gap-2"
+            >
+              <Rocket className="w-5 h-5" />
+              Launch Video
+            </Button>
           </div>
         </div>
       </div>
