@@ -4,8 +4,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import { toast } from 'sonner';
 import { QwenAIService } from '@/services/qwenAIService';
-import { CircleX, Loader2 } from 'lucide-react';
+import { CircleX, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui/card';
 
 // Function to extract text from video (mock implementation)
 const extractTextFromVideo = async (videoFile: File): Promise<string> => {
@@ -33,7 +34,6 @@ const LoadingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [progress, setProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState("Understanding Ad...");
   const [videoGenerationId, setVideoGenerationId] = useState<string | null>(null);
   const [processingComplete, setProcessingComplete] = useState(false);
   const videoFile = location.state?.videoFile;
@@ -86,78 +86,61 @@ const LoadingPage = () => {
     const processVideo = async () => {
       try {
         // Phase 1: Decode Advertisement
-        setCurrentStep("Understanding Ad...");
-        setProgress(0); // Start at 0%
+        setProgress(10);
         
-        // Gradually increase to 95% during this phase
-        await simulateProcessToCompletion(95);
-        
-        const extractedText = await extractTextFromVideo(videoFile);
-        
-        // Reach 100% for this phase
-        await simulateProcessToCompletion(100);
-        
-        // Mark first phase as complete
-        setPhases(prev => ({ ...prev, decoded: true }));
+        // Process phase 1
+        await runPhaseWithProgressUpdate(0, 33, async () => {
+          const extractedText = await extractTextFromVideo(videoFile);
+          setPhases(prev => ({ ...prev, decoded: true }));
+          return extractedText;
+        });
         
         // Phase 2: Map Demographics
-        setCurrentStep("Mapping Demographics...");
-        setProgress(0); // Reset progress for next phase
+        const extractedText = await extractTextFromVideo(videoFile);
         
-        // Gradually increase to 95% during this phase
-        await simulateProcessToCompletion(95);
+        // Process phase 2
+        await runPhaseWithProgressUpdate(33, 66, async () => {
+          const frames = await QwenAIService.extractFramesFromVideo(videoFile);
+          const videoAnalysis = await QwenAIService.getVideoDescription(frames);
+          setPhases(prev => ({ ...prev, mapped: true }));
+          return { frames, videoAnalysis };
+        });
         
+        // Phase 3: Generate Advertisement
         const frames = await QwenAIService.extractFramesFromVideo(videoFile);
         const videoAnalysis = await QwenAIService.getVideoDescription(frames);
         
-        // Reach 100% for this phase
-        await simulateProcessToCompletion(100);
-        
-        // Mark second phase as complete
-        setPhases(prev => ({ ...prev, mapped: true }));
-        
-        // Phase 3: Generate Advertisement
-        setCurrentStep("Morphing Ad...");
-        setProgress(0); // Reset progress for next phase
-        
-        // Gradually increase to 95% during this phase
-        await simulateProcessToCompletion(95);
-        
-        const generatedPrompt = "Cinematic video with enhanced lighting and smooth transitions";
-        
-        // Call Qwen AI service to generate video
-        const videoResponse = await QwenAIService.generateVideo({
-          prompt: generatedPrompt,
-          text: extractedText,
-          style: 'cinematic',
-          duration: 5
+        // Process phase 3
+        await runPhaseWithProgressUpdate(66, 100, async () => {
+          const generatedPrompt = "Cinematic video with enhanced lighting and smooth transitions";
+          
+          // Call Qwen AI service to generate video
+          const videoResponse = await QwenAIService.generateVideo({
+            prompt: generatedPrompt,
+            text: extractedText,
+            style: 'cinematic',
+            duration: 5
+          });
+          
+          setVideoGenerationId(videoResponse.id);
+          
+          // Check video generation status
+          let videoResult = videoResponse;
+          
+          // Poll for status if necessary (simplified for demo)
+          if (videoResult.status === 'processing') {
+            videoResult = await QwenAIService.getVideoStatus(videoResponse.id);
+          }
+          
+          // Save video to storage
+          await saveVideoToStorage(
+            videoResult.videoUrl, 
+            generatedPrompt,
+            videoAnalysis.description
+          );
+          
+          setPhases(prev => ({ ...prev, generated: true }));
         });
-        
-        setVideoGenerationId(videoResponse.id);
-        
-        // Check video generation status
-        let videoResult = videoResponse;
-        
-        // Poll for status if necessary (simplified for demo)
-        if (videoResult.status === 'processing') {
-          videoResult = await QwenAIService.getVideoStatus(videoResponse.id);
-        }
-        
-        // Save video to storage
-        const videoPath = await saveVideoToStorage(
-          videoResult.videoUrl, 
-          generatedPrompt,
-          videoAnalysis.description
-        );
-        
-        // Reach 100% for this phase
-        await simulateProcessToCompletion(100);
-        
-        // Mark third phase as complete
-        setPhases(prev => ({ ...prev, generated: true }));
-        
-        // Wait a moment before completing
-        await new Promise(resolve => setTimeout(resolve, 500));
         
         // Success! Set processing complete flag
         setProcessingComplete(true);
@@ -176,30 +159,20 @@ const LoadingPage = () => {
     processVideo();
   }, [navigate, videoFile, location.state]);
   
-  // Simulate a processing step that completes to the target percentage
-  const simulateProcessToCompletion = (targetPercentage: number) => {
-    return new Promise<void>((resolve) => {
-      const startValue = progress;
-      const endValue = targetPercentage;
-      const duration = 1500; // 1.5 seconds to reach the target
-      const startTime = Date.now();
-      
-      const updateProgress = () => {
-        const elapsed = Date.now() - startTime;
-        const progressPercent = Math.min(elapsed / duration, 1);
-        const newProgress = startValue + (endValue - startValue) * progressPercent;
-        
-        setProgress(Math.min(newProgress, endValue));
-        
-        if (progressPercent < 1) {
-          requestAnimationFrame(updateProgress);
-        } else {
-          resolve();
-        }
-      };
-      
-      updateProgress();
-    });
+  // Helper function to run a phase and update progress
+  const runPhaseWithProgressUpdate = async (startProgress: number, endProgress: number, phaseFunction: () => Promise<any>) => {
+    setProgress(startProgress);
+    
+    // Small increment to show immediate progress
+    setTimeout(() => setProgress(startProgress + 5), 100);
+    
+    // Run the actual phase function
+    const result = await phaseFunction();
+    
+    // Complete the progress
+    setProgress(endProgress);
+    
+    return result;
   };
   
   // Calculate stroke dasharray for circle animation
@@ -211,10 +184,10 @@ const LoadingPage = () => {
   return (
     <AppLayout title="MORPHING ADVERTISEMENT">
       <div className="flex flex-col items-center justify-center p-8 max-w-4xl mx-auto min-h-[60vh]">
-        <div className="w-full space-y-12">
-          {/* Circular progress indicator */}
+        <div className="w-full space-y-16">
+          {/* Main circular progress indicator */}
           <div className="flex justify-center mb-8">
-            <div className="relative w-48 h-48">
+            <div className="relative w-56 h-56">
               {/* Background circle */}
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                 <circle 
@@ -222,7 +195,7 @@ const LoadingPage = () => {
                   cy="50" 
                   r="45" 
                   fill="none" 
-                  strokeWidth="8" 
+                  strokeWidth="6" 
                   className="stroke-gray-200 dark:stroke-gray-700"
                 />
                 {/* Progress circle with gradient */}
@@ -231,7 +204,7 @@ const LoadingPage = () => {
                   cy="50" 
                   r="45" 
                   fill="none" 
-                  strokeWidth="8" 
+                  strokeWidth="6" 
                   strokeLinecap="round" 
                   strokeDasharray={calculateStrokeDasharray(progress)} 
                   className="stroke-[url(#progress-gradient)] transition-all duration-300 ease-in-out"
@@ -245,16 +218,9 @@ const LoadingPage = () => {
                 </defs>
               </svg>
               
-              {/* Show spinner in the center when processing */}
-              {!processingComplete && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-10 w-10 text-green-500 animate-spin" />
-                </div>
-              )}
-              
-              {/* Progress percentage */}
+              {/* Progress percentage in center */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+                <span className="text-4xl font-bold text-gray-800 dark:text-gray-200">
                   {Math.round(progress)}%
                 </span>
               </div>
@@ -262,88 +228,48 @@ const LoadingPage = () => {
           </div>
           
           {/* Phase cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mx-auto">
-            {/* Phase 1 Card */}
-            <div className={cn(
-              "transition-all duration-500 p-6 rounded-xl shadow-sm border flex flex-col items-center text-center space-y-3",
-              phases.decoded 
-                ? "bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800" 
-                : "bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-            )}>
-              <div className={cn(
-                "w-12 h-12 rounded-full flex items-center justify-center",
-                phases.decoded 
-                  ? "bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400" 
-                  : "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
-              )}>
-                <span className="text-xl font-bold">1</span>
-              </div>
-              <div className={cn(
-                "text-lg font-medium",
-                phases.decoded 
-                  ? "text-green-700 dark:text-green-400" 
-                  : "text-gray-700 dark:text-gray-300"
-              )}>
-                Advertisement Decoded
-              </div>
-            </div>
-            
-            {/* Phase 2 Card */}
-            <div className={cn(
-              "transition-all duration-500 p-6 rounded-xl shadow-sm border flex flex-col items-center text-center space-y-3",
-              phases.mapped 
-                ? "bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800" 
-                : "bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-            )}>
-              <div className={cn(
-                "w-12 h-12 rounded-full flex items-center justify-center",
-                phases.mapped 
-                  ? "bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400" 
-                  : "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
-              )}>
-                <span className="text-xl font-bold">2</span>
-              </div>
-              <div className={cn(
-                "text-lg font-medium",
-                phases.mapped 
-                  ? "text-green-700 dark:text-green-400" 
-                  : "text-gray-700 dark:text-gray-300"
-              )}>
-                Demographics Mapped
-              </div>
-            </div>
-            
-            {/* Phase 3 Card */}
-            <div className={cn(
-              "transition-all duration-500 p-6 rounded-xl shadow-sm border flex flex-col items-center text-center space-y-3",
-              phases.generated 
-                ? "bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800" 
-                : "bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-            )}>
-              <div className={cn(
-                "w-12 h-12 rounded-full flex items-center justify-center",
-                phases.generated 
-                  ? "bg-green-100 dark:bg-green-800/30 text-green-600 dark:text-green-400" 
-                  : "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
-              )}>
-                <span className="text-xl font-bold">3</span>
-              </div>
-              <div className={cn(
-                "text-lg font-medium",
-                phases.generated 
-                  ? "text-green-700 dark:text-green-400" 
-                  : "text-gray-700 dark:text-gray-300"
-              )}>
-                Advertisement Generated
-              </div>
-            </div>
-          </div>
-          
-          {/* Current step text */}
-          <div className="text-center">
-            <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300">
-              {currentStep}
-            </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mx-auto">
+            {/* Phase cards */}
+            {[
+              { id: 'decoded', label: 'Advertisement Decoded' },
+              { id: 'mapped', label: 'Demographics Mapped' },
+              { id: 'generated', label: 'Advertisement Generated' }
+            ].map((phase, index) => (
+              <Card
+                key={phase.id}
+                className={cn(
+                  "transition-all duration-500 shadow-md overflow-hidden",
+                  phases[phase.id as keyof typeof phases]
+                    ? "bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800" 
+                    : "bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
+                )}
+              >
+                <div className="p-6 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className={cn(
+                      "w-10 h-10 rounded-full flex items-center justify-center",
+                      phases[phase.id as keyof typeof phases] 
+                        ? "bg-green-100 dark:bg-green-800/30" 
+                        : "bg-gray-100 dark:bg-gray-700"
+                    )}>
+                      {phases[phase.id as keyof typeof phases] ? (
+                        <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      ) : (
+                        <span className="text-lg font-bold text-gray-500 dark:text-gray-400">{index + 1}</span>
+                      )}
+                    </div>
+                    <div className={cn(
+                      "font-medium",
+                      phases[phase.id as keyof typeof phases] 
+                        ? "text-green-700 dark:text-green-400" 
+                        : "text-gray-700 dark:text-gray-300"
+                    )}>
+                      {phase.label}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
           </div>
         </div>
       </div>
