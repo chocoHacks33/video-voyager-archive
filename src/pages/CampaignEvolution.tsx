@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Info } from 'lucide-react';
@@ -151,99 +152,101 @@ const CampaignEvolution = () => {
             </div>
             
             <TabsContent value="comparison" className="space-y-6">
-              <div className="mb-8">
-                <h3 className="text-lg font-medium mb-2">Regular Campaign</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                  Standard Campaign without Agent Powered Ad Evolutions
-                </p>
-                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 h-[300px]">
-                  <ChartContainer config={chartConfig}>
-                    <LineChart data={regularCampaignData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#eaeaea" />
-                      <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-                      <YAxis 
-                        domain={[0, 100]} 
-                        label={{ 
-                          value: 'Engagement (%)', 
-                          angle: -90, 
-                          position: 'insideLeft',
-                          style: { textAnchor: 'middle' }
-                        }} 
-                      />
-                      <Tooltip
-                        content={({ active, payload, label }) => {
-                          if (!active || !payload?.length) return null;
-                          return (
-                            <div className="bg-white dark:bg-gray-800 p-2 rounded shadow-md border border-gray-200 dark:border-gray-700">
-                              <p className="font-medium">{label}</p>
-                              <p className="text-sm text-purple-600 dark:text-purple-400">
-                                Engagement: {payload[0].value}%
-                              </p>
-                            </div>
-                          );
-                        }}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="engagement" 
-                        name="regular" 
-                        strokeWidth={3} 
-                        dot={{ strokeWidth: 2, r: 4 }}
-                        activeDot={{ r: 6, stroke: "#9b87f5", strokeWidth: 2 }}
-                      />
-                    </LineChart>
-                  </ChartContainer>
+              <div className="grid grid-cols-1 gap-8">
+                <div>
+                  <h3 className="text-lg font-medium mb-2">Regular Campaign</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                    Standard Campaign without Agent Powered Ad Evolutions
+                  </p>
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={regularCampaignData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#eaeaea" />
+                        <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                        <YAxis 
+                          domain={[0, 100]} 
+                          label={{ 
+                            value: 'Engagement (%)', 
+                            angle: -90, 
+                            position: 'insideLeft',
+                            style: { textAnchor: 'middle' }
+                          }} 
+                        />
+                        <Tooltip
+                          content={({ active, payload, label }) => {
+                            if (!active || !payload?.length) return null;
+                            return (
+                              <div className="bg-white dark:bg-gray-800 p-2 rounded shadow-md border border-gray-200 dark:border-gray-700">
+                                <p className="font-medium">{label}</p>
+                                <p className="text-sm text-purple-600 dark:text-purple-400">
+                                  Engagement: {payload[0].value}%
+                                </p>
+                              </div>
+                            );
+                          }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="engagement" 
+                          stroke="#9b87f5" 
+                          strokeWidth={3} 
+                          dot={{ strokeWidth: 2, r: 4 }}
+                          activeDot={{ r: 6, stroke: "#9b87f5", strokeWidth: 2 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="mt-8">
-                <h3 className="text-lg font-medium mb-2">Agentic Campaign</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                  Powerful Campaign with Agent Powered Ad Evolutions
-                </p>
-                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 h-[300px]">
-                  <ChartContainer config={chartConfig}>
-                    <LineChart data={selfEvolvingCampaignData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#eaeaea" />
-                      <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-                      <YAxis 
-                        domain={[0, 100]} 
-                        label={{ 
-                          value: 'Engagement (%)', 
-                          angle: -90, 
-                          position: 'insideLeft',
-                          style: { textAnchor: 'middle' }
-                        }} 
-                      />
-                      <Tooltip content={({ active, payload, label, ...rest }) => (
-                        <VideoTooltip 
-                          active={active} 
-                          payload={payload} 
-                          label={label} 
-                          coord={rest} 
+                
+                <div>
+                  <h3 className="text-lg font-medium mb-2">Agentic Campaign</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                    Powerful Campaign with Agent Powered Ad Evolutions
+                  </p>
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={selfEvolvingCampaignData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#eaeaea" />
+                        <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                        <YAxis 
+                          domain={[0, 100]} 
+                          label={{ 
+                            value: 'Engagement (%)', 
+                            angle: -90, 
+                            position: 'insideLeft',
+                            style: { textAnchor: 'middle' }
+                          }} 
                         />
-                      )} />
-                      <Line 
-                        type="monotone" 
-                        dataKey="engagement" 
-                        name="self" 
-                        strokeWidth={3} 
-                        dot={{ strokeWidth: 2, r: 4 }}
-                        activeDot={{ r: 6, stroke: "#1EAEDB", strokeWidth: 2 }}
-                      />
-                      {evolutionPoints.map((point, index) => (
-                        <ReferenceDot
-                          key={index}
-                          x={point.day}
-                          y={point.engagement}
-                          r={8}
-                          fill="#1EAEDB"
-                          stroke="#ffffff"
-                          strokeWidth={2}
+                        <Tooltip content={({ active, payload, label, ...rest }) => (
+                          <VideoTooltip 
+                            active={active} 
+                            payload={payload} 
+                            label={label} 
+                            coord={rest} 
+                          />
+                        )} />
+                        <Line 
+                          type="monotone" 
+                          dataKey="engagement" 
+                          stroke="#1EAEDB" 
+                          strokeWidth={3} 
+                          dot={{ strokeWidth: 2, r: 4 }}
+                          activeDot={{ r: 6, stroke: "#1EAEDB", strokeWidth: 2 }}
                         />
-                      ))}
-                    </LineChart>
-                  </ChartContainer>
+                        {evolutionPoints.map((point, index) => (
+                          <ReferenceDot
+                            key={index}
+                            x={point.day}
+                            y={point.engagement}
+                            r={8}
+                            fill="#1EAEDB"
+                            stroke="#ffffff"
+                            strokeWidth={2}
+                          />
+                        ))}
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </div>
             </TabsContent>
