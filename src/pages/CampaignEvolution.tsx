@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Info } from 'lucide-react';
@@ -14,7 +15,8 @@ import {
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
-  ReferenceDot 
+  ReferenceDot,
+  TooltipProps
 } from 'recharts';
 
 // Data for the regular ad campaign (no self-evolution)
@@ -62,12 +64,13 @@ const evolutionPoints = [
 ];
 
 // Custom tooltip component for the self-evolving chart
-const VideoTooltip = ({ active, payload, label }) => {
+// Update the type definition to match Recharts' TooltipProps
+const VideoTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
   const [videoError, setVideoError] = useState(false);
   
   if (!active || !payload || !payload.length) return null;
   
-  const data = payload[0].payload;
+  const data = payload[0]?.payload;
   
   // Only show video for evolution points
   if (data.version === undefined) {
