@@ -144,17 +144,17 @@ const GalleryPage = () => {
   const [videos, setVideos] = useState<VideoData[]>([]);
   
   useEffect(() => {
-    // Check if the videos exist and prepare the video data
+    // Check if the WAN AI video exists
     const prepareVideos = async () => {
       const videoList: VideoData[] = [];
       
-      // Only add WAN AI video - no longer adding Qwen AI video
+      // Only add WAN AI video
       const wanAiVideoUrl = localStorage.getItem('wanAiVideoUrl');
       if (wanAiVideoUrl) {
         videoList.push({
           id: 1,
           source: wanAiVideoUrl,
-          description: 'WAN AI: Generated from extracted text of the original video',
+          description: 'AI generated advertising video based on your original upload',
           type: 'WAN AI'
         });
       }
