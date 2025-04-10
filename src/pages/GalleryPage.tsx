@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import AppLayout from '@/components/AppLayout';
 import { Play, Rocket } from 'lucide-react';
@@ -102,7 +103,7 @@ const GalleryPage = () => {
               className="bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] text-white hover:from-[#7E69AB] hover:to-[#9b87f5] transition-all duration-300 px-6 py-3 rounded-lg flex items-center gap-2"
             >
               <Rocket className="w-5 h-5" />
-              Launch Video
+              Launch Videos
             </Button>
           </div>
         </div>
