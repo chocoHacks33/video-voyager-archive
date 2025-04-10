@@ -5,7 +5,7 @@ import AppLayout from '@/components/AppLayout';
 import { Progress } from "@/components/ui/progress";
 import { toast } from 'sonner';
 import { QwenAIService, VideoGenerationResponse } from '@/services/qwenAIService';
-import { CircleCheck, CircleX } from 'lucide-react';
+import { CircleX } from 'lucide-react';
 
 // Function to extract text from video (mock implementation)
 const extractTextFromVideo = async (videoFile: File): Promise<string> => {
@@ -60,12 +60,6 @@ const LoadingPage = () => {
       // Ensure progress reaches 100% and wait a moment before navigating
       setProgress(100);
       navigateTimeout = window.setTimeout(() => {
-        toast.custom((id) => (
-          <div className="bg-green-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-            <CircleCheck className="h-5 w-5 text-white" />
-            <span className="font-medium">Video processing complete!</span>
-          </div>
-        ), { duration: 3000 });
         navigate('/gallery');
       }, 2500); // Wait 2.5 seconds before redirecting
     }
@@ -193,42 +187,51 @@ const LoadingPage = () => {
   return (
     <AppLayout title="MORPHING ADVERTISEMENT">
       <div className="flex flex-col items-center justify-center p-8 max-w-3xl mx-auto">
-        <div className="w-full space-y-6">
-          <h2 className="text-xl font-semibold text-center">{currentStep}</h2>
+        <div className="w-full space-y-8">
+          <h2 className="text-2xl font-bold text-center mb-2">{currentStep}</h2>
           
-          <Progress value={progress} className="h-2 w-full" />
+          <div className="relative">
+            <Progress 
+              value={progress} 
+              className="h-3 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden" 
+            />
+            <div className="mt-2 text-right text-sm font-medium text-gray-600 dark:text-gray-300">
+              {progress.toFixed(0)}%
+            </div>
+          </div>
           
-          <p className="text-center text-gray-600">
-            {progress.toFixed(0)}% complete
-          </p>
-          
-          <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-100">
-            <h3 className="font-medium mb-4">What's Happening?</h3>
-            <ul className="space-y-4">
-              <li className={`flex items-center gap-2 p-3 rounded-md transition-colors ${phases.decoded ? 'bg-green-50 text-green-700' : ''}`}>
-                {phases.decoded ? 
-                  <CircleCheck className="h-5 w-5 text-green-500" /> : 
-                  <div className={`w-5 h-5 rounded-full border ${currentStep === "Understanding Ad..." ? 'border-blue-500 animate-pulse' : 'border-gray-300'}`} />
-                }
-                <span className={`font-medium ${phases.decoded ? 'text-green-700' : ''}`}>Advertisement Decoded</span>
-              </li>
+          <div className="mt-10 py-6 px-8 bg-white/50 dark:bg-gray-800/50 rounded-lg shadow-lg backdrop-blur-sm border border-gray-200 dark:border-gray-700">
+            <div className="grid grid-cols-1 gap-6">
+              <div className={`transition-all duration-300 p-4 rounded-lg ${
+                phases.decoded 
+                  ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800' 
+                  : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'
+              }`}>
+                <div className="text-lg font-medium text-center">
+                  Advertisement Decoded
+                </div>
+              </div>
               
-              <li className={`flex items-center gap-2 p-3 rounded-md transition-colors ${phases.mapped ? 'bg-green-50 text-green-700' : ''}`}>
-                {phases.mapped ? 
-                  <CircleCheck className="h-5 w-5 text-green-500" /> : 
-                  <div className={`w-5 h-5 rounded-full border ${currentStep === "Mapping Demographics..." ? 'border-blue-500 animate-pulse' : 'border-gray-300'}`} />
-                }
-                <span className={`font-medium ${phases.mapped ? 'text-green-700' : ''}`}>Advertisement Demographic Mapping</span>
-              </li>
+              <div className={`transition-all duration-300 p-4 rounded-lg ${
+                phases.mapped 
+                  ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800' 
+                  : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'
+              }`}>
+                <div className="text-lg font-medium text-center">
+                  Advertisement Demographic Mapping
+                </div>
+              </div>
               
-              <li className={`flex items-center gap-2 p-3 rounded-md transition-colors ${phases.generated ? 'bg-green-50 text-green-700' : ''}`}>
-                {phases.generated ? 
-                  <CircleCheck className="h-5 w-5 text-green-500" /> : 
-                  <div className={`w-5 h-5 rounded-full border ${currentStep === "Morphing Ad..." ? 'border-blue-500 animate-pulse' : 'border-gray-300'}`} />
-                }
-                <span className={`font-medium ${phases.generated ? 'text-green-700' : ''}`}>Advertisement Generated</span>
-              </li>
-            </ul>
+              <div className={`transition-all duration-300 p-4 rounded-lg ${
+                phases.generated 
+                  ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800' 
+                  : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'
+              }`}>
+                <div className="text-lg font-medium text-center">
+                  Advertisement Generated
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
