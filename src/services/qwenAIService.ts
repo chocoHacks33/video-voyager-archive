@@ -5,6 +5,10 @@ import { toast } from 'sonner';
 const QWEN_API_KEY = 'YOUR_QWEN_API_KEY'; 
 const QWEN_API_ENDPOINT = 'https://api.qwen.ai/v1/video/generate';
 
+// WAN AI API details
+const WAN_AI_URL = "http://quickstart-deploy-20250410-g9hk.5158343315505498.ap-northeast-1.pai-eas.aliyuncs.com";
+const WAN_AI_TOKEN = "MWFjNDk4NDlkYTRjOTFhOTY4NjE0NDE1ZWFiZWVhMjhjMDFkN2VhNw==";
+
 export interface VideoGenerationOptions {
   prompt: string;
   text?: string;
@@ -20,6 +24,11 @@ export interface VideoGenerationResponse {
 
 export interface VideoAnalysisResponse {
   description: string;
+}
+
+export interface WanAITaskStatus {
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  error?: string;
 }
 
 export class QwenAIService {
@@ -116,7 +125,7 @@ export class QwenAIService {
       throw error;
     }
   }
-
+  
   /**
    * Extract frames from a video file and return them as base64 strings
    * This is a client-side implementation that works in browsers
@@ -245,6 +254,108 @@ export class QwenAIService {
       return {
         description: "Error analyzing video content: " + (error instanceof Error ? error.message : String(error))
       };
+    }
+  }
+  
+  /**
+   * Generate a video using WAN AI API based on the extracted text from the original video
+   * @param prompt The prompt to use for video generation
+   * @param extractedText Text extracted from the original video
+   */
+  static async generateVideoWithWanAI(prompt: string, extractedText: string): Promise<string> {
+    try {
+      console.log('Generating video with WAN AI:', { prompt, extractedText });
+      
+      // Create a combined prompt using the extracted text
+      const enhancedPrompt = extractedText ? 
+        `${prompt} - Based on this context: ${extractedText}` : 
+        prompt;
+      
+      // Step 1: Create a generation task
+      const response = await fetch(`${WAN_AI_URL}/generate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': WAN_AI_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          prompt: enhancedPrompt,
+          seed: Math.floor(Math.random() * 1000), // Random seed for variety
+          neg_prompt: "low quality, blurry, distorted",
+          infer_steps: 50,
+          cfg_scale: 7.5,
+          height: 720,
+          width: 1280
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("WAN AI Generation Error:", errorData);
+        throw new Error(`Failed to start video generation: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      const taskId = data.task_id;
+      console.log("WAN AI Task Created:", taskId);
+      
+      // Step 2: Poll for task completion
+      let isCompleted = false;
+      let attempts = 0;
+      const maxAttempts = 20; // Limit polling attempts
+      
+      while (!isCompleted && attempts < maxAttempts) {
+        attempts++;
+        await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds between checks
+        
+        const statusResponse = await fetch(`${WAN_AI_URL}/tasks/${taskId}/status`, {
+          headers: {
+            'Authorization': WAN_AI_TOKEN
+          }
+        });
+        
+        if (!statusResponse.ok) {
+          console.error(`Error checking task status: ${statusResponse.statusText}`);
+          continue;
+        }
+        
+        const statusData = await statusResponse.json() as WanAITaskStatus;
+        console.log(`WAN AI Task Status (attempt ${attempts}):`, statusData);
+        
+        if (statusData.status === 'completed') {
+          isCompleted = true;
+        } else if (statusData.status === 'failed') {
+          throw new Error(`Video generation failed: ${statusData.error || 'Unknown error'}`);
+        }
+      }
+      
+      if (!isCompleted) {
+        throw new Error("Video generation timed out. Please try again later.");
+      }
+      
+      // Step 3: Download the video
+      const videoResponse = await fetch(`${WAN_AI_URL}/tasks/${taskId}/video`, {
+        headers: {
+          'Authorization': WAN_AI_TOKEN
+        }
+      });
+      
+      if (!videoResponse.ok) {
+        throw new Error(`Failed to download video: ${videoResponse.statusText}`);
+      }
+      
+      // Convert the response to a blob and create an object URL
+      const videoBlob = await videoResponse.blob();
+      const videoUrl = URL.createObjectURL(videoBlob);
+      
+      // In a real app, you might want to save this to a server or localStorage
+      localStorage.setItem('wanAiVideoUrl', videoUrl);
+      
+      return videoUrl;
+    } catch (error) {
+      console.error('Error generating video with WAN AI:', error);
+      toast.error('WAN AI video generation failed. Please try again.');
+      throw error;
     }
   }
 }
