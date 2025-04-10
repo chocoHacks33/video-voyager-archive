@@ -171,7 +171,7 @@ const GalleryPage = () => {
 
   const handleLaunch = () => {
     toast.success("Video launch initiated!", {
-      description: "Your AI-generated video is ready to use.",
+      description: "Your Targeted Ad-Campaign is Launched!",
       duration: 3000
     });
   };
