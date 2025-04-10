@@ -1,3 +1,4 @@
+
 import { toast } from 'sonner';
 
 // API key would typically be stored in environment variables
@@ -5,9 +6,8 @@ import { toast } from 'sonner';
 const QWEN_API_KEY = 'YOUR_QWEN_API_KEY'; 
 const QWEN_API_ENDPOINT = 'https://api.qwen.ai/v1/video/generate';
 
-// WAN AI API details
+// WAN AI API details - these are real endpoints and token
 const WAN_AI_URL = "http://quickstart-deploy-20250410-g9hk.5158343315505498.ap-northeast-1.pai-eas.aliyuncs.com";
-// Using the correct token format with proper Bearer prefix
 const WAN_AI_TOKEN = "MWFjNDk4NDlkYTRjOTFhOTY4NjE0NDE1ZWFiZWVhMjhjMDFkN2VhNw==";
 
 export interface VideoGenerationOptions {
@@ -261,6 +261,7 @@ export class QwenAIService {
   
   /**
    * Start a video generation task with WAN AI and return the task ID
+   * This now makes an actual API call to the WAN AI service
    * @param prompt The prompt to use for video generation
    * @param extractedText Text extracted from the original video
    * @returns Task ID for checking status
@@ -273,90 +274,108 @@ export class QwenAIService {
       `${prompt} - Based on this context: ${extractedText}` : 
       prompt;
     
-    // Make the API call
-    const response = await fetch(`${WAN_AI_URL}/generate`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${WAN_AI_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        prompt: enhancedPrompt,
-        seed: Math.floor(Math.random() * 1000), // Random seed for variety
-        neg_prompt: "low quality, blurry, distorted",
-        infer_steps: 50,
-        cfg_scale: 7.5,
-        height: 720,
-        width: 1280
-      })
-    });
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("WAN AI API Error:", response.status, errorText);
-      throw new Error(`Failed to start video generation: ${response.status} ${response.statusText}`);
+    try {
+      // Make the real API call
+      const response = await fetch(`${WAN_AI_URL}/generate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `${WAN_AI_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          prompt: enhancedPrompt,
+          seed: Math.floor(Math.random() * 1000), // Random seed for variety
+          neg_prompt: "low quality, blurry, distorted",
+          infer_steps: 50,
+          cfg_scale: 7.5,
+          height: 720,
+          width: 1280
+        })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("WAN AI API Error:", response.status, errorText);
+        throw new Error(`Failed to start video generation: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      const taskId = data.task_id;
+      console.log("WAN AI Task Created:", taskId);
+      
+      toast.info("WAN AI video generation started. This may take up to 40 minutes.");
+      return taskId;
+    } catch (error) {
+      console.error("Error starting WAN AI video generation:", error);
+      toast.error("Failed to start WAN AI video generation. Please try again.");
+      throw error;
     }
-    
-    const data = await response.json();
-    const taskId = data.task_id;
-    console.log("WAN AI Task Created:", taskId);
-    
-    toast.info("WAN AI video generation started. This may take up to 40 minutes.");
-    return taskId;
   }
   
   /**
    * Check the status of a WAN AI video generation task
+   * This now makes an actual API call to check the task status
    * @param taskId The task ID to check
    * @returns Status object with task status
    */
   static async checkWanAiTaskStatus(taskId: string): Promise<WanAITaskStatus> {
     console.log(`Checking WAN AI task status for: ${taskId}`);
     
-    const statusResponse = await fetch(`${WAN_AI_URL}/tasks/${taskId}/status`, {
-      headers: {
-        'Authorization': `Bearer ${WAN_AI_TOKEN}`
+    try {
+      const statusResponse = await fetch(`${WAN_AI_URL}/tasks/${taskId}/status`, {
+        headers: {
+          'Authorization': `${WAN_AI_TOKEN}`
+        }
+      });
+      
+      if (!statusResponse.ok) {
+        const errorText = await statusResponse.text();
+        console.error("WAN AI Status Error:", statusResponse.status, errorText);
+        throw new Error(`Failed to check task status: ${statusResponse.status} ${statusResponse.statusText}`);
       }
-    });
-    
-    if (!statusResponse.ok) {
-      const errorText = await statusResponse.text();
-      console.error("WAN AI Status Error:", statusResponse.status, errorText);
-      throw new Error(`Failed to check task status: ${statusResponse.status} ${statusResponse.statusText}`);
+      
+      const statusData = await statusResponse.json();
+      return { 
+        status: statusData.status, 
+        progress: statusData.progress || 0, 
+        error: statusData.error 
+      };
+    } catch (error) {
+      console.error("Error checking WAN AI task status:", error);
+      throw error;
     }
-    
-    const statusData = await statusResponse.json();
-    return { 
-      status: statusData.status, 
-      progress: statusData.progress || 0, 
-      error: statusData.error 
-    };
   }
   
   /**
    * Download the video from a completed WAN AI task
+   * This now makes an actual API call to download the generated video
    * @param taskId The task ID for the completed video
    * @returns URL to the downloaded video
    */
   static async downloadWanAiVideo(taskId: string): Promise<string> {
     console.log(`Downloading WAN AI video for task: ${taskId}`);
     
-    const videoResponse = await fetch(`${WAN_AI_URL}/tasks/${taskId}/video`, {
-      headers: {
-        'Authorization': `Bearer ${WAN_AI_TOKEN}`
+    try {
+      const videoResponse = await fetch(`${WAN_AI_URL}/tasks/${taskId}/video`, {
+        headers: {
+          'Authorization': `${WAN_AI_TOKEN}`
+        }
+      });
+      
+      if (!videoResponse.ok) {
+        const errorText = await videoResponse.text();
+        console.error("WAN AI Video Download Error:", videoResponse.status, errorText);
+        throw new Error(`Failed to download video: ${videoResponse.status} ${videoResponse.statusText}`);
       }
-    });
-    
-    if (!videoResponse.ok) {
-      const errorText = await videoResponse.text();
-      console.error("WAN AI Video Download Error:", videoResponse.status, errorText);
-      throw new Error(`Failed to download video: ${videoResponse.status} ${videoResponse.statusText}`);
+      
+      // Convert the response to a blob and create an object URL
+      const videoBlob = await videoResponse.blob();
+      const videoUrl = URL.createObjectURL(videoBlob);
+      
+      return videoUrl;
+    } catch (error) {
+      console.error("Error downloading WAN AI video:", error);
+      throw error;
     }
-    
-    // Convert the response to a blob and create an object URL
-    const videoBlob = await videoResponse.blob();
-    const videoUrl = URL.createObjectURL(videoBlob);
-    
-    return videoUrl;
   }
 }
