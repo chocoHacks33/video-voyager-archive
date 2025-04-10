@@ -174,7 +174,7 @@ const GalleryPage = () => {
     toast.success("Video launch initiated!", {
       description: "Your Targeted Ad-Campaign is Launched!",
       duration: 3000,
-      icon: <CircleCheck color="green" className="mr-2" />,
+      icon: <CircleCheck className="h-5 w-5 text-green-500" />,
     });
   };
 
