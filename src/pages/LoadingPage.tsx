@@ -57,6 +57,7 @@ const LoadingPage = () => {
   const [wanAiCheckCount, setWanAiCheckCount] = useState(0);
   const [maxWanAiChecks] = useState(300); // Maximum number of status checks
   const [wanAiError, setWanAiError] = useState<string | null>(null);
+  const [wanAiProgress, setWanAiProgress] = useState(0);
   const videoFile = location.state?.videoFile;
   
   // Handle navigation after processing is complete
@@ -101,7 +102,12 @@ const LoadingPage = () => {
           setWanAiStatus(status.status);
           setWanAiCheckCount(prev => prev + 1);
           
-          logProgress(`WAN AI status check result: ${status.status}`);
+          // Update progress if available
+          if (status.progress !== undefined) {
+            setWanAiProgress(status.progress);
+          }
+          
+          logProgress(`WAN AI status check result: ${status.status}, Progress: ${status.progress || 'unknown'}%`);
           
           if (status.status === 'completed') {
             // Fetch the video when it's completed
@@ -118,6 +124,8 @@ const LoadingPage = () => {
                   <span className="font-medium">WAN AI video successfully generated!</span>
                 </div>
               ), { duration: 3000 });
+              setProcessingComplete(true);
+              clearInterval(statusCheckInterval);
             } catch (downloadError) {
               console.error('Error downloading WAN AI video:', downloadError);
               logProgress('WAN AI video download failed', downloadError);
@@ -127,9 +135,9 @@ const LoadingPage = () => {
                   <span className="font-medium">WAN AI video download failed. Proceeding with original video only.</span>
                 </div>
               ), { duration: 3000 });
+              setProcessingComplete(true);
+              clearInterval(statusCheckInterval);
             }
-            setProcessingComplete(true);
-            clearInterval(statusCheckInterval);
           } else if (status.status === 'failed') {
             const errorMsg = status.error || 'Unknown error';
             setWanAiError(errorMsg);
@@ -172,7 +180,7 @@ const LoadingPage = () => {
             clearInterval(statusCheckInterval);
           }
         }
-      }, 10000); // Check every 10 seconds
+      }, 30000); // Check every 30 seconds instead of 10 to reduce API calls
     }
 
     return () => {
@@ -354,13 +362,28 @@ const LoadingPage = () => {
           </p>
           
           {wanAiTaskId && wanAiStatus === 'processing' && !wanAiError && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-center gap-3 my-4">
-              <Clock className="h-5 w-5 text-amber-600 animate-pulse" />
-              <p className="text-sm text-amber-700">
-                Waiting for WAN AI video generation to complete. This may take several minutes...
-                <br />
-                <span className="text-xs">Check {wanAiCheckCount} of {maxWanAiChecks}</span>
-              </p>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex flex-col gap-3 my-4">
+              <div className="flex items-center gap-3">
+                <Clock className="h-5 w-5 text-amber-600 animate-pulse" />
+                <p className="text-sm text-amber-700">
+                  Waiting for WAN AI video generation to complete. This may take approximately 40 minutes...
+                  <br />
+                  <span className="text-xs">Check {wanAiCheckCount} of {maxWanAiChecks}</span>
+                </p>
+              </div>
+              
+              {wanAiProgress > 0 && (
+                <div className="w-full">
+                  <p className="text-xs text-amber-700 mb-1">Estimated progress:</p>
+                  <div className="w-full bg-amber-100 rounded-full h-2.5">
+                    <div 
+                      className="bg-amber-500 h-2.5 rounded-full transition-all duration-500"
+                      style={{ width: `${wanAiProgress}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-xs text-right mt-1 text-amber-700">{wanAiProgress}%</p>
+                </div>
+              )}
             </div>
           )}
           
@@ -396,7 +419,7 @@ const LoadingPage = () => {
               <li className={progress >= 80 ? "text-green-600 font-medium" : ""}>
                 Creating WAN AI Video Alternative
                 {wanAiStatus === 'processing' && !wanAiError && (
-                  <span className="text-amber-600 ml-2">(in progress...)</span>
+                  <span className="text-amber-600 ml-2">(in progress... {wanAiProgress}%)</span>
                 )}
                 {wanAiStatus === 'completed' && (
                   <span className="text-green-600 ml-2">(complete)</span>
