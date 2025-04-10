@@ -1,14 +1,9 @@
-
 import { toast } from 'sonner';
 
 // API key would typically be stored in environment variables
 // This is a placeholder - in production, never expose API keys in client-side code
 const QWEN_API_KEY = 'YOUR_QWEN_API_KEY'; 
 const QWEN_API_ENDPOINT = 'https://api.qwen.ai/v1/video/generate';
-
-// WAN AI API details - these are real endpoints and token
-const WAN_AI_URL = "http://quickstart-deploy-20250410-g9hk.5158343315505498.ap-northeast-1.pai-eas.aliyuncs.com";
-const WAN_AI_TOKEN = "MWFjNDk4NDlkYTRjOTFhOTY4NjE0NDE1ZWFiZWVhMjhjMDFkN2VhNw==";
 
 export interface VideoGenerationOptions {
   prompt: string;
@@ -25,12 +20,6 @@ export interface VideoGenerationResponse {
 
 export interface VideoAnalysisResponse {
   description: string;
-}
-
-export interface WanAITaskStatus {
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  error?: string;
-  progress?: number; // Tracks generation percentage
 }
 
 export class QwenAIService {
@@ -127,7 +116,7 @@ export class QwenAIService {
       throw error;
     }
   }
-  
+
   /**
    * Extract frames from a video file and return them as base64 strings
    * This is a client-side implementation that works in browsers
@@ -256,173 +245,6 @@ export class QwenAIService {
       return {
         description: "Error analyzing video content: " + (error instanceof Error ? error.message : String(error))
       };
-    }
-  }
-  
-  /**
-   * Start a video generation task with WAN AI and return the task ID
-   * NOTE: This now has CORS protection enabled and will return a mock response
-   * @param prompt The prompt to use for video generation
-   * @param extractedText Text extracted from the original video
-   * @returns Task ID for checking status
-   */
-  static async startWanAiVideoGeneration(prompt: string, extractedText: string): Promise<string> {
-    console.log('Starting WAN AI video generation (CORS-safe mock):', { prompt, extractedText });
-      
-    try {
-      // Display CORS information
-      toast.info("WAN AI API requires server-side proxy to handle CORS. Using mock implementation for demo.");
-      
-      // Create a combined prompt using the extracted text
-      const enhancedPrompt = extractedText ? 
-        `${prompt} - Based on this context: ${extractedText}` : 
-        prompt;
-      
-      // IMPORTANT: Real API call would look like this, but it fails due to CORS:
-      /*
-      const response = await fetch(`${WAN_AI_URL}/generate`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `${WAN_AI_TOKEN}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          prompt: enhancedPrompt,
-          seed: Math.floor(Math.random() * 1000), // Random seed for variety
-          neg_prompt: "low quality, blurry, distorted",
-          infer_steps: 50,
-          cfg_scale: 7.5,
-          height: 720,
-          width: 1280
-        })
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("WAN AI API Error:", response.status, errorText);
-        throw new Error(`Failed to start video generation: ${response.status} ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      const taskId = data.task_id;
-      */
-      
-      // Instead, we'll create a mock task ID
-      const taskId = `mock-${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 5)}`;
-      console.log("WAN AI Mock Task Created:", taskId);
-      
-      toast.info("WAN AI video generation started (mock). This would normally take up to 40 minutes in production.");
-      return taskId;
-    } catch (error) {
-      console.error("Error starting WAN AI video generation:", error);
-      toast.error("Failed to start WAN AI video generation due to CORS restrictions. Check console for details.");
-      
-      // Show more detailed error about CORS
-      toast.error("Browser security prevents direct API calls to WAN AI. In production, use a server-side proxy.");
-      
-      throw error;
-    }
-  }
-  
-  /**
-   * Check the status of a WAN AI video generation task
-   * This is now a mocked implementation that simulates progress
-   * @param taskId The task ID to check
-   * @returns Status object with task status
-   */
-  static async checkWanAiTaskStatus(taskId: string): Promise<WanAITaskStatus> {
-    console.log(`Checking WAN AI task status for mock task: ${taskId}`);
-    
-    try {
-      // For mock implementation, we'll simulate progress based on time
-      // Real implementation would call the WAN AI API
-      
-      if (taskId.startsWith('mock-')) {
-        // Extract timestamp from mock ID to calculate elapsed time
-        const mockTimestamp = parseInt(taskId.split('-')[1], 36);
-        const elapsedSeconds = (Date.now() - mockTimestamp) / 1000;
-        
-        // Calculate progress based on elapsed time (faster for demo)
-        // In mock mode, we'll complete in ~90 seconds instead of 40 minutes
-        const mockTotalTime = 90; // seconds for demo
-        const progress = Math.min(Math.floor((elapsedSeconds / mockTotalTime) * 100), 100);
-        
-        if (progress >= 100) {
-          return { status: 'completed', progress: 100 };
-        }
-        
-        return { 
-          status: 'processing', 
-          progress: progress
-        };
-      }
-      
-      // Real implementation would look like this, but fails due to CORS:
-      /*
-      const statusResponse = await fetch(`${WAN_AI_URL}/tasks/${taskId}/status`, {
-        headers: {
-          'Authorization': `${WAN_AI_TOKEN}`
-        }
-      });
-      
-      if (!statusResponse.ok) {
-        const errorText = await statusResponse.text();
-        console.error("WAN AI Status Error:", statusResponse.status, errorText);
-        throw new Error(`Failed to check task status: ${statusResponse.status} ${statusResponse.statusText}`);
-      }
-      
-      const statusData = await statusResponse.json();
-      return { 
-        status: statusData.status, 
-        progress: statusData.progress || 0, 
-        error: statusData.error 
-      };
-      */
-      
-      return { status: 'processing', progress: 50 };
-    } catch (error) {
-      console.error("Error checking WAN AI task status:", error);
-      throw error;
-    }
-  }
-  
-  /**
-   * Download the video from a completed WAN AI task
-   * This is now a mocked implementation that returns a stock video
-   * @param taskId The task ID for the completed video
-   * @returns URL to the downloaded video
-   */
-  static async downloadWanAiVideo(taskId: string): Promise<string> {
-    console.log(`Downloading WAN AI video for mock task: ${taskId}`);
-    
-    try {
-      // For mock implementation, return a stock video
-      toast.info("Using stock video for demo. In production, this would download from WAN AI API.");
-      
-      // Real implementation would look like this, but fails due to CORS:
-      /*
-      const videoResponse = await fetch(`${WAN_AI_URL}/tasks/${taskId}/video`, {
-        headers: {
-          'Authorization': `${WAN_AI_TOKEN}`
-        }
-      });
-      
-      if (!videoResponse.ok) {
-        const errorText = await videoResponse.text();
-        console.error("WAN AI Video Download Error:", videoResponse.status, errorText);
-        throw new Error(`Failed to download video: ${videoResponse.status} ${videoResponse.statusText}`);
-      }
-      
-      // Convert the response to a blob and create an object URL
-      const videoBlob = await videoResponse.blob();
-      const videoUrl = URL.createObjectURL(videoBlob);
-      */
-      
-      // Return a stock video URL
-      return '/stock-videos/video1.mp4';
-    } catch (error) {
-      console.error("Error downloading WAN AI video:", error);
-      throw error;
     }
   }
 }

@@ -10,8 +10,14 @@ interface VideoData {
   id: number;
   source: string;
   description: string;
-  type: string;
 }
+
+// Simplified to just one video for now
+const videoData: VideoData = { 
+  id: 1, 
+  source: '/stock-videos/video1.mp4', 
+  description: 'Qwen AI: Cinematic version with enhanced lighting and smooth transitions' 
+};
 
 const VideoCard = ({ video }: { video: VideoData }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -96,7 +102,6 @@ const VideoCard = ({ video }: { video: VideoData }) => {
           <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex flex-col items-center justify-center p-4">
             <AlertTriangle className="w-10 h-10 text-amber-500 mb-2" />
             <p className="text-sm text-center">Video not found or still processing</p>
-            <p className="text-xs text-center mt-2 text-gray-500">WAN AI video generation can take up to 40 minutes to complete</p>
             <Button 
               variant="outline" 
               size="sm" 
@@ -129,11 +134,8 @@ const VideoCard = ({ video }: { video: VideoData }) => {
       </div>
       
       <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-        <div className="flex justify-between items-center mb-1">
-          <span className="text-xs font-medium bg-blue-500 px-2 py-0.5 rounded">{video.type}</span>
-        </div>
         <p className="text-base">{video.description}</p>
-        <p className="text-xs mt-1 text-gray-300">AI Generated from your uploaded video</p>
+        <p className="text-xs mt-1 text-gray-300">5 seconds • AI Generated</p>
       </div>
     </div>
   );
@@ -142,25 +144,29 @@ const VideoCard = ({ video }: { video: VideoData }) => {
 const GalleryPage = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [videoDescription, setVideoDescription] = useState<string | null>(null);
-  const [videos, setVideos] = useState<VideoData[]>([]);
   
   useEffect(() => {
-    // Check if the WAN AI video exists
-    const prepareVideos = async () => {
-      const videoList: VideoData[] = [];
-      
-      // Only add WAN AI video
-      const wanAiVideoUrl = localStorage.getItem('wanAiVideoUrl');
-      if (wanAiVideoUrl) {
-        videoList.push({
-          id: 1,
-          source: wanAiVideoUrl,
-          description: 'AI generated video based on text extracted from your upload',
-          type: 'WAN AI'
-        });
+    // Check if the video exists
+    const checkVideoExists = async () => {
+      try {
+        const response = await fetch(videoData.source);
+        if (!response.ok) {
+          toast.custom((id) => (
+            <div className="bg-amber-100 text-amber-800 rounded-md p-4 flex items-center gap-2 shadow-md">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              <span>Video is still being generated and saved. This may take some time.</span>
+            </div>
+          ), { duration: 5000 });
+        }
+      } catch (error) {
+        console.error("Error checking video:", error);
+        toast.custom((id) => (
+          <div className="bg-amber-100 text-amber-800 rounded-md p-4 flex items-center gap-2 shadow-md">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            <span>Video is still being generated and saved. This may take some time.</span>
+          </div>
+        ), { duration: 5000 });
       }
-      
-      setVideos(videoList);
     };
     
     // Retrieve video description from localStorage
@@ -169,7 +175,7 @@ const GalleryPage = () => {
       setVideoDescription(storedDescription);
     }
     
-    prepareVideos();
+    checkVideoExists();
   }, []);
 
   const handleRefresh = () => {
@@ -178,18 +184,23 @@ const GalleryPage = () => {
   };
 
   const handleLaunch = () => {
-    toast.success("Your Targeted Ad-Campaign is Launched!");
+    toast.custom((id) => (
+      <div className="bg-green-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
+        <CircleCheck className="h-5 w-5 text-white" />
+        <span className="font-medium">Your Targeted Ad-Campaign is Launched!</span>
+      </div>
+    ), { duration: 3000 });
   };
 
   return (
-    <AppLayout title="AI GENERATED VIDEO">
+    <AppLayout title="QWEN AI GENERATED VIDEO">
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-8">
           <div className="mb-6 flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold mb-2">Your WAN AI Generated Video</h2>
+              <h2 className="text-2xl font-bold mb-2">Your AI Video</h2>
               <p className="text-gray-600 dark:text-gray-300">
-                This video was generated by WAN AI based on the text extracted from your original upload.
+                This video was generated by Qwen AI based on the text extracted from your original video.
               </p>
             </div>
             <Button 
@@ -203,28 +214,12 @@ const GalleryPage = () => {
             </Button>
           </div>
           
-          <div className="max-w-3xl mx-auto">
-            {videos.map((video) => (
-              <VideoCard key={video.id} video={video} />
-            ))}
+          <div className="max-w-2xl mx-auto">
+            <VideoCard key={videoData.id} video={videoData} />
           </div>
           
-          {videos.length === 0 && (
-            <div className="p-8 bg-gray-50 dark:bg-gray-700 rounded-lg text-center">
-              <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No Video Available</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
-                Your video is still being generated or could not be generated. Please refresh the page to check again.
-              </p>
-              <Button onClick={handleRefresh} className="flex items-center gap-2 mx-auto">
-                <RefreshCw className="w-4 h-4" />
-                Refresh
-              </Button>
-            </div>
-          )}
-          
           <p className="text-sm text-center text-amber-600 dark:text-amber-400 mt-6">
-            Note: WAN AI video generation typically takes around 40 minutes to complete in demonstration mode. If no video appears, refresh after some time.
+            Note: If the video appears missing, it may still be processing. Try refreshing the page after a few minutes.
           </p>
           
           {videoDescription && (
@@ -243,7 +238,7 @@ const GalleryPage = () => {
               size="lg"
             >
               <Rocket className="mr-2 h-5 w-5" />
-              Launch Campaign
+              Launch Video
             </Button>
           </div>
         </div>
