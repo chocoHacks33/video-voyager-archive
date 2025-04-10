@@ -19,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState, useEffect } from "react";
 
 const Sidebar = () => {
-  const { username } = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [activePath, setActivePath] = useState("/upload");
@@ -37,7 +37,7 @@ const Sidebar = () => {
     },
     {
       title: "Your Campaigns",
-      path: "/gallery",
+      path: "", // Empty path to prevent navigation
       icon: FolderOpen,
     }
   ];
@@ -76,7 +76,7 @@ const Sidebar = () => {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     isActive={activePath === item.path}
-                    onClick={() => navigate(item.path)}
+                    onClick={() => item.path && navigate(item.path)}
                     tooltip={item.title}
                   >
                     <item.icon className="w-5 h-5" />
@@ -93,16 +93,16 @@ const Sidebar = () => {
         <div className="p-3 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900 dark:to-blue-900 rounded-lg shadow-sm transition-all duration-300 hover:shadow-md">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Avatar className="h-10 w-10 border-2 border-white dark:border-gray-800">
+              <Avatar className="h-10 w-10 border-2 border-white dark:border-gray-800 animate-pulse hover:animate-none transition-all">
                 <AvatarImage src="" />
                 <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white">
-                  {getInitials(username || 'User')}
+                  {getInitials(user?.username || 'Admin')}
                 </AvatarFallback>
               </Avatar>
               <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white dark:border-gray-800"></div>
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-medium leading-none">Welcome, {username || 'User'}</p>
+              <p className="text-sm font-medium leading-none">Welcome, {user?.username || 'Admin'}</p>
               <p className="text-xs text-muted-foreground">Active now</p>
             </div>
           </div>
