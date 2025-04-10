@@ -74,13 +74,16 @@ const UploadPage = () => {
         } else {
           clearInterval(itemInterval);
           
+          // Ensure all items are marked as completed before audiences are loaded
+          setAudienceItems(prev => prev.map(item => ({ ...item, completed: true })));
+          
           // Delay setting audiences loaded to show completion
           setTimeout(() => {
             setAudiencesLoaded(true);
             setLoading(false);
           }, 1000);
         }
-      }, 7500); // ~45 seconds total divided by 6 items
+      }, 7000); // ~42 seconds total divided by 6 items
 
       return () => {
         clearInterval(interval);
@@ -247,7 +250,7 @@ const UploadPage = () => {
                 render={({ field }) => (
                   <FormItem className="relative">
                     <div className="flex flex-col items-center">
-                      <div className="h-16 w-16 bg-blue-100 rounded-lg flex items-center justify-center relative">
+                      <div className="h-16 w-16 bg-blue-100 rounded-lg flex items-center justify-center relative hover:bg-blue-200 transition-colors duration-200">
                         <Facebook className="h-10 w-10 text-blue-600" />
                         <FormControl>
                           <Checkbox 
@@ -269,7 +272,7 @@ const UploadPage = () => {
                 render={({ field }) => (
                   <FormItem className="relative">
                     <div className="flex flex-col items-center">
-                      <div className="h-16 w-16 bg-purple-100 rounded-lg flex items-center justify-center relative">
+                      <div className="h-16 w-16 bg-purple-100 rounded-lg flex items-center justify-center relative hover:bg-purple-200 transition-colors duration-200">
                         <Instagram className="h-10 w-10 text-purple-600" />
                         <FormControl>
                           <Checkbox 
@@ -291,7 +294,7 @@ const UploadPage = () => {
                 render={({ field }) => (
                   <FormItem className="relative">
                     <div className="flex flex-col items-center">
-                      <div className="h-16 w-16 bg-red-100 rounded-lg flex items-center justify-center relative">
+                      <div className="h-16 w-16 bg-red-100 rounded-lg flex items-center justify-center relative hover:bg-red-200 transition-colors duration-200">
                         <Youtube className="h-10 w-10 text-red-600" />
                         <FormControl>
                           <Checkbox 
@@ -313,7 +316,7 @@ const UploadPage = () => {
         {/* Audience loading section */}
         {file && platformsSelected && !loading && !audiencesLoaded && (
           <Button 
-            className="bg-blue-app hover:bg-blue-500 px-12 mb-6"
+            className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-medium px-8 py-2 rounded-md shadow-md hover:shadow-lg transition-all duration-200 mb-6"
             onClick={startAudienceLoading}
           >
             Fetch Audiences
@@ -324,24 +327,31 @@ const UploadPage = () => {
         {loading && (
           <div className="w-full max-w-md mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700">Fetching Audiences...</span>
+              <span className="text-sm font-medium text-gray-700">Fetching Target Audience...</span>
               <span className="text-sm text-gray-500">{Math.round(progress)}%</span>
             </div>
-            <Progress value={progress} className="h-2 mb-6" />
+            <Progress value={progress} className="h-2 mb-6 bg-gray-200" />
           </div>
         )}
 
         {/* Audience checklist */}
         {(loading || audiencesLoaded) && (
-          <div className="w-full max-w-md mb-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">Audience Segmentation</h4>
-            <ul className="space-y-2">
+          <div className="w-full max-w-md mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100 shadow-sm">
+            <ul className="space-y-3">
               {audienceItems.map((item, index) => (
-                <li key={index} className="flex items-center gap-3">
-                  <div className={`flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center ${item.completed ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>
+                <li key={index} className="flex items-center gap-3 p-2 rounded-md transition-all duration-200" style={{
+                  background: item.completed ? 'linear-gradient(90deg, rgba(239,246,255,0.6) 0%, rgba(219,234,254,0.6) 100%)' : 'transparent'
+                }}>
+                  <div className={`flex-shrink-0 h-6 w-6 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    item.completed 
+                      ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-sm' 
+                      : 'bg-gray-200'
+                  }`}>
                     {item.completed && <CheckCircle2 className="h-5 w-5" />}
                   </div>
-                  <span className={`text-sm ${item.completed ? 'text-gray-700' : 'text-gray-500'}`}>
+                  <span className={`text-sm font-medium transition-all duration-200 ${
+                    item.completed ? 'text-gray-800' : 'text-gray-500'
+                  }`}>
                     {item.name}
                   </span>
                 </li>
@@ -353,7 +363,7 @@ const UploadPage = () => {
         {/* Morph AD button appears after audiences are loaded */}
         {audiencesLoaded && (
           <Button 
-            className="bg-blue-app hover:bg-blue-500 px-12"
+            className="bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white font-medium px-10 py-2.5 rounded-md shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
             onClick={handleMorphAd}
           >
             Morph AD
