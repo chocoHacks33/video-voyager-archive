@@ -67,7 +67,7 @@ const CampaignEvolution = () => {
           <h1 className="text-2xl font-bold text-[#ea384c]">DEMO MODE</h1>
           <Button 
             variant="outline" 
-            className="gap-2 bg-[#F2FCE2] border-green-300 text-green-800 hover:bg-[#E6F9D0]"
+            className="gap-2 border-purple-300 text-purple-800 hover:bg-purple-50 hover:border-purple-400 transition-colors"
             onClick={handleSkipDays}
             disabled={daysToShow >= 28}
           >
@@ -109,3 +109,4 @@ const CampaignEvolution = () => {
 };
 
 export default CampaignEvolution;
+
