@@ -45,19 +45,23 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
     const startTime = performance.now();
     const animationDuration = 5000; // 5 seconds
     
+    const easeInOutQuint = (t: number) => {
+      return t < 0.5 
+        ? 16 * t * t * t * t * t 
+        : 1 - Math.pow(-2 * t + 2, 5) / 2;
+    };
+    
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
       
-      // Ease-in-out cubic interpolation for smoother animation
-      const smoothProgress = progress < 0.5 
-        ? 4 * progress ** 3 
-        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      // Use custom easing function for even smoother progression
+      const smoothProgress = easeInOutQuint(progress);
 
       const newAnimatedData = [...startData];
       
       if (prevDay < currentDay) {
-        // Interpolate between previous and current checkpoint
+        // Interpolate between previous and current checkpoint with enhanced smoothing
         const interpolatedDay = prevDay + Math.floor((currentDay - prevDay) * smoothProgress);
         const interpolatedValue = prevCheckpointData.value + 
           (currentCheckpointData.value - prevCheckpointData.value) * smoothProgress;
