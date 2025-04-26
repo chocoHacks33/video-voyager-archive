@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { AlertTriangle, Check } from 'lucide-react';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface ImageData {
   id: number;
@@ -15,13 +15,15 @@ interface ImageCardProps {
   isSelected: boolean;
   onSelect: () => void;
   selectable?: boolean;
+  className?: string;
 }
 
 const ImageCard = ({ 
   image, 
   isSelected, 
   onSelect,
-  selectable = true
+  selectable = true,
+  className
 }: ImageCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -60,15 +62,16 @@ const ImageCard = ({
 
   return (
     <div 
-      className={`bg-navy rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform ${
+      className={cn(`bg-navy rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform ${
         isHovered ? 'scale-105 -translate-y-2 shadow-xl z-10' : ''
       } ${selectable ? 'cursor-pointer' : ''} ${
         isSelected && selectable ? 'ring-4 ring-green-500' : ''
-      }`}
+      }`, className)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={selectable ? onSelect : undefined}
     >
+      
       <AspectRatio ratio={16/9} className="w-full">
         {isLoading ? (
           <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
