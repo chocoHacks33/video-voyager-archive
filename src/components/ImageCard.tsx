@@ -25,8 +25,8 @@ const ImageCard = ({
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Use correct image path
   const imageSrc = image.source;
+  console.log(`ImageCard: Attempting to load image from: ${imageSrc}`);
 
   useEffect(() => {
     console.log(`ImageCard: Loading image from path: ${imageSrc}`);
@@ -81,7 +81,7 @@ const ImageCard = ({
   };
 
   const handleCardClick = () => {
-    if (onSelect) {
+    if (selectable && onSelect) {
       onSelect();
     }
   };
@@ -130,7 +130,7 @@ const ImageCard = ({
             className="w-full h-full object-cover"
             onLoad={handleImageLoad}
             onError={handleImageError}
-            loading="eager"
+            loading="lazy"
           />
         )}
       </AspectRatio>
