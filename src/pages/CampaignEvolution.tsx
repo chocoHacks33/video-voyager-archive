@@ -1,4 +1,3 @@
-
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -67,7 +66,7 @@ const CampaignEvolution = () => {
           <h1 className="text-2xl font-bold text-[#ea384c]">DEMO MODE</h1>
           <Button 
             variant="outline" 
-            className="gap-2"
+            className="gap-2 border-purple-500 hover:border-purple-600"
             onClick={handleSkipDays}
             disabled={daysToShow >= 28}
           >
