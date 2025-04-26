@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Rocket, Activity, TrendingUp, Zap, Eye, Coins, Tag } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
@@ -200,9 +201,15 @@ const GalleryPage = () => {
   };
 
   const handleAdClick = (imageId: number) => {
-    if (campaignLaunched && displayedImages.find(img => img.id === imageId)) {
-      // Navigate to evolution page with the ad ID and selected metrics
-      navigate(`/campaign-evolution?adId=${imageId}&metrics=${selectedMetrics.join(',')}`);
+    if (campaignLaunched) {
+      // Find the image to ensure it exists before navigating
+      const clickedImage = displayedImages.find(img => img.id === imageId);
+      if (clickedImage) {
+        console.log(`Navigating to /campaign-evolution with adId=${imageId} and metrics=${selectedMetrics.join(',')}`);
+        
+        // Navigate to evolution page with the ad ID and selected metrics
+        navigate(`/campaign-evolution?adId=${imageId}&metrics=${selectedMetrics.join(',')}`);
+      }
     }
   };
 
@@ -215,15 +222,15 @@ const GalleryPage = () => {
             {displayedImages.map((image, index) => (
               <div
                 key={image.id}
-                className={`
-                  ${campaignLaunched && displayedImages.length % 3 === 1 && index === displayedImages.length - 1
+                className={cn(
+                  `${campaignLaunched && displayedImages.length % 3 === 1 && index === displayedImages.length - 1
                     ? 'col-start-2'  // Center the last image if it's alone in the last row
                     : ''}
                   ${campaignLaunched && displayedImages.length % 3 === 2 && index >= displayedImages.length - 2
                     ? 'col-span-1 first:col-start-1 last:col-start-3'  // Space out last two images
                     : ''}
-                  relative
-                `}
+                  relative`
+                )}
               >
                 {campaignLaunched && image.allocatedBudget && (
                   <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1 z-10 flex items-center gap-1.5">
