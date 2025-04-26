@@ -1,7 +1,4 @@
-
 import React, { useState, useEffect } from 'react';
-import { Activity, TrendingUp, Zap, Eye, Tag, Flame } from 'lucide-react';
-import AppLayout from '@/components/AppLayout';
 import { toast } from "sonner";
 import { useCredits } from '@/contexts/CreditsContext';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -14,44 +11,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import AppLayout from '@/components/AppLayout';
 import GalleryGrid from '@/components/gallery/GalleryGrid';
 import CampaignSettings from '@/components/gallery/CampaignSettings';
-import { ImageData, MetricTag } from '@/components/gallery/types';
-
-const metricTags: MetricTag[] = [
-  { id: 'engagement', label: 'Engagement', icon: Activity },
-  { id: 'outreach', label: 'Outreach', icon: TrendingUp },
-  { id: 'ctr', label: 'CTR', icon: Zap },
-  { id: 'views', label: 'Views', icon: Eye },
-  { id: 'convertibility', label: 'Convertibility', icon: Tag },
-  { id: 'wild', label: 'Wild', icon: Flame }
-];
-
-const distributeBudget = (totalBudget: number, imageCount: number): number[] => {
-  if (imageCount === 0) return [];
-  if (imageCount === 1) return [totalBudget];
-  
-  const baseBudgetPool = totalBudget * 0.7;
-  const baseBudget = Math.floor(baseBudgetPool / imageCount);
-  const distribution = Array(imageCount).fill(baseBudget);
-  let toDistribute = totalBudget - (baseBudget * imageCount);
-  
-  while (toDistribute > 0) {
-    for (let i = 0; i < imageCount && toDistribute > 0; i++) {
-      const maxExtra = Math.min(toDistribute, Math.floor(baseBudget * 0.3));
-      const extra = Math.floor(Math.random() * maxExtra);
-      distribution[i] += extra;
-      toDistribute -= extra;
-    }
-    if (toDistribute > 0 && toDistribute < imageCount) {
-      const randomIndex = Math.floor(Math.random() * imageCount);
-      distribution[randomIndex] += toDistribute;
-      toDistribute = 0;
-    }
-  }
-  
-  return distribution.sort(() => Math.random() - 0.5);
-};
+import { ImageData } from '@/components/gallery/types';
+import { baseImages, evoImages } from '@/data/galleryImages';
+import { metricTags } from '@/data/campaignMetrics';
+import { distributeBudget } from '@/utils/campaignUtils';
 
 const GalleryPage = () => {
   const location = useLocation();
@@ -71,32 +37,9 @@ const GalleryPage = () => {
 
   useEffect(() => {
     const loadInitialImages = () => {
-      // Main images for initial selection, with corrected paths
-      const baseImages: ImageData[] = [
-        { id: 1, source: '/lovable-uploads/9da504bc-82c3-45aa-a0e2-37780ae1e297.png', description: 'Gaming Experience' },
-        { id: 2, source: '/lovable-uploads/c4a72d70-7e42-4eef-923a-6b0ecfa9cfe9.png', description: 'Classroom Joy' },
-        { id: 3, source: '/lovable-uploads/5737fa2f-eb77-4912-a895-d29211ffc78a.png', description: 'Chess Masters' },
-        { id: 4, source: '/lovable-uploads/98840411-b0be-4149-8d19-6a0689ff1aac.png', description: 'Leadership' },
-        { id: 5, source: '/lovable-uploads/3458d241-5855-4eae-add3-641531d930d3.png', description: 'Summer Vibes' },
-        { id: 6, source: '/lovable-uploads/93554f30-535b-4830-a5d7-8bb020d6923d.png', description: 'Home Comfort' },
-        { id: 7, source: '/lovable-uploads/ed20f719-1d5d-43f8-ba9a-60e65b233b5f.png', description: 'Autumn Reflection' },
-        { id: 8, source: '/lovable-uploads/8472d902-e251-485c-9190-7fca155d4bb0.png', description: 'Youth Energy' },
-        { id: 9, source: '/lovable-uploads/31d6fd8a-d034-4119-905b-5f196771f402.png', description: 'Anime Entertainment' }
-      ];
-
-      // Evolution images for campaign view
-      const evoImages: ImageData[] = [
-        { id: 10, source: '/lovable-uploads/07eddad6-7feb-4734-b135-98d5881e30a0.png', description: 'Evolution 0' },
-        { id: 11, source: '/lovable-uploads/bb88b842-11ea-4909-b1d8-320ce63ee527.png', description: 'Evolution 1' },
-        { id: 12, source: '/lovable-uploads/670877c1-37cc-4aad-bacd-f1bb1aa8daba.png', description: 'Evolution 2' },
-        { id: 13, source: '/lovable-uploads/46aa19d0-db67-4c9f-adb5-6cd27bc10a78.png', description: 'Evolution 3' },
-        { id: 14, source: '/lovable-uploads/a1ed0bfe-9482-4bbb-97b6-18537cbcfb80.png', description: 'Evolution 4' }
-      ];
-
       if (initialSelectedImages.length > 0 && initialCampaignLaunched) {
-        // If campaign is launched, show evolution images
         const selectedImagesData = evoImages;
-        const mockBudget = distributeRandomBudgets(selectedImagesData.length);
+        const mockBudget = distributeBudget(selectedImagesData.length);
         
         const imagesWithBudget = selectedImagesData.map((img, index) => ({
           ...img,
@@ -105,19 +48,12 @@ const GalleryPage = () => {
         
         setDisplayedImages(imagesWithBudget);
       } else {
-        // If not launched, show base images
         setDisplayedImages(baseImages);
       }
     };
 
     loadInitialImages();
   }, [initialSelectedImages, initialCampaignLaunched]);
-
-  // Function to generate random budget distribution for mock data
-  const distributeRandomBudgets = (count: number): number[] => {
-    const totalBudget = 1000; // Mock budget value
-    return distributeBudget(totalBudget, count);
-  };
 
   const handleSelectImage = (imageId: number) => {
     if (campaignLaunched) return;
@@ -168,14 +104,7 @@ const GalleryPage = () => {
     const budgetValue = parseFloat(budget);
     spendCredits(budgetValue);
     
-    // Get all images first
-    const allImages: ImageData[] = Array.from({ length: 9 }, (_, index) => ({
-      id: index + 1,
-      source: `/public/stock-videos/image${index + 1}.jpg`,
-      description: `Ad Variation ${index + 1}`
-    }));
-    
-    const selectedImagesData = allImages.filter(img => selectedImages.includes(img.id));
+    const selectedImagesData = evoImages;
     const budgetDistribution = distributeBudget(budgetValue, selectedImagesData.length);
     
     const imagesWithBudget = selectedImagesData.map((img, index) => ({
@@ -187,7 +116,6 @@ const GalleryPage = () => {
     setCampaignLaunched(true);
     setDisplayedImages(imagesWithBudget);
     
-    // Navigate to the same page with URL parameters to show filtered view
     navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true`, { replace: true });
     
     toast.success("Ad campaign launched successfully!", {
@@ -199,12 +127,7 @@ const GalleryPage = () => {
     if (campaignLaunched) {
       const clickedImage = displayedImages.find(img => img.id === imageId);
       if (clickedImage) {
-        console.log('Navigating to campaign evolution for image:', clickedImage);
-        // Use the selectedMetrics state which will contain either the initial metrics from URL
-        // or the metrics selected by the user during campaign setup
         navigate(`/campaign-evolution?adId=${imageId}&metrics=${selectedMetrics.join(',')}&selectedImages=${selectedImages.join(',')}`);
-      } else {
-        console.error('Clicked image not found:', imageId);
       }
     } else {
       handleSelectImage(imageId);
