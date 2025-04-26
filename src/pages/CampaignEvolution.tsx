@@ -1,4 +1,3 @@
-
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -36,11 +35,22 @@ const VideoTooltip = ({ active, payload, label }: any) => {
 };
 
 const generateRandomData = (metric: string) => {
-  return Array.from({ length: 5 }, (_, i) => ({
-    name: i,
-    value: Math.floor(Math.random() * 1000) + 100,
-    videoSrc: `/stock-videos/video${(i % 6) + 1}.mp4`
-  }));
+  // Generate data for 29 days (0-28)
+  return Array.from({ length: 29 }, (_, i) => {
+    const isMutation = i > 0 && i % 7 === 0; // Check if current day is a mutation day
+    const mutationNumber = i > 0 ? Math.floor(i / 7) : 0; // Calculate mutation number
+    
+    // Generate a value that trends upward over time
+    const baseValue = Math.floor(Math.random() * 500) + 100;
+    const trendFactor = 1 + (i * 0.1); // Increase value over time
+    const value = Math.floor(baseValue * trendFactor);
+
+    return {
+      name: i,
+      value: value,
+      videoSrc: isMutation ? `/stock-videos/video${mutationNumber}.mp4` : null
+    };
+  });
 };
 
 // Format metric name for display (capitalize or make uppercase for acronyms)
@@ -169,8 +179,10 @@ const CampaignEvolution = () => {
                           >
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis 
-                              dataKey="name" 
-                              tickFormatter={(value) => `Day ${value + 1}`}
+                              dataKey="name"
+                              domain={[0, 28]}
+                              ticks={[0, 7, 14, 21, 28]} // Show these specific days
+                              tickFormatter={(value) => `Day ${value}`}
                               label={{ value: 'Timeline (Days)', position: 'insideBottom', offset: -15 }}
                             />
                             <YAxis 
@@ -211,4 +223,3 @@ const CampaignEvolution = () => {
 };
 
 export default CampaignEvolution;
-
