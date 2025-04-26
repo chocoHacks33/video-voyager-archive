@@ -22,10 +22,19 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
 
   // Animation effect when data changes
   useEffect(() => {
+    // Find the most recent checkpoint in the data
+    const checkpoints = [0, 7, 14, 21, 28];
+    const currentCheckpoint = checkpoints.filter(cp => data.some(d => d.name === cp)).pop() || 0;
+    const nextCheckpoint = checkpoints.find(cp => cp > currentCheckpoint) || 28;
+    
+    // Get the complete dataset with actual data points
     const targetData = fullDataset.map(point => {
       const actualDataPoint = data.find(d => d.name === point.name);
       return actualDataPoint || point;
     });
+
+    // Get the previous state of the animation as starting point
+    const startData = [...animatedData];
 
     let startTime: number;
     const animationDuration = 5000; // 5 seconds
@@ -37,24 +46,26 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
 
       const newData = fullDataset.map((point, index) => {
         const targetPoint = targetData[index];
-        if (!targetPoint?.value) return point;
-
-        // Find the previous checkpoint
-        const prevCheckpoint = Math.floor((index - 7) / 7) * 7;
-        const nextCheckpoint = Math.ceil(index / 7) * 7;
         
-        // If this point is from a previous checkpoint, keep its value
-        if (index <= prevCheckpoint) {
-          return targetPoint;
+        // Keep previous data points unchanged
+        if (index <= currentCheckpoint) {
+          return targetPoint?.value ? targetPoint : startData[index];
         }
         
-        // If this point is between checkpoints, animate it based on progress
-        const segmentProgress = progress * (nextCheckpoint - prevCheckpoint);
-        if (index <= prevCheckpoint + segmentProgress) {
-          return targetPoint;
+        // If this is in the new range being animated
+        if (index <= nextCheckpoint) {
+          // Calculate how far along this point should be based on its position
+          const segmentProgress = progress * (nextCheckpoint - currentCheckpoint);
+          const pointPosition = index - currentCheckpoint;
+          
+          // Only show this point if the animation has reached it
+          if (pointPosition <= segmentProgress) {
+            return targetPoint;
+          }
         }
         
-        return point;
+        // For points beyond the current animation range, don't show them yet
+        return { ...point, value: null };
       });
 
       setAnimatedData(newData);
