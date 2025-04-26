@@ -2,7 +2,7 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -183,7 +183,6 @@ const CampaignEvolution = () => {
                               }}
                             />
                             <Tooltip content={<VideoTooltip />} />
-                            <Legend />
                             <Line 
                               type="monotone" 
                               dataKey="value" 
@@ -212,3 +211,4 @@ const CampaignEvolution = () => {
 };
 
 export default CampaignEvolution;
+
