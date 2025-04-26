@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,8 +32,7 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
     const prevCheckpointData = data.find(d => d.name === prevDay) || 
       { name: prevDay, value: 0, mutationNumber: Math.floor(prevDay / 7), videoSrc: `/stock-videos/video${Math.floor(prevDay / 7)}.mp4` };
 
-    // Start with previous data state, filtering to only include checkpoint days (0, 7, 14, 21, 28)
-    // This ensures we only show the 5 key mutation points
+    // Start with previous data state
     let startData = previousDataRef.current.length > 0 
       ? previousDataRef.current.filter(d => d.name % 7 === 0)
       : data.filter(d => d.name <= prevDay && d.name % 7 === 0);
@@ -49,17 +49,19 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
       
-      // Create animated points between previous and current checkpoint
+      // Ease-in-out cubic interpolation for smoother animation
+      const smoothProgress = progress < 0.5 
+        ? 4 * progress ** 3 
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
       const newAnimatedData = [...startData];
       
-      // Only animate if we're moving to a new checkpoint
       if (prevDay < currentDay) {
-        // Calculate interpolated points only for the animation
-        const interpolatedDay = prevDay + Math.floor((currentDay - prevDay) * progress);
+        // Interpolate between previous and current checkpoint
+        const interpolatedDay = prevDay + Math.floor((currentDay - prevDay) * smoothProgress);
         const interpolatedValue = prevCheckpointData.value + 
-          (currentCheckpointData.value - prevCheckpointData.value) * progress;
+          (currentCheckpointData.value - prevCheckpointData.value) * smoothProgress;
         
-        // Only add the current point if we've progressed to it
         if (progress > 0) {
           const interpolatedPoint = {
             name: interpolatedDay,
@@ -68,25 +70,12 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
             videoSrc: `/stock-videos/video${Math.floor(interpolatedDay / 7)}.mp4`
           };
           
-          // Add the animated point
-          if (progress < 1) {
-            // During animation, add the interpolated point
-            const existingIndex = newAnimatedData.findIndex(d => d.name === currentDay);
-            if (existingIndex >= 0) {
-              // Replace existing endpoint with interpolated point
-              newAnimatedData[existingIndex] = interpolatedPoint;
-            } else {
-              // Add interpolated point
-              newAnimatedData.push(interpolatedPoint);
-            }
+          const existingIndex = newAnimatedData.findIndex(d => d.name === currentDay);
+          if (existingIndex >= 0) {
+            // Replace or add interpolated point
+            newAnimatedData[existingIndex] = progress < 1 ? interpolatedPoint : currentCheckpointData;
           } else {
-            // At end of animation, add the final checkpoint
-            const existingIndex = newAnimatedData.findIndex(d => d.name === currentDay);
-            if (existingIndex >= 0) {
-              newAnimatedData[existingIndex] = currentCheckpointData;
-            } else {
-              newAnimatedData.push(currentCheckpointData);
-            }
+            newAnimatedData.push(progress < 1 ? interpolatedPoint : currentCheckpointData);
           }
         }
       }
@@ -99,7 +88,6 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
         animationRef.current = requestAnimationFrame(animate);
       } else {
         // Animation complete, save final state
-        // Make sure we only keep the checkpoint days (0, 7, 14, 21, 28)
         previousDataRef.current = newAnimatedData.filter(d => d.name % 7 === 0);
       }
     };
