@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -142,7 +141,7 @@ const UploadPage = () => {
           
           {file && (
             <p className="text-sm text-gray-500 mt-2 text-center">
-              Your product image will be processed and subsequently morphed into platform-specific variations
+              Your product image will be processed and subsequently morphed into demographic-specific variations
             </p>
           )}
         </div>

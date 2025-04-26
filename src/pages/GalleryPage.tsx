@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Rocket, Check } from 'lucide-react';
+import { Rocket } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -72,8 +72,6 @@ const imagesData: ImageData[] = [
 ];
 
 const GalleryPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const [selectedImages, setSelectedImages] = useState<number[]>([]);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [campaignLaunched, setCampaignLaunched] = useState(false);
@@ -86,9 +84,9 @@ const GalleryPage = () => {
     if (storedUrls.length > 0) {
       // Use the stored URLs to create image data
       const generatedImages = storedUrls.map((url: string, index: number) => ({
-        id: 100 + index, // Use a different ID range to avoid conflicts
+        id: 100 + index,
         source: url,
-        description: imagesData[index % imagesData.length].description // Reuse descriptions
+        description: imagesData[index % imagesData.length].description
       }));
       
       setDisplayedImages(generatedImages);
@@ -99,7 +97,7 @@ const GalleryPage = () => {
   }, []);
 
   const handleSelectImage = (imageId: number) => {
-    if (campaignLaunched) return; // Disable selection if campaign already launched
+    if (campaignLaunched) return;
     
     setSelectedImages(prev => {
       if (prev.includes(imageId)) {
@@ -152,34 +150,33 @@ const GalleryPage = () => {
           {!campaignLaunched && (
             <div className="flex justify-center">
               <Button 
-                className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2 group"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium px-10 py-3 rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3"
                 onClick={handleLaunchCampaign}
               >
                 <Rocket className="w-5 h-5 transition-transform group-hover:rotate-12" />
-                Launch Campaigns {selectedImages.length > 0 && `(${selectedImages.length})`}
+                Launch Campaign {selectedImages.length > 0 && `(${selectedImages.length})`}
               </Button>
             </div>
-          )}
-          
-          {!campaignLaunched && (
-            <p className="text-sm text-center text-amber-600 dark:text-amber-400 mt-6">
-              Note: To add your own images, place image files named image1.jpg through image9.jpg in the /public/stock-videos/ folder.
-            </p>
           )}
         </div>
       </div>
 
       <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white dark:bg-gray-800 border-0 shadow-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle>Launch Ad Campaign</AlertDialogTitle>
-            <AlertDialogDescription>
-              You've selected {selectedImages.length} image{selectedImages.length > 1 ? 's' : ''} for your campaign. 
-              Launch now to start showing these ads to your audience.
+            <AlertDialogTitle className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+              Launch Ad Campaign
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
+              You've selected {selectedImages.length} ad{selectedImages.length !== 1 ? 's' : ''} for your campaign. 
+              Launch now to start showing these ads to your audience and begin evolution cycle!
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={handleConfirmLaunch} className="bg-green-600 hover:bg-green-700">
+            <AlertDialogAction 
+              onClick={handleConfirmLaunch} 
+              className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            >
               Confirm Launch
             </AlertDialogAction>
           </AlertDialogFooter>
