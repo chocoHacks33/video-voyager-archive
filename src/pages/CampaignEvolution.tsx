@@ -34,12 +34,13 @@ const CampaignEvolution = () => {
       setActiveTab(metrics[0]);
     }
     
+    // Only show initial toast, not on every skip
     if (metrics.length > 0 && adId) {
       toast.success(`Loaded evolution data for Ad ${adId}`, {
         description: `Tracking ${metrics.length} metric${metrics.length !== 1 ? 's' : ''}`
       });
     }
-  }, [metrics, activeTab, adId]);
+  }, [metrics, activeTab, adId]); // Remove daysToShow dependency
 
   const handleBack = () => {
     const currentMetrics = params.get('metrics') || '';

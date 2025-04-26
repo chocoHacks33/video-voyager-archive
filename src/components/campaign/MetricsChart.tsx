@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import VideoTooltip from './VideoTooltip';
@@ -13,6 +12,7 @@ interface MetricsChartProps {
 const MetricsChart = ({ metric, data }: MetricsChartProps) => {
   const [animatedData, setAnimatedData] = useState(data);
   const maxValue = getMetricMaxValue(metric);
+  const animationRef = useRef<number>();
 
   // Create a fixed dataset with all possible days
   const fullDataset = Array.from({ length: 29 }, (_, i) => ({
@@ -35,27 +35,49 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
 
-      const newData = targetData.map((target, index) => {
-        const prev = animatedData[index];
-        if (!target.value || !prev) return target;
+      const newData = fullDataset.map((point, index) => {
+        const targetPoint = targetData[index];
+        if (!targetPoint?.value) return point;
 
-        const prevValue = prev.value ?? 0;
-        const targetValue = target.value;
+        // Find the previous checkpoint
+        const prevCheckpoint = Math.floor((index - 7) / 7) * 7;
+        const nextCheckpoint = Math.ceil(index / 7) * 7;
         
-        return {
-          ...target,
-          value: prevValue + (targetValue - prevValue) * progress
-        };
+        // If this point is from a previous checkpoint, keep its value
+        if (index <= prevCheckpoint) {
+          return targetPoint;
+        }
+        
+        // If this point is between checkpoints, animate it based on progress
+        const segmentProgress = progress * (nextCheckpoint - prevCheckpoint);
+        if (index <= prevCheckpoint + segmentProgress) {
+          return targetPoint;
+        }
+        
+        return point;
       });
 
       setAnimatedData(newData);
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        animationRef.current = requestAnimationFrame(animate);
       }
     };
 
-    requestAnimationFrame(animate);
+    // Cancel any existing animation
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+
+    // Start new animation
+    animationRef.current = requestAnimationFrame(animate);
+
+    // Cleanup
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
   }, [data]);
 
   return (
