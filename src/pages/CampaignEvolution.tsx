@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -61,7 +60,6 @@ const CampaignEvolution = () => {
 
   const handleBack = () => {
     // Always navigate back to gallery with selected images and campaignLaunched=true
-    // This ensures we see the filtered/launched view
     navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true`);
   };
 
@@ -92,7 +90,7 @@ const CampaignEvolution = () => {
                 <CardHeader>
                   <CardTitle className="capitalize">{metric} Evolution</CardTitle>
                   <CardDescription>
-                    Hover over points to see the ad mutation for that stage
+                    Track the {metric.toLowerCase()} performance over time
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -110,7 +108,7 @@ const CampaignEvolution = () => {
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis 
                           dataKey="name" 
-                          tickFormatter={(value) => `Mutation ${value}`}
+                          tickFormatter={(value) => `Day ${value + 1}`}
                         />
                         <YAxis />
                         <Tooltip content={<VideoTooltip />} />
