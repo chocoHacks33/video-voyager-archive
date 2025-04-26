@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import { useCredits } from '@/contexts/CreditsContext';
@@ -33,12 +32,16 @@ const GalleryPage = () => {
   const [displayedImages, setDisplayedImages] = useState<ImageData[]>([]);
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>(initialMetrics);
   const [budget, setBudget] = useState<string>('');
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const { spendCredits } = useCredits();
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("GalleryPage: Loading initial images");
+    
     const loadInitialImages = () => {
       if (initialSelectedImages.length > 0 && initialCampaignLaunched) {
+        console.log("Loading evolution images for campaign");
         const selectedImagesData = evoImages;
         // Fixed: Pass both required arguments to distributeBudget
         const mockBudget = distributeBudget(1000, selectedImagesData.length);
@@ -48,10 +51,14 @@ const GalleryPage = () => {
           allocatedBudget: mockBudget[index]
         }));
         
+        console.log("Setting displayed images:", imagesWithBudget);
         setDisplayedImages(imagesWithBudget);
       } else {
+        console.log("Loading base images");
+        console.log("Base images:", baseImages);
         setDisplayedImages(baseImages);
       }
+      setImagesLoaded(true);
     };
 
     loadInitialImages();
@@ -135,6 +142,16 @@ const GalleryPage = () => {
       handleSelectImage(imageId);
     }
   };
+
+  if (!imagesLoaded) {
+    return (
+      <AppLayout title="Loading Gallery...">
+        <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-6 shadow-lg flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout title={campaignLaunched ? "Your Active Campaigns" : "Choose Your Ads"}>

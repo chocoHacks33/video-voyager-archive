@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Check } from 'lucide-react';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,11 @@ const ImageCard = ({
     ? image.source.replace('/public/', '/') 
     : image.source;
 
+  // Add effect to log image source for debugging
+  useEffect(() => {
+    console.log(`Loading image from: ${imageSrc}`);
+  }, [imageSrc]);
+
   const handleImageError = () => {
     console.error(`Failed to load image: ${imageSrc}`);
     setImageError(true);
@@ -46,6 +51,11 @@ const ImageCard = ({
     if (onSelect) {
       onSelect();
     }
+  };
+
+  const handleImageLoad = () => {
+    console.log(`Successfully loaded image: ${imageSrc}`);
+    setIsLoading(false);
   };
 
   return (
@@ -84,13 +94,13 @@ const ImageCard = ({
             src={imageSrc}
             alt={image.description}
             className="w-full h-full object-cover"
-            onLoad={() => setIsLoading(false)}
+            onLoad={handleImageLoad}
             onError={handleImageError}
           />
         )}
       </AspectRatio>
       
-      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-80'}`}>
         <p className="text-base">{image.description}</p>
       </div>
       
