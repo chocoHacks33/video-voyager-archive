@@ -14,9 +14,9 @@ export const baseImages: ImageData[] = [
 ];
 
 export const evoImages: ImageData[] = [
-  { id: 10, source: '/lovable-uploads/photo-1649972904349-6e44c42644a7.jpg', description: 'Evolution 0' },
-  { id: 11, source: '/lovable-uploads/photo-1488590528505-98d2b5aba04b.jpg', description: 'Evolution 1' },
-  { id: 12, source: '/lovable-uploads/photo-1518770660439-4636190af475.jpg', description: 'Evolution 2' },
+  { id: 10, source: '/lovable-uploads/evo0.jpg', description: 'Evolution 0' },
+  { id: 11, source: '/lovable-uploads/evo1.jpg', description: 'Evolution 1' },
+  { id: 12, source: '/lovable-uploads/evo2.jpg', description: 'Evolution 2' },
   { id: 13, source: '/lovable-uploads/evo3.jpg', description: 'Evolution 3' },
   { id: 14, source: '/lovable-uploads/evo4.jpg', description: 'Evolution 4' }
 ];

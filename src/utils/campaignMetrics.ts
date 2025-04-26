@@ -25,20 +25,20 @@ export const generateRandomData = (metric: string) => {
         name: day,
         mutationNumber: Math.floor(day / 7),
         value: dataCache[metric][day],
-        videoSrc: `/stock-videos/video${Math.floor(day / 7)}.mp4`
+        imageSrc: `/lovable-uploads/evo${Math.floor(day / 7)}.jpg`
       };
     }
 
     // Generate and cache new value for this day based on metric type
     const maxValue = metricMaxValues[metric.toLowerCase()] || 1000;
-    const value = Math.floor(Math.random() * (maxValue * 0.8)) + (maxValue * 0.1); // Values between 10% and 90% of max
+    const value = Math.floor(Math.random() * (maxValue * 0.8)) + (maxValue * 0.1);
     dataCache[metric][day] = value;
     
     return {
       name: day,
       mutationNumber: Math.floor(day / 7),
       value,
-      videoSrc: `/stock-videos/video${Math.floor(day / 7)}.mp4`
+      imageSrc: `/lovable-uploads/evo${Math.floor(day / 7)}.jpg`
     };
   });
 };

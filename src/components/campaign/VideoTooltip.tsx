@@ -19,12 +19,10 @@ const VideoTooltip = ({ active, payload, label }: VideoTooltipProps) => {
       <p className="text-gray-600 mb-2">{payload[0].name}: {payload[0].value}</p>
       <div className="w-64">
         <AspectRatio ratio={16/9}>
-          <video 
-            src={data.videoSrc || "/stock-videos/video1.mp4"}
+          <img
+            src={data.imageSrc}
+            alt={`Evolution ${data.mutationNumber}`}
             className="rounded-md w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
           />
         </AspectRatio>
       </div>
