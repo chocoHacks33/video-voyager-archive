@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Rocket } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { Button } from "@/components/ui/button";
@@ -22,54 +22,6 @@ interface ImageData {
   description: string;
 }
 
-const imagesData: ImageData[] = [
-  {
-    id: 1,
-    source: '/public/stock-videos/image1.jpg',
-    description: 'Female Chinese Fashion Model'
-  },
-  {
-    id: 2,
-    source: '/public/stock-videos/image2.jpg',
-    description: 'Married Couple Casual Model'
-  },
-  {
-    id: 3,
-    source: '/public/stock-videos/image3.jpg',
-    description: 'Female Western Fashion Model'
-  },
-  {
-    id: 4,
-    source: '/public/stock-videos/image4.jpg',
-    description: 'Male Black Fashion Model'
-  },
-  {
-    id: 5,
-    source: '/public/stock-videos/image5.jpg',
-    description: 'Chinese Traditional Model'
-  },
-  {
-    id: 6,
-    source: '/public/stock-videos/image6.jpg',
-    description: 'All Male Basketball Model'
-  },
-  {
-    id: 7,
-    source: '/public/stock-videos/image7.jpg',
-    description: 'Female Black Fashion Model'
-  },
-  {
-    id: 8,
-    source: '/public/stock-videos/image8.jpg',
-    description: 'Kids Fashion Models'
-  },
-  {
-    id: 9,
-    source: '/public/stock-videos/image9.jpg',
-    description: 'Female Black Fashion Model'
-  }
-];
-
 const GalleryPage = () => {
   const [selectedImages, setSelectedImages] = useState<number[]>([]);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -77,8 +29,13 @@ const GalleryPage = () => {
   const [displayedImages, setDisplayedImages] = useState<ImageData[]>([]);
 
   useEffect(() => {
-    // Initialize with empty array, ready for local images
-    setDisplayedImages([]);
+    // Prepare 9 empty image slots
+    const emptyImages: ImageData[] = Array.from({ length: 9 }, (_, index) => ({
+      id: index + 1,
+      source: `/public/stock-videos/image${index + 1}.jpg`,
+      description: `Ad Variation ${index + 1}`
+    }));
+    setDisplayedImages(emptyImages);
   }, []);
 
   const handleSelectImage = (imageId: number) => {
@@ -107,7 +64,6 @@ const GalleryPage = () => {
     setShowSuccessDialog(false);
     setCampaignLaunched(true);
     
-    // Filter only selected images to display
     const selectedImagesData = displayedImages.filter(img => selectedImages.includes(img.id));
     setDisplayedImages(selectedImagesData);
     
