@@ -57,12 +57,13 @@ const GalleryPage = () => {
   const params = new URLSearchParams(location.search);
   const initialSelectedImages = params.get('selectedImages')?.split(',').map(Number) || [];
   const initialCampaignLaunched = params.get('campaignLaunched') === 'true';
+  const initialMetrics = params.get('metrics')?.split(',').filter(Boolean) || [];
   
   const [selectedImages, setSelectedImages] = useState<number[]>(initialSelectedImages);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [campaignLaunched, setCampaignLaunched] = useState(initialCampaignLaunched);
   const [displayedImages, setDisplayedImages] = useState<ImageData[]>([]);
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
+  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(initialMetrics);
   const [budget, setBudget] = useState<string>('');
   const { spendCredits } = useCredits();
   const navigate = useNavigate();
@@ -184,6 +185,8 @@ const GalleryPage = () => {
       const clickedImage = displayedImages.find(img => img.id === imageId);
       if (clickedImage) {
         console.log('Navigating to campaign evolution for image:', clickedImage);
+        // Use the selectedMetrics state which will contain either the initial metrics from URL
+        // or the metrics selected by the user during campaign setup
         navigate(`/campaign-evolution?adId=${imageId}&metrics=${selectedMetrics.join(',')}&selectedImages=${selectedImages.join(',')}`);
       } else {
         console.error('Clicked image not found:', imageId);

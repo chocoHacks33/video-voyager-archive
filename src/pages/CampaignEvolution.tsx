@@ -48,12 +48,12 @@ const CampaignEvolution = () => {
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const adId = params.get('adId');
-  const metrics = params.get('metrics')?.split(',') || [];
+  const metrics = params.get('metrics')?.split(',').filter(Boolean) || [];
   const selectedImages = params.get('selectedImages')?.split(',').map(Number) || [];
   
-  // Track the current active metric tab and use a ref to track component mounts
+  // Use a ref for the render key to force complete re-renders when metrics change
+  const renderKeyRef = useRef(`metrics-tabs-${Date.now()}`);
   const [activeTab, setActiveTab] = useState<string>('');
-  const componentMountedRef = useRef(false);
   
   // Generate random data for each metric
   const metricsData = useMemo(() => {
@@ -64,10 +64,10 @@ const CampaignEvolution = () => {
     return data;
   }, [metrics]);
 
-  // Reset active tab and remount logic whenever URL parameters change
+  // Reset active tab and create a new render key whenever URL parameters change
   useEffect(() => {
-    // Force a complete component reset on every navigation
-    componentMountedRef.current = false;
+    // Update the render key to force a complete component re-render
+    renderKeyRef.current = `metrics-tabs-${metrics.join('-')}-${Date.now()}`;
     
     // Reset the active tab
     if (metrics.length > 0) {
@@ -76,20 +76,22 @@ const CampaignEvolution = () => {
       setActiveTab('');
     }
     
-    // Mark component as mounted
-    componentMountedRef.current = true;
-    
-    // Show a toast message when metrics are loaded successfully
+    // Show a toast message when metrics are loaded
     if (metrics.length > 0 && adId) {
       toast.success(`Loaded evolution data for Ad ${adId}`, {
-        description: `Tracking ${metrics.length} metrics`
+        description: `Tracking ${metrics.length} metric${metrics.length !== 1 ? 's' : ''}`
       });
     }
-  }, [location.search, metrics, adId]);
+
+    // Log the metrics for debugging
+    console.log('Current metrics:', metrics);
+  }, [adId, metrics]);
 
   const handleBack = () => {
     // Always navigate back to gallery with selected images and campaignLaunched=true
-    navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true`);
+    // Also preserve the metrics parameter to maintain consistency
+    const currentMetrics = params.get('metrics') || '';
+    navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true&metrics=${currentMetrics}`);
   };
 
   return (
@@ -106,7 +108,7 @@ const CampaignEvolution = () => {
 
         {metrics.length > 0 ? (
           <Tabs 
-            key={`metrics-tabs-${metrics.join('-')}`} 
+            key={renderKeyRef.current} 
             value={activeTab} 
             onValueChange={setActiveTab} 
             className="w-full"
