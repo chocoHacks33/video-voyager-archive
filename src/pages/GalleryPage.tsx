@@ -171,6 +171,9 @@ const GalleryPage = () => {
     setCampaignLaunched(true);
     setDisplayedImages(imagesWithBudget);
     
+    // Navigate to the same page with URL parameters to show filtered view
+    navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true`, { replace: true });
+    
     toast.success("Ad campaign launched successfully!", {
       description: `Launched ${selectedImages.length} ad${selectedImages.length > 1 ? 's' : ''}`
     });
