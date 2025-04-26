@@ -11,6 +11,18 @@ interface MetricsChartProps {
 }
 
 const MetricsChart = ({ metric, data }: MetricsChartProps) => {
+  // Create a fixed dataset with all possible days
+  const fullDataset = Array.from({ length: 29 }, (_, i) => ({
+    name: i,
+    value: null
+  }));
+
+  // Merge actual data with the full dataset
+  const mergedData = fullDataset.map(point => {
+    const actualDataPoint = data.find(d => d.name === point.name);
+    return actualDataPoint || point;
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -23,7 +35,7 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
-              data={data}
+              data={mergedData}
               margin={{
                 top: 20,
                 right: 30,
@@ -55,6 +67,7 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
                 stroke="#8884d8" 
                 activeDot={{ r: 8 }}
                 name={metric}
+                connectNulls={true}
               />
             </LineChart>
           </ResponsiveContainer>
