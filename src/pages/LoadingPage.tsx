@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -7,35 +8,35 @@ import { CircleX, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 
-// Function to extract text from video (mock implementation)
-const extractTextFromVideo = async (videoFile: File): Promise<string> => {
-  // In a real implementation, this would use speech-to-text or OCR services
-  console.log('Extracting text from video:', videoFile.name);
+// Function to extract text from image (mock implementation)
+const extractTextFromImage = async (imageFile: File): Promise<string> => {
+  // In a real implementation, this would use OCR services
+  console.log('Extracting text from image:', imageFile.name);
   await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate processing time
   
-  return "This is simulated text extracted from the uploaded video. In a real implementation, we would use speech-to-text or OCR services to extract actual content from the video.";
+  return "This is simulated text extracted from the uploaded image. In a real implementation, we would use OCR services to extract actual content from the image.";
 };
 
-// Function to save video to storage (simplified implementation)
-const saveVideoToStorage = async (videoUrl: string, generatedPrompt: string, videoDescription?: string): Promise<string> => {
-  console.log('Saving video to storage:', videoUrl, 'with prompt:', generatedPrompt);
+// Function to save image to storage (simplified implementation)
+const saveImageToStorage = async (imageUrl: string, generatedPrompt: string, imageDescription?: string): Promise<string> => {
+  console.log('Saving image to storage:', imageUrl, 'with prompt:', generatedPrompt);
   
-  // In a real implementation, this would download the video and save it locally or to cloud storage
-  // Also save the video description to localStorage for the gallery page
-  if (videoDescription) {
-    localStorage.setItem('videoDescription', videoDescription);
+  // In a real implementation, this would download the image and save it locally or to cloud storage
+  // Also save the image description to localStorage for the gallery page
+  if (imageDescription) {
+    localStorage.setItem('imageDescription', imageDescription);
   }
   
-  return videoUrl; // Return the path/URL where the video is stored
+  return imageUrl; // Return the path/URL where the image is stored
 };
 
 const LoadingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [progress, setProgress] = useState(0);
-  const [videoGenerationId, setVideoGenerationId] = useState<string | null>(null);
+  const [imageGenerationId, setImageGenerationId] = useState<string | null>(null);
   const [processingComplete, setProcessingComplete] = useState(false);
-  const videoFile = location.state?.videoFile;
+  const imageFile = location.state?.imageFile;
   
   // Track completion of each major phase
   const [phases, setPhases] = useState({
@@ -71,72 +72,77 @@ const LoadingPage = () => {
   }, [processingComplete, navigate]);
 
   useEffect(() => {
-    if (!videoFile) {
+    if (!imageFile) {
       toast.custom((id) => (
         <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
           <CircleX className="h-5 w-5 text-white" />
-          <span className="font-medium">No video file provided</span>
+          <span className="font-medium">No image file provided</span>
         </div>
       ), { duration: 3000 });
       navigate('/upload');
       return;
     }
 
-    const processVideo = async () => {
+    const processImage = async () => {
       try {
-        // Phase 1: Decode Advertisement
+        // Phase 1: Decode Product
         setProgress(10);
         
         // Process phase 1
         await runPhaseWithProgressUpdate(0, 33, async () => {
-          const extractedText = await extractTextFromVideo(videoFile);
+          const extractedText = await extractTextFromImage(imageFile);
           setPhases(prev => ({ ...prev, decoded: true }));
           return extractedText;
         });
         
-        // Phase 2: Map Demographics
-        const extractedText = await extractTextFromVideo(videoFile);
+        // Phase 2: Map Platform Settings
+        const extractedText = await extractTextFromImage(imageFile);
         
         // Process phase 2
         await runPhaseWithProgressUpdate(33, 66, async () => {
-          const frames = await QwenAIService.extractFramesFromVideo(videoFile);
-          const videoAnalysis = await QwenAIService.getVideoDescription(frames);
+          const imageAnalysis = await QwenAIService.getVideoDescription([imageFile]);
           setPhases(prev => ({ ...prev, mapped: true }));
-          return { frames, videoAnalysis };
+          return { imageFile, imageAnalysis };
         });
         
-        // Phase 3: Generate Advertisement
-        const frames = await QwenAIService.extractFramesFromVideo(videoFile);
-        const videoAnalysis = await QwenAIService.getVideoDescription(frames);
+        // Phase 3: Generate Assets
+        const imageAnalysis = await QwenAIService.getVideoDescription([imageFile]);
         
         // Process phase 3
         await runPhaseWithProgressUpdate(66, 100, async () => {
-          const generatedPrompt = "Cinematic video with enhanced lighting and smooth transitions";
+          const generatedPrompt = "Product image with enhanced lighting and platform-specific formatting";
           
-          // Call Qwen AI service to generate video
-          const videoResponse = await QwenAIService.generateVideo({
-            prompt: generatedPrompt,
-            text: extractedText,
-            style: 'cinematic',
-            duration: 5
-          });
+          // Call Qwen AI service to generate images (mock)
+          const imageResponse = {
+            id: "img-" + Date.now(),
+            status: 'complete',
+            imageUrl: URL.createObjectURL(imageFile)
+          };
           
-          setVideoGenerationId(videoResponse.id);
+          setImageGenerationId(imageResponse.id);
           
-          // Check video generation status
-          let videoResult = videoResponse;
-          
-          // Poll for status if necessary (simplified for demo)
-          if (videoResult.status === 'processing') {
-            videoResult = await QwenAIService.getVideoStatus(videoResponse.id);
-          }
-          
-          // Save video to storage
-          await saveVideoToStorage(
-            videoResult.videoUrl, 
+          // Save image to storage (mock implementation for demo)
+          await saveImageToStorage(
+            imageResponse.imageUrl, 
             generatedPrompt,
-            videoAnalysis.description
+            imageAnalysis.description
           );
+          
+          // Create additional dummy images and save locally - FOR DEMO ONLY
+          // In a real implementation, the AI would generate different variations
+          for (let i = 1; i <= 8; i++) {
+            const dummyImageUrl = URL.createObjectURL(imageFile);
+            await saveImageToStorage(
+              dummyImageUrl,
+              `${generatedPrompt} - variation ${i}`,
+              imageAnalysis.description
+            );
+            
+            // Store URLs in localStorage to access in gallery
+            const existingUrls = JSON.parse(localStorage.getItem('generatedImageUrls') || '[]');
+            existingUrls.push(dummyImageUrl);
+            localStorage.setItem('generatedImageUrls', JSON.stringify(existingUrls));
+          }
           
           setPhases(prev => ({ ...prev, generated: true }));
         });
@@ -144,19 +150,19 @@ const LoadingPage = () => {
         // Success! Set processing complete flag
         setProcessingComplete(true);
       } catch (error) {
-        console.error("Video processing error:", error);
+        console.error("Image processing error:", error);
         toast.custom((id) => (
           <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
             <CircleX className="h-5 w-5 text-white" />
-            <span className="font-medium">Error processing video</span>
+            <span className="font-medium">Error processing image</span>
           </div>
         ), { duration: 3000 });
         navigate('/upload');
       }
     };
 
-    processVideo();
-  }, [navigate, videoFile, location.state]);
+    processImage();
+  }, [navigate, imageFile, location.state]);
   
   // Helper function to run a phase and update progress
   const runPhaseWithProgressUpdate = async (startProgress: number, endProgress: number, phaseFunction: () => Promise<any>) => {
@@ -230,9 +236,9 @@ const LoadingPage = () => {
             {/* Phase cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mx-auto max-w-4xl">
               {[
-                { id: 'decoded', label: 'Advertisement Decoded' },
-                { id: 'mapped', label: 'Demographics Mapped' },
-                { id: 'generated', label: 'Advertisement Generated' }
+                { id: 'decoded', label: 'Product Decoded' },
+                { id: 'mapped', label: 'Platform Settings Mapped' },
+                { id: 'generated', label: 'Assets Generated' }
               ].map((phase, index) => (
                 <Card
                   key={phase.id}

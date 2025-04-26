@@ -1,256 +1,195 @@
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Info } from 'lucide-react';
+import React from 'react';
 import AppLayout from '@/components/AppLayout';
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  ReferenceDot,
-  TooltipProps
-} from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from 'recharts';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
-// Data for the regular ad campaign (no self-evolution)
-const regularCampaignData = [
-  { day: 'Day 1', engagement: 32 },
-  { day: 'Day 2', engagement: 38 },
-  { day: 'Day 3', engagement: 42 },
-  { day: 'Day 4', engagement: 45 },
-  { day: 'Day 5', engagement: 48 },
-  { day: 'Day 6', engagement: 50 },
-  { day: 'Day 7', engagement: 51 },
-  { day: 'Day 8', engagement: 53 },
-  { day: 'Day 9', engagement: 52 },
-  { day: 'Day 10', engagement: 54 },
-  { day: 'Day 11', engagement: 53 },
-  { day: 'Day 12', engagement: 56 },
-  { day: 'Day 13', engagement: 55 },
-  { day: 'Day 14', engagement: 57 }
-];
+// Define a type for video tooltip data
+interface VideoTooltipData {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+    dataKey: string;
+    name: string;
+    payload: {
+      name: string;
+      value: number;
+      videoSrc?: string;
+    };
+  }>;
+  label?: string;
+}
 
-// Data for the self-evolving ad campaign with plateaus followed by sharp increases after evolutions
-const selfEvolvingCampaignData = [
-  { day: 'Day 1', engagement: 32, version: 0, videoId: 'video9.mp4' }, // Added videoId for Day 1
-  { day: 'Day 2', engagement: 36 },
-  { day: 'Day 3', engagement: 41 },
-  { day: 'Day 4', engagement: 43 },
-  { day: 'Day 5', engagement: 44, version: 1, videoId: 'video10.mp4' }, // First evolution point
-  { day: 'Day 6', engagement: 58 }, // Sharp increase after evolution
-  { day: 'Day 7', engagement: 59 },
-  { day: 'Day 8', engagement: 57 }, // Some natural variation
-  { day: 'Day 9', engagement: 61 },
-  { day: 'Day 10', engagement: 63 },
-  { day: 'Day 11', engagement: 60 },
-  { day: 'Day 12', engagement: 48, version: 2, videoId: 'video11.mp4' }, // More significant dip before increase
-  { day: 'Day 13', engagement: 72 }, // Sharp increase after evolution
-  { day: 'Day 14', engagement: 95, version: 3, videoId: 'video12.mp4' } // More dramatic final evolution point
-];
+// Custom tooltip component that shows a video
+const VideoTooltip: React.FC<TooltipProps<ValueType, NameType>> = (props) => {
+  const { active, payload, label } = props as VideoTooltipData;
 
-// Evolution points for visual reference
-const evolutionPoints = [
-  { day: 'Day 1', engagement: 32, version: 0, videoId: 'video9.mp4' }, // Added videoId for Day 1
-  { day: 'Day 5', engagement: 44, version: 1, videoId: 'video10.mp4' },
-  { day: 'Day 12', engagement: 48, version: 2, videoId: 'video11.mp4' },
-  { day: 'Day 14', engagement: 95, version: 3, videoId: 'video12.mp4' }
-];
-
-// Custom tooltip component for the self-evolving chart
-// Update the type definition to match Recharts' TooltipProps
-const VideoTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
-  const [videoError, setVideoError] = useState(false);
-  
-  if (!active || !payload || !payload.length) return null;
-  
-  const data = payload[0]?.payload;
-  
-  // Only show video for evolution points
-  if (data.version === undefined) {
-    return (
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
-        <p className="font-medium">{label}</p>
-        <p className="text-sm text-purple-600 dark:text-purple-400">
-          Engagement Rate: {data.engagement}%
-        </p>
-      </div>
-    );
+  if (!active || !payload || payload.length === 0) {
+    return null;
   }
-  
+
+  const data = payload[0].payload;
+  const videoSrc = data.videoSrc || "/stock-videos/video1.mp4"; // Fallback video
+
   return (
-    <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 min-w-[300px]">
-      <p className="font-medium mb-2">Evolution Version {data.version}</p>
-      <p className="text-sm text-purple-600 dark:text-purple-400 mb-3">
-        Engagement Rate: {data.engagement}%
-      </p>
-      <div className="w-full overflow-hidden rounded-md">
-        <AspectRatio ratio={16/9} className="bg-gray-100 dark:bg-gray-700">
-          {videoError ? (
-            <div className="w-full h-full flex items-center justify-center text-amber-500">
-              <Info className="w-5 h-5 mr-2" />
-              <span className="text-sm">Video unavailable</span>
-            </div>
-          ) : (
-            <video 
-              src={`/stock-videos/${data.videoId}`}
-              className="w-full h-full object-cover"
-              autoPlay
-              loop
-              muted
-              playsInline
-              onError={() => setVideoError(true)}
-            />
-          )}
+    <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
+      <h3 className="font-bold text-gray-900">{label}</h3>
+      <p className="text-gray-600 mb-2">Engagement: {payload[0].value}</p>
+      <div className="w-64">
+        <AspectRatio ratio={16/9}>
+          <video 
+            src={videoSrc}
+            className="rounded-md w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+          />
         </AspectRatio>
       </div>
-      <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
-        Evolved Ad Variation Generated by Agents
-      </p>
     </div>
   );
 };
 
 const CampaignEvolution = () => {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("comparison");
-  const [activeTooltipIndex, setActiveTooltipIndex] = useState<number | null>(null);
-  
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-  };
-  
-  const chartConfig = {
-    regular: {
-      label: "Regular Campaign",
-      theme: { 
-        light: "#9b87f5", 
-        dark: "#9b87f5" 
-      }
-    },
-    self: {
-      label: "Agentic Campaign",
-      theme: { 
-        light: "#1EAEDB", 
-        dark: "#1EAEDB" 
-      }
-    }
-  };
+  // Data for the engagement chart - including video sources
+  const engagementData = [
+    { name: 'Day 1', value: 240, videoSrc: "/stock-videos/video1.mp4" },
+    { name: 'Day 3', value: 390, videoSrc: "/stock-videos/video2.mp4" },
+    { name: 'Day 7', value: 420, videoSrc: "/stock-videos/video3.mp4" },
+    { name: 'Day 14', value: 580, videoSrc: "/stock-videos/video4.mp4" },
+    { name: 'Day 21', value: 690, videoSrc: "/stock-videos/video5.mp4" },
+    { name: 'Day 30', value: 790, videoSrc: "/stock-videos/video6.mp4" },
+  ];
+
+  // Data for the conversion chart
+  const conversionData = [
+    { name: 'Day 1', value: 10 },
+    { name: 'Day 3', value: 25 },
+    { name: 'Day 7', value: 40 },
+    { name: 'Day 14', value: 60 },
+    { name: 'Day 21', value: 85 },
+    { name: 'Day 30', value: 110 },
+  ];
+
+  // Data for the spending chart
+  const spendingData = [
+    { name: 'Day 1', value: 50 },
+    { name: 'Day 3', value: 150 },
+    { name: 'Day 7', value: 300 },
+    { name: 'Day 14', value: 500 },
+    { name: 'Day 21', value: 700 },
+    { name: 'Day 30', value: 1000 },
+  ];
 
   return (
     <AppLayout title="Campaign Evolution">
-      <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
-          <Tabs defaultValue="comparison" value={activeTab} onValueChange={handleTabChange} className="w-full">
-            <div className="flex justify-between items-center mb-6">
-              <TabsList className="grid w-[400px] grid-cols-1">
-                <TabsTrigger value="comparison">Campaign Comparison</TabsTrigger>
-              </TabsList>
-            </div>
-            
-            <TabsContent value="comparison" className="space-y-6">
-              <div className="grid grid-cols-1 gap-8">
-                <div>
-                  <h3 className="text-lg font-medium mb-2">Regular Campaign</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                    Standard Campaign without Agent Powered Ad Evolutions
-                  </p>
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 h-[300px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={regularCampaignData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#eaeaea" />
-                        <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-                        <YAxis 
-                          domain={[0, 100]} 
-                          label={{ 
-                            value: 'Engagement', 
-                            angle: -90, 
-                            position: 'insideLeft',
-                            style: { textAnchor: 'middle' }
-                          }} 
-                        />
-                        <Tooltip
-                          content={({ active, payload, label }) => {
-                            if (!active || !payload?.length) return null;
-                            return (
-                              <div className="bg-white dark:bg-gray-800 p-2 rounded shadow-md border border-gray-200 dark:border-gray-700">
-                                <p className="font-medium">{label}</p>
-                                <p className="text-sm text-purple-600 dark:text-purple-400">
-                                  Engagement: {payload[0].value}%
-                                </p>
-                              </div>
-                            );
-                          }}
-                        />
-                        <Line 
-                          type="monotone" 
-                          dataKey="engagement" 
-                          stroke="#9b87f5" 
-                          strokeWidth={3} 
-                          dot={{ strokeWidth: 2, r: 4 }}
-                          activeDot={{ r: 6, stroke: "#9b87f5", strokeWidth: 2 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
+      <div className="w-full space-y-6">
+        <Tabs defaultValue="engagement" className="w-full">
+          <TabsList className="mb-4">
+            <TabsTrigger value="engagement">Engagement</TabsTrigger>
+            <TabsTrigger value="conversion">Conversion</TabsTrigger>
+            <TabsTrigger value="spending">Spending</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="engagement">
+            <Card>
+              <CardHeader>
+                <CardTitle>Ad Engagement Evolution</CardTitle>
+                <CardDescription>
+                  Hover over the data points to see the ad version for that period
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                      data={engagementData}
+                      margin={{
+                        top: 20,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip content={<VideoTooltip />} />
+                      <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
-                
-                <div>
-                  <h3 className="text-lg font-medium mb-2">Agentic Campaign</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                    Powerful Campaign with Agent Powered Ad Evolutions
-                  </p>
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 h-[300px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={selfEvolvingCampaignData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#eaeaea" />
-                        <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-                        <YAxis 
-                          domain={[0, 100]} 
-                          label={{ 
-                            value: 'Engagement', 
-                            angle: -90, 
-                            position: 'insideLeft',
-                            style: { textAnchor: 'middle' }
-                          }} 
-                        />
-                        <Tooltip 
-                          content={(props) => <VideoTooltip {...props} />}
-                          cursor={{ stroke: '#ccc', strokeDasharray: '5 5' }}
-                        />
-                        <Line 
-                          type="monotone" 
-                          dataKey="engagement" 
-                          stroke="#1EAEDB" 
-                          strokeWidth={3} 
-                          dot={{ strokeWidth: 2, r: 4 }}
-                          activeDot={{ r: 6, stroke: "#1EAEDB", strokeWidth: 2 }}
-                        />
-                        {evolutionPoints.map((point, index) => (
-                          <ReferenceDot
-                            key={index}
-                            x={point.day}
-                            y={point.engagement}
-                            r={8}
-                            fill="#1EAEDB"
-                            stroke="#ffffff"
-                            strokeWidth={2}
-                          />
-                        ))}
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="conversion">
+            <Card>
+              <CardHeader>
+                <CardTitle>Ad Conversion Evolution</CardTitle>
+                <CardDescription>
+                  Number of conversions over time
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                      data={conversionData}
+                      margin={{
+                        top: 20,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="value" stroke="#82ca9d" activeDot={{ r: 8 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="spending">
+            <Card>
+              <CardHeader>
+                <CardTitle>Campaign Spending</CardTitle>
+                <CardDescription>
+                  Total spending over time (in USD)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                      data={spendingData}
+                      margin={{
+                        top: 20,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="value" stroke="#ff7300" activeDot={{ r: 8 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </AppLayout>
   );
