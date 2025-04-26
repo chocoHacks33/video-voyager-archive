@@ -43,16 +43,17 @@ export const generateRandomData = (metric: string) => {
 
 export const formatMetricName = (metric: string): string => {
   if (metric === 'ctr') return 'CTR';
+  if (metric === 'convertibility') return 'Conversion';
   return metric.charAt(0).toUpperCase() + metric.slice(1);
 };
 
 export const getMetricUnit = (metric: string): string => {
   switch(metric.toLowerCase()) {
     case 'ctr': return '%';
-    case 'engagement': return 'actions';
+    case 'engagement': return 'Score';
     case 'views': return 'count';
     case 'outreach': return 'users';
-    case 'convertibility': return 'conversions';
+    case 'convertibility': return '# of Buyers';
     default: return '';
   }
 };

@@ -3,7 +3,7 @@ import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, SkipForward } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import MetricsChart from '@/components/campaign/MetricsChart';
@@ -46,7 +46,7 @@ const CampaignEvolution = () => {
   };
 
   return (
-    <AppLayout title="Ad Evolution Analysis">
+    <AppLayout title="">
       <div className="w-full space-y-6">
         <Button 
           variant="ghost" 
@@ -56,6 +56,14 @@ const CampaignEvolution = () => {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Gallery
         </Button>
+
+        <div className="flex items-center gap-4 mb-6">
+          <h1 className="text-2xl font-bold text-[#ea384c]">DEMO MODE</h1>
+          <Button variant="outline" className="gap-2">
+            <SkipForward className="h-4 w-4" />
+            Skip 7 Days
+          </Button>
+        </div>
 
         {metrics.length > 0 ? (
           <div className="w-full">
