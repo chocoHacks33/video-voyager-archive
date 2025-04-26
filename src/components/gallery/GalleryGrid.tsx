@@ -2,13 +2,7 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
 import ImageCard from '@/components/ImageCard';
-
-interface ImageData {
-  id: number;
-  source: string;
-  description: string;
-  allocatedBudget?: number;
-}
+import { ImageData } from './types';
 
 interface GalleryGridProps {
   images: ImageData[];
@@ -49,13 +43,14 @@ const GalleryGrid = ({
               : ''}
             relative`
           )}
+          onClick={() => campaignLaunched ? onAdClick(image.id) : undefined}
         >
           <ImageCard 
             image={image}
             isSelected={selectedImages.includes(image.id)}
             onSelect={() => campaignLaunched ? onAdClick(image.id) : onSelectImage(image.id)}
             selectable={!campaignLaunched}
-            className="cursor-pointer"
+            className={cn("cursor-pointer", campaignLaunched && "hover:scale-105 transition-all duration-200")}
           />
         </div>
       ))}

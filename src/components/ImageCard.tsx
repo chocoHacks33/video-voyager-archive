@@ -1,14 +1,10 @@
+
 import React, { useState } from 'react';
 import { AlertTriangle, Check } from 'lucide-react';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-interface ImageData {
-  id: number;
-  source: string;
-  description: string;
-}
+import { ImageData } from '@/components/gallery/types';
 
 interface ImageCardProps {
   image: ImageData;
@@ -60,6 +56,12 @@ const ImageCard = ({
     window.location.reload();
   };
 
+  const handleCardClick = () => {
+    if (onSelect) {
+      onSelect();
+    }
+  };
+
   return (
     <div 
       className={cn(`bg-navy rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform ${
@@ -69,7 +71,7 @@ const ImageCard = ({
       }`, className)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={selectable ? onSelect : undefined}
+      onClick={handleCardClick}
     >
       
       <AspectRatio ratio={16/9} className="w-full">

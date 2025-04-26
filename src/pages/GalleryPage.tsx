@@ -140,11 +140,20 @@ const GalleryPage = () => {
   };
 
   const handleAdClick = (imageId: number) => {
+    console.log('Ad clicked:', imageId);
+    console.log('Campaign launched status:', campaignLaunched);
+    console.log('Selected metrics:', selectedMetrics);
+    
     if (campaignLaunched) {
       const clickedImage = displayedImages.find(img => img.id === imageId);
       if (clickedImage) {
+        console.log('Navigating to campaign evolution for image:', clickedImage);
         navigate(`/campaign-evolution?adId=${imageId}&metrics=${selectedMetrics.join(',')}`);
+      } else {
+        console.error('Clicked image not found:', imageId);
       }
+    } else {
+      console.log('Campaign not launched yet, not navigating');
     }
   };
 
