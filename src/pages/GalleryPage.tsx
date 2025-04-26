@@ -54,37 +54,39 @@ const calculateGridColumns = (imageCount: number): string => {
   return 'grid-cols-3';
 };
 
-// Modify the distributeBudget function to make it uneven
 const distributeBudget = (totalBudget: number, imageCount: number): number[] => {
   if (imageCount === 0) return [];
   if (imageCount === 1) return [totalBudget];
   
-  const baseBudget = Math.floor(totalBudget / imageCount);
-  const remaining = totalBudget - (baseBudget * imageCount);
+  // Calculate base budget (70% of total divided evenly)
+  const baseBudgetPool = totalBudget * 0.7;
+  const baseBudget = Math.floor(baseBudgetPool / imageCount);
   
-  // Create array with base budget
+  // Initialize array with base budgets
   const distribution = Array(imageCount).fill(baseBudget);
   
-  // Distribute remaining budget randomly but ensure no more than 100 difference
-  let remainingToDistribute = remaining;
-  const maxVariation = Math.min(100, baseBudget / 2);
+  // Distribute remaining 30% randomly with larger variations
+  const remainingBudget = totalBudget - (baseBudget * imageCount);
+  let toDistribute = remainingBudget;
   
-  while (remainingToDistribute > 0) {
-    for (let i = 0; i < imageCount && remainingToDistribute > 0; i++) {
-      // Randomly decide how much extra to add (between 1 and min(remainingToDistribute, maxVariation))
-      const extra = Math.floor(Math.random() * Math.min(remainingToDistribute, maxVariation)) + 1;
+  while (toDistribute > 0) {
+    for (let i = 0; i < imageCount && toDistribute > 0; i++) {
+      // Random variation between 0% and 30% of base budget
+      const maxExtra = Math.min(toDistribute, Math.floor(baseBudget * 0.3));
+      const extra = Math.floor(Math.random() * maxExtra);
       distribution[i] += extra;
-      remainingToDistribute -= extra;
+      toDistribute -= extra;
     }
     
-    // If we have very small amounts left, just add to the first image
-    if (remainingToDistribute > 0 && remainingToDistribute < imageCount) {
-      distribution[0] += remainingToDistribute;
-      remainingToDistribute = 0;
+    // If we have a small amount left, just add it to a random image
+    if (toDistribute > 0 && toDistribute < imageCount) {
+      const randomIndex = Math.floor(Math.random() * imageCount);
+      distribution[randomIndex] += toDistribute;
+      toDistribute = 0;
     }
   }
   
-  // Shuffle the distribution so it's not always the first images getting more budget
+  // Shuffle the distribution
   return distribution.sort(() => Math.random() - 0.5);
 };
 

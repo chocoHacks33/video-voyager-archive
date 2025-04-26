@@ -34,10 +34,7 @@ const AppLayout = ({ children, title }: AppLayoutProps) => {
         <div className="flex-1 flex flex-col w-full">
           <header className="bg-white dark:bg-gray-900 p-4 shadow-sm dark:shadow-gray-800 w-full">
             <div className="container mx-auto flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <h1 className="font-semibold text-lg text-navy dark:text-gray-200">ADMOROH.AI</h1>
-                <CreditsDisplay />
-              </div>
+              <CreditsDisplay className="text-lg" />
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <Sun size={16} className="text-navy dark:text-gray-400" />
