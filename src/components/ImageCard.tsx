@@ -43,6 +43,12 @@ const ImageCard = ({
     e.stopPropagation(); // Prevent selection when clicking retry button
     setIsLoading(true);
     setImageError(false);
+    
+    // Force reload the image by adding a timestamp to the URL
+    const img = new Image();
+    img.src = `${imageSrc}?t=${new Date().getTime()}`;
+    img.onload = handleImageLoad;
+    img.onerror = handleImageError;
   };
 
   const handleCardClick = () => {
@@ -69,11 +75,22 @@ const ImageCard = ({
     >
       
       <AspectRatio ratio={16/9} className="w-full">
-        {isLoading ? (
-          <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+        {isLoading && (
+          <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center absolute top-0 left-0 z-10">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
           </div>
-        ) : imageError ? (
+        )}
+        
+        <img 
+          src={imageSrc}
+          alt={image.description}
+          className={cn("w-full h-full object-cover", isLoading ? "opacity-0" : "opacity-100")}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          style={{ display: imageError ? "none" : "block" }}
+        />
+        
+        {imageError && (
           <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex flex-col items-center justify-center p-4">
             <AlertTriangle className="w-10 h-10 text-amber-500 mb-2" />
             <p className="text-sm text-center">Image not found or unavailable</p>
@@ -87,14 +104,6 @@ const ImageCard = ({
               Retry
             </Button>
           </div>
-        ) : (
-          <img 
-            src={imageSrc}
-            alt={image.description}
-            className="w-full h-full object-cover"
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-          />
         )}
       </AspectRatio>
       
