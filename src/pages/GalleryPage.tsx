@@ -1,5 +1,5 @@
+
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Rocket, Activity, TrendingUp, Zap, Eye, Coins } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { Button } from "@/components/ui/button";
@@ -136,23 +136,26 @@ const GalleryPage = () => {
                     Campaign Metrics
                   </Label>
                   <div className="flex flex-wrap gap-3">
-                    {metricTags.map(metric => (
-                      <Badge
-                        key={metric.id}
-                        variant={selectedMetrics.includes(metric.id) ? "default" : "outline"}
-                        className={`
-                          px-4 py-2 text-sm cursor-pointer transition-all duration-200
-                          hover:scale-105 active:scale-95
-                          ${selectedMetrics.includes(metric.id) 
-                            ? 'bg-purple-600 hover:bg-purple-700' 
-                            : 'hover:border-purple-400'}
-                        `}
-                        onClick={() => handleToggleMetric(metric.id)}
-                      >
-                        <metric.icon className="w-4 h-4 mr-2" />
-                        {metric.label}
-                      </Badge>
-                    ))}
+                    {metricTags.map(metric => {
+                      const Icon = metric.icon;
+                      return (
+                        <Badge
+                          key={metric.id}
+                          variant={selectedMetrics.includes(metric.id) ? "default" : "outline"}
+                          className={`
+                            px-4 py-2 text-sm cursor-pointer transition-all duration-200
+                            hover:scale-105 active:scale-95
+                            ${selectedMetrics.includes(metric.id) 
+                              ? 'bg-purple-600 hover:bg-purple-700' 
+                              : 'hover:border-purple-400'}
+                          `}
+                          onClick={() => handleToggleMetric(metric.id)}
+                        >
+                          <Icon className="w-4 h-4 mr-2" />
+                          {metric.label}
+                        </Badge>
+                      );
+                    })}
                   </div>
                 </div>
 
