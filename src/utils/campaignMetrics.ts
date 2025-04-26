@@ -1,44 +1,34 @@
-
-// Utility functions for campaign metrics data generation and formatting
+// Cache to store generated values for each metric
+const dataCache: Record<string, Record<number, number>> = {};
 
 export const generateRandomData = (metric: string) => {
-  return [
-    // Mutation 0 (day 0)
-    {
-      name: 0,
-      mutationNumber: 0,
-      value: Math.floor(Math.random() * 500) + 100,
-      videoSrc: '/stock-videos/video0.mp4'
-    },
-    // Mutation 1 (day 7)
-    {
-      name: 7,
-      mutationNumber: 1,
-      value: Math.floor(Math.random() * 800) + 200,
-      videoSrc: '/stock-videos/video1.mp4'
-    },
-    // Mutation 2 (day 14)
-    {
-      name: 14,
-      mutationNumber: 2,
-      value: Math.floor(Math.random() * 1100) + 300,
-      videoSrc: '/stock-videos/video2.mp4'
-    },
-    // Mutation 3 (day 21)
-    {
-      name: 21,
-      mutationNumber: 3,
-      value: Math.floor(Math.random() * 1400) + 400,
-      videoSrc: '/stock-videos/video3.mp4'
-    },
-    // Mutation 4 (day 28)
-    {
-      name: 28,
-      mutationNumber: 4,
-      value: Math.floor(Math.random() * 1700) + 500,
-      videoSrc: '/stock-videos/video4.mp4'
+  if (!dataCache[metric]) {
+    dataCache[metric] = {};
+  }
+
+  const days = [0, 7, 14, 21, 28];
+  return days.map(day => {
+    // If we already have a value for this day and metric, use it
+    if (dataCache[metric][day] !== undefined) {
+      return {
+        name: day,
+        mutationNumber: Math.floor(day / 7),
+        value: dataCache[metric][day],
+        videoSrc: `/stock-videos/video${Math.floor(day / 7)}.mp4`
+      };
     }
-  ];
+
+    // Generate and cache new value for this day
+    const value = Math.floor(Math.random() * 1000) + 100;
+    dataCache[metric][day] = value;
+    
+    return {
+      name: day,
+      mutationNumber: Math.floor(day / 7),
+      value,
+      videoSrc: `/stock-videos/video${Math.floor(day / 7)}.mp4`
+    };
+  });
 };
 
 export const formatMetricName = (metric: string): string => {

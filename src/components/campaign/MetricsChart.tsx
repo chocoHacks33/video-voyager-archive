@@ -23,6 +23,9 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
     return actualDataPoint || point;
   });
 
+  // Find the max value in the actual data for setting the domain
+  const maxValue = Math.max(...data.map(d => d.value)) * 1.2; // Add 20% padding
+
   return (
     <Card>
       <CardHeader>
@@ -52,6 +55,7 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
                 label={{ value: 'Timeline (Days)', position: 'insideBottom', offset: -15 }}
               />
               <YAxis 
+                domain={[0, maxValue]}
                 tickFormatter={(value) => formatYAxisTick(value, metric)}
                 label={{ 
                   value: `${formatMetricName(metric)} (${getMetricUnit(metric)})`, 
