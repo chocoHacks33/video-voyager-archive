@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Rocket, Activity, TrendingUp, Zap, Eye, Coins, Tag } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
