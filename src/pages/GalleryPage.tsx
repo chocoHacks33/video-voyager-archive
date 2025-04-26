@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Rocket, Activity, TrendingUp, Zap, Eye, Coins, Tag } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
@@ -7,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import ImageCard from '@/components/ImageCard';
+import { useCredits } from '@/contexts/CreditsContext';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +23,7 @@ interface ImageData {
   id: number;
   source: string;
   description: string;
+  allocatedBudget?: number;
 }
 
 interface MetricTag {
@@ -52,6 +55,40 @@ const calculateGridColumns = (imageCount: number): string => {
   return 'grid-cols-3';
 };
 
+// Distribute budget unevenly but within 100 credits difference
+const distributeBudget = (totalBudget: number, imageCount: number): number[] => {
+  if (imageCount === 0) return [];
+  if (imageCount === 1) return [totalBudget];
+  
+  const baseBudget = Math.floor(totalBudget / imageCount);
+  const remaining = totalBudget - (baseBudget * imageCount);
+  
+  // Create array with base budget
+  const distribution = Array(imageCount).fill(baseBudget);
+  
+  // Distribute remaining budget randomly but ensure no more than 100 difference
+  let remainingToDistribute = remaining;
+  const maxVariation = Math.min(100, baseBudget / 2);
+  
+  while (remainingToDistribute > 0) {
+    for (let i = 0; i < imageCount && remainingToDistribute > 0; i++) {
+      // Randomly decide how much extra to add (between 1 and min(remainingToDistribute, maxVariation))
+      const extra = Math.floor(Math.random() * Math.min(remainingToDistribute, maxVariation)) + 1;
+      distribution[i] += extra;
+      remainingToDistribute -= extra;
+    }
+    
+    // If we have very small amounts left, just add to the first image
+    if (remainingToDistribute > 0 && remainingToDistribute < imageCount) {
+      distribution[0] += remainingToDistribute;
+      remainingToDistribute = 0;
+    }
+  }
+  
+  // Shuffle the distribution so it's not always the first images getting more budget
+  return distribution.sort(() => Math.random() - 0.5);
+};
+
 const GalleryPage = () => {
   const [selectedImages, setSelectedImages] = useState<number[]>([]);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -59,6 +96,7 @@ const GalleryPage = () => {
   const [displayedImages, setDisplayedImages] = useState<ImageData[]>([]);
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
   const [budget, setBudget] = useState<string>('');
+  const { spendCredits } = useCredits();
 
   useEffect(() => {
     // Prepare 9 empty image slots
@@ -112,15 +150,36 @@ const GalleryPage = () => {
       return;
     }
 
+    const budgetValue = parseFloat(budget);
+    
     setShowSuccessDialog(true);
   };
 
   const handleConfirmLaunch = () => {
+    const budgetValue = parseFloat(budget);
+    
+    // Try to spend credits
+    if (!spendCredits(budgetValue)) {
+      setShowSuccessDialog(false);
+      return;
+    }
+    
+    // Get selected images
+    const selectedImagesData = displayedImages
+      .filter(img => selectedImages.includes(img.id));
+    
+    // Distribute the budget among selected images
+    const budgetDistribution = distributeBudget(budgetValue, selectedImagesData.length);
+    
+    // Apply allocated budgets to images
+    const imagesWithBudget = selectedImagesData.map((img, index) => ({
+      ...img,
+      allocatedBudget: budgetDistribution[index]
+    }));
+    
     setShowSuccessDialog(false);
     setCampaignLaunched(true);
-    
-    const selectedImagesData = displayedImages.filter(img => selectedImages.includes(img.id));
-    setDisplayedImages(selectedImagesData);
+    setDisplayedImages(imagesWithBudget);
     
     toast.success("Ad campaign launched successfully!", {
       description: `Launched ${selectedImages.length} ad${selectedImages.length > 1 ? 's' : ''}`
@@ -143,8 +202,15 @@ const GalleryPage = () => {
                   ${campaignLaunched && displayedImages.length % 3 === 2 && index >= displayedImages.length - 2
                     ? 'col-span-1 first:col-start-1 last:col-start-3'  // Space out last two images
                     : ''}
+                  relative
                 `}
               >
+                {campaignLaunched && image.allocatedBudget && (
+                  <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1 z-10 flex items-center gap-1.5">
+                    <Coins className="h-4 w-4 text-yellow-400" />
+                    <span className="text-white font-medium text-sm">{image.allocatedBudget}</span>
+                  </div>
+                )}
                 <ImageCard 
                   image={image}
                   isSelected={selectedImages.includes(image.id)}
@@ -182,7 +248,7 @@ const GalleryPage = () => {
                             `}
                             onClick={() => handleToggleMetric(metric.id)}
                           >
-                            <Icon size={14} />
+                            <Icon className="h-3.5 w-3.5" />
                             <span className="ml-1.5">{metric.label}</span>
                           </Badge>
                         );
