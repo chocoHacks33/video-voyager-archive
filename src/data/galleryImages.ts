@@ -1,6 +1,9 @@
 
 import { ImageData } from '@/components/gallery/types';
 
+// Adding console logs to help debug
+console.log("Loading gallery image data");
+
 export const baseImages: ImageData[] = [
   { id: 1, source: '/lovable-uploads/image1.jpg', description: 'Image 1' },
   { id: 2, source: '/lovable-uploads/image2.jpg', description: 'Image 2' },
