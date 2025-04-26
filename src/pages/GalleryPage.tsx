@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Activity, TrendingUp, Zap, Eye, Tag } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { toast } from "sonner";
 import { useCredits } from '@/contexts/CreditsContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -53,7 +52,11 @@ const distributeBudget = (totalBudget: number, imageCount: number): number[] => 
 };
 
 const GalleryPage = () => {
-  const [selectedImages, setSelectedImages] = useState<number[]>([]);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const initialSelectedImages = params.get('selectedImages')?.split(',').map(Number) || [];
+  
+  const [selectedImages, setSelectedImages] = useState<number[]>(initialSelectedImages);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [campaignLaunched, setCampaignLaunched] = useState(false);
   const [displayedImages, setDisplayedImages] = useState<ImageData[]>([]);
@@ -140,22 +143,27 @@ const GalleryPage = () => {
   };
 
   const handleAdClick = (imageId: number) => {
-    console.log('Ad clicked:', imageId);
-    console.log('Campaign launched status:', campaignLaunched);
-    console.log('Selected metrics:', selectedMetrics);
-    
     if (campaignLaunched) {
       const clickedImage = displayedImages.find(img => img.id === imageId);
       if (clickedImage) {
         console.log('Navigating to campaign evolution for image:', clickedImage);
-        navigate(`/campaign-evolution?adId=${imageId}&metrics=${selectedMetrics.join(',')}`);
+        navigate(`/campaign-evolution?adId=${imageId}&metrics=${selectedMetrics.join(',')}&selectedImages=${selectedImages.join(',')}`);
       } else {
         console.error('Clicked image not found:', imageId);
       }
     } else {
-      console.log('Campaign not launched yet, not navigating');
+      handleSelectImage(imageId);
     }
   };
+
+  // Filter displayed images if we have selectedImages from URL
+  useEffect(() => {
+    if (initialSelectedImages.length > 0 && campaignLaunched) {
+      setDisplayedImages(prev => 
+        prev.filter(image => initialSelectedImages.includes(image.id))
+      );
+    }
+  }, [initialSelectedImages, campaignLaunched]);
 
   return (
     <AppLayout title={campaignLaunched ? "Your Active Campaigns" : "Choose Your Ads"}>

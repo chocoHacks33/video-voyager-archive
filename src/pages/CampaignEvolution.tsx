@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -48,6 +47,7 @@ const CampaignEvolution = () => {
   const params = new URLSearchParams(location.search);
   const adId = params.get('adId');
   const metrics = params.get('metrics')?.split(',') || [];
+  const selectedImages = params.get('selectedImages')?.split(',').map(Number) || [];
 
   // Generate random data for each metric
   const metricsData = useMemo(() => {
@@ -59,7 +59,8 @@ const CampaignEvolution = () => {
   }, [metrics]);
 
   const handleBack = () => {
-    navigate('/gallery'); // Redirects to Gallery page
+    // Navigate back to gallery with selected images
+    navigate(`/gallery?selectedImages=${selectedImages.join(',')}`);
   };
 
   return (
