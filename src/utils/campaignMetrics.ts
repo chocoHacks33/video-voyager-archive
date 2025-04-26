@@ -11,6 +11,15 @@ const metricMaxValues: Record<string, number> = {
   wild: 3000, // wild factor
 };
 
+// Define specific engagement values for each evolution point
+const engagementPattern = {
+  0: 400,  // Starting point
+  7: 420,  // Evolution 1 (relatively constant from 0)
+  14: 500, // Evolution 2 (slight increase)
+  21: 800, // Evolution 3 (sharp increase)
+  28: 820  // Evolution 4 (relatively constant from 3)
+};
+
 export const generateRandomData = (metric: string) => {
   if (!dataCache[metric]) {
     dataCache[metric] = {};
@@ -29,7 +38,19 @@ export const generateRandomData = (metric: string) => {
       };
     }
 
-    // Generate and cache new value for this day based on metric type
+    // For engagement metric, use predetermined pattern
+    if (metric.toLowerCase() === 'engagement') {
+      const value = engagementPattern[day];
+      dataCache[metric][day] = value;
+      return {
+        name: day,
+        mutationNumber: Math.floor(day / 7),
+        value,
+        imageSrc: `/lovable-uploads/evo${Math.floor(day / 7)}.jpg`
+      };
+    }
+
+    // For other metrics, keep existing random generation logic
     const maxValue = metricMaxValues[metric.toLowerCase()] || 1000;
     const value = Math.floor(Math.random() * (maxValue * 0.8)) + (maxValue * 0.1);
     dataCache[metric][day] = value;
