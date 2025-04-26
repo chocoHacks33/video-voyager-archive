@@ -35,22 +35,38 @@ const VideoTooltip = ({ active, payload, label }: any) => {
 };
 
 const generateRandomData = (metric: string) => {
-  // Generate data for 29 days (0-28)
-  return Array.from({ length: 29 }, (_, i) => {
-    const isMutation = i > 0 && i % 7 === 0; // Check if current day is a mutation day
-    const mutationNumber = i > 0 ? Math.floor(i / 7) : 0; // Calculate mutation number
-    
-    // Generate a value that trends upward over time
-    const baseValue = Math.floor(Math.random() * 500) + 100;
-    const trendFactor = 1 + (i * 0.1); // Increase value over time
-    const value = Math.floor(baseValue * trendFactor);
-
-    return {
-      name: i,
-      value: value,
-      videoSrc: isMutation ? `/stock-videos/video${mutationNumber}.mp4` : null
-    };
-  });
+  return [
+    // Original state (day 0)
+    {
+      name: 0,
+      value: Math.floor(Math.random() * 500) + 100,
+      videoSrc: '/stock-videos/video0.mp4'
+    },
+    // Mutation 1 (day 7)
+    {
+      name: 7,
+      value: Math.floor(Math.random() * 800) + 200,
+      videoSrc: '/stock-videos/video1.mp4'
+    },
+    // Mutation 2 (day 14)
+    {
+      name: 14,
+      value: Math.floor(Math.random() * 1100) + 300,
+      videoSrc: '/stock-videos/video2.mp4'
+    },
+    // Mutation 3 (day 21)
+    {
+      name: 21,
+      value: Math.floor(Math.random() * 1400) + 400,
+      videoSrc: '/stock-videos/video3.mp4'
+    },
+    // Mutation 4 (day 28)
+    {
+      name: 28,
+      value: Math.floor(Math.random() * 1700) + 500,
+      videoSrc: '/stock-videos/video4.mp4'
+    }
+  ];
 };
 
 // Format metric name for display (capitalize or make uppercase for acronyms)
