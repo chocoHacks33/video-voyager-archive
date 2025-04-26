@@ -37,6 +37,20 @@ const metricTags: MetricTag[] = [
   { id: 'convertibility', label: 'Convertibility', icon: Tag },
 ];
 
+const calculateGridColumns = (imageCount: number): string => {
+  // Determine optimal grid layout based on image count
+  switch (imageCount) {
+    case 1:
+      return 'grid-cols-1';
+    case 2:
+      return 'grid-cols-2';
+    case 4:
+      return 'grid-cols-2';
+    default:
+      return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3';
+  }
+};
+
 const GalleryPage = () => {
   const [selectedImages, setSelectedImages] = useState<number[]>([]);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -115,9 +129,9 @@ const GalleryPage = () => {
   return (
     <AppLayout title={campaignLaunched ? "Your Active Campaigns" : "Choose Your Ads"}>
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-6 shadow-lg">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
-          {/* Gallery Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 space-y-8">
+          {/* Gallery Grid with dynamic columns */}
+          <div className={`grid gap-6 ${campaignLaunched ? calculateGridColumns(displayedImages.length) : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'}`}>
             {displayedImages.map(image => (
               <ImageCard 
                 key={image.id} 
@@ -132,7 +146,7 @@ const GalleryPage = () => {
           {/* Campaign Settings Section */}
           {!campaignLaunched && (
             <div className="mt-10 space-y-8">
-              <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 shadow-sm">
+              <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6">
                 <div className="grid md:grid-cols-2 gap-8">
                   {/* Metrics Selection */}
                   <div className="space-y-4">
@@ -196,7 +210,7 @@ const GalleryPage = () => {
                            transform hover:scale-105 transition-all duration-300 flex items-center gap-3"
                   onClick={handleLaunchCampaign}
                 >
-                  <Rocket className="w-6 h-6 transition-transform group-hover:rotate-12" />
+                  <Rocket className="w-6 h-6" />
                   <span className="text-lg">
                     Launch Campaign {selectedImages.length > 0 && `(${selectedImages.length})`}
                   </span>
