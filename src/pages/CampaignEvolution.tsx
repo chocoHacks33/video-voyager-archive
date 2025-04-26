@@ -1,3 +1,4 @@
+
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -63,6 +64,10 @@ const CampaignEvolution = () => {
     navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true`);
   };
 
+  // Force the component to always show the first tab as default when rendered
+  // This ensures tabs are visible even after navigation
+  const defaultTab = metrics[0] || '';
+
   return (
     <AppLayout title="Ad Evolution Analysis">
       <div className="w-full space-y-6">
@@ -75,58 +80,65 @@ const CampaignEvolution = () => {
           Back to Gallery
         </Button>
 
-        <Tabs defaultValue={metrics[0]} className="w-full">
-          <TabsList className="mb-4">
+        {metrics.length > 0 ? (
+          <Tabs defaultValue={defaultTab} className="w-full">
+            <TabsList className="mb-4">
+              {metrics.map(metric => (
+                <TabsTrigger key={metric} value={metric} className="capitalize">
+                  {metric}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            
             {metrics.map(metric => (
-              <TabsTrigger key={metric} value={metric} className="capitalize">
-                {metric}
-              </TabsTrigger>
+              <TabsContent key={metric} value={metric}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="capitalize">{metric} Evolution</CardTitle>
+                    <CardDescription>
+                      Track the {metric.toLowerCase()} performance over time
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                          data={metricsData[metric]}
+                          margin={{
+                            top: 20,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                          }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis 
+                            dataKey="name" 
+                            tickFormatter={(value) => `Day ${value + 1}`}
+                          />
+                          <YAxis />
+                          <Tooltip content={<VideoTooltip />} />
+                          <Line 
+                            type="monotone" 
+                            dataKey="value" 
+                            stroke="#8884d8" 
+                            activeDot={{ r: 8 }}
+                            name={metric}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
             ))}
-          </TabsList>
-          
-          {metrics.map(metric => (
-            <TabsContent key={metric} value={metric}>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="capitalize">{metric} Evolution</CardTitle>
-                  <CardDescription>
-                    Track the {metric.toLowerCase()} performance over time
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[400px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={metricsData[metric]}
-                        margin={{
-                          top: 20,
-                          right: 30,
-                          left: 20,
-                          bottom: 5,
-                        }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis 
-                          dataKey="name" 
-                          tickFormatter={(value) => `Day ${value + 1}`}
-                        />
-                        <YAxis />
-                        <Tooltip content={<VideoTooltip />} />
-                        <Line 
-                          type="monotone" 
-                          dataKey="value" 
-                          stroke="#8884d8" 
-                          activeDot={{ r: 8 }}
-                          name={metric}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          ))}
-        </Tabs>
+          </Tabs>
+        ) : (
+          <div className="text-center p-6 bg-gray-50 rounded-lg dark:bg-gray-800">
+            <p className="text-lg text-gray-500 dark:text-gray-400">No metrics selected for this campaign.</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Please go back and select metrics to track.</p>
+          </div>
+        )}
       </div>
     </AppLayout>
   );
