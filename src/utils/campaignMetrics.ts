@@ -20,6 +20,15 @@ const engagementPattern = {
   28: 820  // Evolution 4 (relatively constant from 3)
 };
 
+// Agent explanations for engagement evolution points
+export const agentExplanations: Record<number, string> = {
+  0: "We've just launched an ad targeting the kids' gaming demographic. Excited to monitor performance and optimize as the data starts coming in.",
+  7: "Initial data shows stable engagement. The ad seems to resonate with our target audience, but there's room for improvement.",
+  14: "Minor uptick in engagement after our first optimization. The tweaks are working, but we can push for better results.",
+  21: "Significant breakthrough! Our latest evolution has dramatically increased engagement levels. The ad is really connecting with viewers now.",
+  28: "Maintaining our strong performance. The high engagement levels from our previous evolution are holding steady."
+};
+
 export const generateRandomData = (metric: string) => {
   if (!dataCache[metric]) {
     dataCache[metric] = {};

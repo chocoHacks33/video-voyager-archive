@@ -3,7 +3,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import VideoTooltip from './VideoTooltip';
-import { formatMetricName, formatYAxisTick, getMetricUnit, getMetricMaxValue } from '@/utils/campaignMetrics';
+import { formatMetricName, formatYAxisTick, getMetricUnit, getMetricMaxValue, agentExplanations } from '@/utils/campaignMetrics';
+import { MessageSquare } from 'lucide-react';
 
 interface MetricsChartProps {
   metric: string;
@@ -165,6 +166,24 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
             </LineChart>
           </ResponsiveContainer>
         </div>
+
+        {metric === 'engagement' && data.length > 0 && (
+          <div className="mt-6 p-4 bg-purple-50 dark:bg-purple-950 rounded-lg">
+            <div className="flex items-start gap-3">
+              <div className="mt-1">
+                <MessageSquare className="h-5 w-5 text-purple-500" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-sm text-purple-700 dark:text-purple-300">
+                  AI Agent Analysis - Evolution {Math.floor(data[data.length - 1].name / 7)}
+                </h4>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                  {agentExplanations[data[data.length - 1].name]}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
