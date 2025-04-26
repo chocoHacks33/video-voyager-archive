@@ -114,9 +114,10 @@ const GalleryPage = () => {
 
   return (
     <AppLayout title={campaignLaunched ? "Your Active Campaigns" : "Choose Your Ads"}>
-      <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-1 shadow-lg">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-6 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
+          {/* Gallery Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {displayedImages.map(image => (
               <ImageCard 
                 key={image.id} 
@@ -128,67 +129,77 @@ const GalleryPage = () => {
             ))}
           </div>
           
+          {/* Campaign Settings Section */}
           {!campaignLaunched && (
-            <div className="space-y-8 mt-12 max-w-4xl mx-auto bg-gray-50 dark:bg-gray-900/50 p-8 rounded-lg shadow-sm">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <Label className="text-lg font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-purple-500" />
-                    Campaign Metrics
-                  </Label>
-                  <div className="flex flex-wrap gap-3">
-                    {metricTags.map(metric => {
-                      const Icon = metric.icon;
-                      return (
-                        <Badge
-                          key={metric.id}
-                          variant={selectedMetrics.includes(metric.id) ? "default" : "outline"}
-                          className={`
-                            px-4 py-2 text-sm cursor-pointer transition-all duration-200
-                            hover:scale-105 active:scale-95
-                            ${selectedMetrics.includes(metric.id) 
-                              ? 'bg-purple-600 hover:bg-purple-700' 
-                              : 'hover:border-purple-400'}
-                          `}
-                          onClick={() => handleToggleMetric(metric.id)}
-                        >
-                          <Icon size={16} className="mr-2" />
-                          {metric.label}
-                        </Badge>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <Label className="text-lg font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2" htmlFor="budget">
-                    <Coins className="w-5 h-5 text-purple-500" />
-                    Campaign Budget
-                  </Label>
-                  <div className="flex items-center gap-4">
-                    <div className="relative flex-1">
-                      <Input
-                        id="budget"
-                        type="number"
-                        placeholder="Enter budget amount"
-                        value={budget}
-                        onChange={(e) => setBudget(e.target.value)}
-                        className="pl-10"
-                      />
-                      <Coins className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <div className="mt-10 space-y-8">
+              <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-6 shadow-sm">
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Metrics Selection */}
+                  <div className="space-y-4">
+                    <Label className="text-lg font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                      <Activity className="w-5 h-5 text-purple-500" />
+                      Campaign Metrics
+                    </Label>
+                    <div className="flex flex-wrap gap-2.5">
+                      {metricTags.map(metric => {
+                        const Icon = metric.icon;
+                        return (
+                          <Badge
+                            key={metric.id}
+                            variant={selectedMetrics.includes(metric.id) ? "default" : "outline"}
+                            className={`
+                              px-3 py-1.5 text-sm cursor-pointer transition-all duration-200
+                              hover:scale-105 active:scale-95
+                              ${selectedMetrics.includes(metric.id) 
+                                ? 'bg-purple-600 hover:bg-purple-700' 
+                                : 'hover:border-purple-400'}
+                            `}
+                            onClick={() => handleToggleMetric(metric.id)}
+                          >
+                            <Icon size={14} />
+                            <span className="ml-1.5">{metric.label}</span>
+                          </Badge>
+                        );
+                      })}
                     </div>
-                    <span className="text-sm text-gray-500 whitespace-nowrap">credits</span>
+                  </div>
+
+                  {/* Budget Input */}
+                  <div className="space-y-4">
+                    <Label className="text-lg font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2" htmlFor="budget">
+                      <Coins className="w-5 h-5 text-purple-500" />
+                      Campaign Budget
+                    </Label>
+                    <div className="flex items-center gap-3 max-w-xs">
+                      <div className="relative flex-1">
+                        <Input
+                          id="budget"
+                          type="number"
+                          placeholder="Enter budget amount"
+                          value={budget}
+                          onChange={(e) => setBudget(e.target.value)}
+                          className="pl-9"
+                        />
+                        <Coins className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-500">credits</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex justify-center mt-8">
+              {/* Launch Button */}
+              <div className="flex justify-center">
                 <Button 
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium px-10 py-3 rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3"
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 
+                           text-white font-medium px-10 py-6 rounded-lg shadow-xl hover:shadow-2xl 
+                           transform hover:scale-105 transition-all duration-300 flex items-center gap-3"
                   onClick={handleLaunchCampaign}
                 >
-                  <Rocket className="w-5 h-5 transition-transform group-hover:rotate-12" />
-                  Launch Campaign {selectedImages.length > 0 && `(${selectedImages.length})`}
+                  <Rocket className="w-6 h-6 transition-transform group-hover:rotate-12" />
+                  <span className="text-lg">
+                    Launch Campaign {selectedImages.length > 0 && `(${selectedImages.length})`}
+                  </span>
                 </Button>
               </div>
             </div>
