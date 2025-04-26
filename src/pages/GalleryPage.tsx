@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Activity, TrendingUp, Zap, Eye, Tag } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
@@ -66,14 +67,41 @@ const GalleryPage = () => {
   const { spendCredits } = useCredits();
   const navigate = useNavigate();
 
+  // Load all images initially
   useEffect(() => {
-    const emptyImages: ImageData[] = Array.from({ length: 9 }, (_, index) => ({
-      id: index + 1,
-      source: `/public/stock-videos/image${index + 1}.jpg`,
-      description: `Ad Variation ${index + 1}`
-    }));
-    setDisplayedImages(emptyImages);
-  }, []);
+    const loadInitialImages = () => {
+      const allImages: ImageData[] = Array.from({ length: 9 }, (_, index) => ({
+        id: index + 1,
+        source: `/public/stock-videos/image${index + 1}.jpg`,
+        description: `Ad Variation ${index + 1}`
+      }));
+
+      if (initialSelectedImages.length > 0 && initialCampaignLaunched) {
+        // If campaign is already launched, only show the selected images
+        const selectedImagesData = allImages.filter(img => initialSelectedImages.includes(img.id));
+        // Add mock budget allocation for returned campaign data
+        const mockBudget = distributeRandomBudgets(selectedImagesData.length);
+        
+        const imagesWithBudget = selectedImagesData.map((img, index) => ({
+          ...img,
+          allocatedBudget: mockBudget[index]
+        }));
+        
+        setDisplayedImages(imagesWithBudget);
+      } else {
+        // If not launched, show all images
+        setDisplayedImages(allImages);
+      }
+    };
+
+    loadInitialImages();
+  }, [initialSelectedImages, initialCampaignLaunched]);
+
+  // Function to generate random budget distribution for mock data
+  const distributeRandomBudgets = (count: number): number[] => {
+    const totalBudget = 1000; // Mock budget value
+    return distributeBudget(totalBudget, count);
+  };
 
   const handleSelectImage = (imageId: number) => {
     if (campaignLaunched) return;
@@ -124,9 +152,14 @@ const GalleryPage = () => {
     const budgetValue = parseFloat(budget);
     spendCredits(budgetValue);
     
-    const selectedImagesData = displayedImages
-      .filter(img => selectedImages.includes(img.id));
+    // Get all images first
+    const allImages: ImageData[] = Array.from({ length: 9 }, (_, index) => ({
+      id: index + 1,
+      source: `/public/stock-videos/image${index + 1}.jpg`,
+      description: `Ad Variation ${index + 1}`
+    }));
     
+    const selectedImagesData = allImages.filter(img => selectedImages.includes(img.id));
     const budgetDistribution = distributeBudget(budgetValue, selectedImagesData.length);
     
     const imagesWithBudget = selectedImagesData.map((img, index) => ({
@@ -156,21 +189,6 @@ const GalleryPage = () => {
       handleSelectImage(imageId);
     }
   };
-
-  // Filter displayed images if we have selectedImages from URL
-  useEffect(() => {
-    const emptyImages: ImageData[] = Array.from({ length: 9 }, (_, index) => ({
-      id: index + 1,
-      source: `/public/stock-videos/image${index + 1}.jpg`,
-      description: `Ad Variation ${index + 1}`
-    }));
-
-    if (initialSelectedImages.length > 0 && initialCampaignLaunched) {
-      setDisplayedImages(emptyImages.filter(image => initialSelectedImages.includes(image.id)));
-    } else {
-      setDisplayedImages(emptyImages);
-    }
-  }, [initialSelectedImages, initialCampaignLaunched]);
 
   return (
     <AppLayout title={campaignLaunched ? "Your Active Campaigns" : "Choose Your Ads"}>

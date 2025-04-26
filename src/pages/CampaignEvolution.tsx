@@ -60,7 +60,8 @@ const CampaignEvolution = () => {
   }, [metrics]);
 
   const handleBack = () => {
-    // Navigate back to gallery with selected images and set campaign as launched
+    // Always navigate back to gallery with selected images and campaignLaunched=true
+    // This ensures we see the filtered/launched view
     navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true`);
   };
 
