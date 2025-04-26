@@ -15,7 +15,7 @@ const VideoTooltip = ({ active, payload, label }: VideoTooltipProps) => {
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
-      <h3 className="font-bold text-gray-900">Mutation {label}</h3>
+      <h3 className="font-bold text-gray-900">Mutation {data.mutationNumber}</h3>
       <p className="text-gray-600 mb-2">{payload[0].name}: {payload[0].value}</p>
       <div className="w-64">
         <AspectRatio ratio={16/9}>
