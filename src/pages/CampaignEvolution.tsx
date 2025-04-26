@@ -70,11 +70,8 @@ const CampaignEvolution = () => {
 
   // Set the active tab whenever metrics change
   useEffect(() => {
-    // Reset the active tab
-    if (metrics.length > 0) {
+    if (metrics.length > 0 && !activeTab) {
       setActiveTab(metrics[0]);
-    } else {
-      setActiveTab('');
     }
     
     // Show a toast message when metrics are loaded
@@ -86,13 +83,19 @@ const CampaignEvolution = () => {
 
     // Log the metrics for debugging
     console.log('Current metrics:', metrics);
-  }, [adId, metrics]);
+    console.log('Active tab:', activeTab);
+  }, [metrics, activeTab]);
 
   const handleBack = () => {
     // Always navigate back to gallery with selected images and campaignLaunched=true
     // Also preserve the metrics parameter to maintain consistency
     const currentMetrics = params.get('metrics') || '';
     navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true&metrics=${currentMetrics}`);
+  };
+
+  const handleTabChange = (value: string) => {
+    console.log('Tab changed to:', value);
+    setActiveTab(value);
   };
 
   return (
@@ -109,17 +112,22 @@ const CampaignEvolution = () => {
 
         {metrics.length > 0 ? (
           <div className="w-full">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="mb-4">
+            <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
+              <TabsList className="mb-4 flex flex-wrap gap-1">
                 {metrics.map(metric => (
-                  <TabsTrigger key={metric} value={metric} className="capitalize">
+                  <TabsTrigger 
+                    key={metric} 
+                    value={metric} 
+                    className="capitalize"
+                    onClick={() => console.log('Tab clicked:', metric)}
+                  >
                     {formatMetricName(metric)}
                   </TabsTrigger>
                 ))}
               </TabsList>
               
               {metrics.map(metric => (
-                <TabsContent key={metric} value={metric}>
+                <TabsContent key={metric} value={metric} className="mt-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="capitalize">{formatMetricName(metric)} Evolution</CardTitle>
