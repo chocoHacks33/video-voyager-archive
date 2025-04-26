@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Rocket, Activity, TrendingUp, Zap, Eye, Coins } from 'lucide-react';
+import { Rocket, Activity, TrendingUp, Zap, Eye, Coins, Tag } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -35,6 +34,7 @@ const metricTags: MetricTag[] = [
   { id: 'outreach', label: 'Outreach', icon: TrendingUp },
   { id: 'ctr', label: 'CTR', icon: Zap },
   { id: 'views', label: 'Views', icon: Eye },
+  { id: 'convertibility', label: 'Convertibility', icon: Tag },
 ];
 
 const GalleryPage = () => {
@@ -129,10 +129,11 @@ const GalleryPage = () => {
           </div>
           
           {!campaignLaunched && (
-            <>
-              <div className="space-y-6">
+            <div className="space-y-8 mt-12 max-w-4xl mx-auto bg-gray-50 dark:bg-gray-900/50 p-8 rounded-lg shadow-sm">
+              <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                  <Label className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                  <Label className="text-lg font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-purple-500" />
                     Campaign Metrics
                   </Label>
                   <div className="flex flex-wrap gap-3">
@@ -151,7 +152,7 @@ const GalleryPage = () => {
                           `}
                           onClick={() => handleToggleMetric(metric.id)}
                         >
-                          <Icon className="w-4 h-4 mr-2" />
+                          <Icon size={16} className="mr-2" />
                           {metric.label}
                         </Badge>
                       );
@@ -160,10 +161,11 @@ const GalleryPage = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <Label className="text-lg font-semibold text-gray-700 dark:text-gray-300" htmlFor="budget">
+                  <Label className="text-lg font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2" htmlFor="budget">
+                    <Coins className="w-5 h-5 text-purple-500" />
                     Campaign Budget
                   </Label>
-                  <div className="flex items-center gap-4 max-w-md">
+                  <div className="flex items-center gap-4">
                     <div className="relative flex-1">
                       <Input
                         id="budget"
@@ -175,21 +177,21 @@ const GalleryPage = () => {
                       />
                       <Coins className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                     </div>
-                    <span className="text-sm text-gray-500">credits</span>
+                    <span className="text-sm text-gray-500 whitespace-nowrap">credits</span>
                   </div>
                 </div>
-
-                <div className="flex justify-center mt-8">
-                  <Button 
-                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium px-10 py-3 rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3"
-                    onClick={handleLaunchCampaign}
-                  >
-                    <Rocket className="w-5 h-5 transition-transform group-hover:rotate-12" />
-                    Launch Campaign {selectedImages.length > 0 && `(${selectedImages.length})`}
-                  </Button>
-                </div>
               </div>
-            </>
+
+              <div className="flex justify-center mt-8">
+                <Button 
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium px-10 py-3 rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3"
+                  onClick={handleLaunchCampaign}
+                >
+                  <Rocket className="w-5 h-5 transition-transform group-hover:rotate-12" />
+                  Launch Campaign {selectedImages.length > 0 && `(${selectedImages.length})`}
+                </Button>
+              </div>
+            </div>
           )}
         </div>
       </div>
