@@ -1,5 +1,5 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -49,6 +49,9 @@ const CampaignEvolution = () => {
   const adId = params.get('adId');
   const metrics = params.get('metrics')?.split(',') || [];
   const selectedImages = params.get('selectedImages')?.split(',').map(Number) || [];
+  
+  // Track the current active metric tab
+  const [activeTab, setActiveTab] = useState<string>('');
 
   // Generate random data for each metric
   const metricsData = useMemo(() => {
@@ -58,6 +61,13 @@ const CampaignEvolution = () => {
     });
     return data;
   }, [metrics]);
+
+  // Reset active tab whenever the URL parameters change
+  useEffect(() => {
+    if (metrics.length > 0) {
+      setActiveTab(metrics[0]);
+    }
+  }, [location.search, metrics]);
 
   const handleBack = () => {
     // Always navigate back to gallery with selected images and campaignLaunched=true
@@ -77,7 +87,7 @@ const CampaignEvolution = () => {
         </Button>
 
         {metrics.length > 0 ? (
-          <Tabs defaultValue={metrics[0]} className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="mb-4">
               {metrics.map(metric => (
                 <TabsTrigger key={metric} value={metric} className="capitalize">
