@@ -1,5 +1,5 @@
 
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 // Custom tooltip component that shows the mutation video
 const VideoTooltip = ({ active, payload, label }: any) => {
@@ -50,9 +51,10 @@ const CampaignEvolution = () => {
   const metrics = params.get('metrics')?.split(',') || [];
   const selectedImages = params.get('selectedImages')?.split(',').map(Number) || [];
   
-  // Track the current active metric tab
+  // Track the current active metric tab and use a ref to track component mounts
   const [activeTab, setActiveTab] = useState<string>('');
-
+  const componentMountedRef = useRef(false);
+  
   // Generate random data for each metric
   const metricsData = useMemo(() => {
     const data: Record<string, any[]> = {};
@@ -62,12 +64,28 @@ const CampaignEvolution = () => {
     return data;
   }, [metrics]);
 
-  // Reset active tab whenever the URL parameters change
+  // Reset active tab and remount logic whenever URL parameters change
   useEffect(() => {
+    // Force a complete component reset on every navigation
+    componentMountedRef.current = false;
+    
+    // Reset the active tab
     if (metrics.length > 0) {
       setActiveTab(metrics[0]);
+    } else {
+      setActiveTab('');
     }
-  }, [location.search, metrics]);
+    
+    // Mark component as mounted
+    componentMountedRef.current = true;
+    
+    // Show a toast message when metrics are loaded successfully
+    if (metrics.length > 0 && adId) {
+      toast.success(`Loaded evolution data for Ad ${adId}`, {
+        description: `Tracking ${metrics.length} metrics`
+      });
+    }
+  }, [location.search, metrics, adId]);
 
   const handleBack = () => {
     // Always navigate back to gallery with selected images and campaignLaunched=true
@@ -87,7 +105,12 @@ const CampaignEvolution = () => {
         </Button>
 
         {metrics.length > 0 ? (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs 
+            key={`metrics-tabs-${metrics.join('-')}`} 
+            value={activeTab} 
+            onValueChange={setActiveTab} 
+            className="w-full"
+          >
             <TabsList className="mb-4">
               {metrics.map(metric => (
                 <TabsTrigger key={metric} value={metric} className="capitalize">
