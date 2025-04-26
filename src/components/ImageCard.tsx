@@ -25,69 +25,36 @@ const ImageCard = ({
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const imageSrc = image.source;
-  console.log(`ImageCard: Attempting to load image from: ${imageSrc}`);
+  // Format image source to ensure it's accessible
+  const imageSrc = image.source.startsWith('/public/') 
+    ? image.source.replace('/public/', '/') 
+    : image.source;
 
+  // Add effect to log image source for debugging
   useEffect(() => {
-    console.log(`ImageCard: Loading image from path: ${imageSrc}`);
-    
-    // Create a new Image object to preload the image
-    const img = new Image();
-    img.src = imageSrc;
-    
-    img.onload = () => {
-      console.log(`ImageCard: Successfully loaded image: ${imageSrc}`);
-      setIsLoading(false);
-      setImageError(false);
-    };
-    
-    img.onerror = () => {
-      console.error(`ImageCard: Failed to load image: ${imageSrc}`);
-      setImageError(true);
-      setIsLoading(false);
-    };
-    
-    return () => {
-      // Cleanup
-      img.onload = null;
-      img.onerror = null;
-    };
+    console.log(`Loading image from: ${imageSrc}`);
   }, [imageSrc]);
 
   const handleImageError = () => {
-    console.error(`ImageCard: Error event triggered for image: ${imageSrc}`);
+    console.error(`Failed to load image: ${imageSrc}`);
     setImageError(true);
+    setIsLoading(false);
   };
 
   const handleRetry = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent selection when clicking retry button
-    console.log(`ImageCard: Retrying image load for: ${imageSrc}`);
     setIsLoading(true);
     setImageError(false);
-    
-    const timestamp = new Date().getTime();
-    const img = new Image();
-    img.src = `${imageSrc}?t=${timestamp}`;
-    
-    img.onload = () => {
-      setIsLoading(false);
-      setImageError(false);
-    };
-    
-    img.onerror = () => {
-      setImageError(true);
-      setIsLoading(false);
-    };
   };
 
   const handleCardClick = () => {
-    if (selectable && onSelect) {
+    if (onSelect) {
       onSelect();
     }
   };
 
   const handleImageLoad = () => {
-    console.log(`ImageCard: Successfully rendered image in DOM: ${imageSrc}`);
+    console.log(`Successfully loaded image: ${imageSrc}`);
     setIsLoading(false);
   };
 
@@ -111,8 +78,7 @@ const ImageCard = ({
         ) : imageError ? (
           <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex flex-col items-center justify-center p-4">
             <AlertTriangle className="w-10 h-10 text-amber-500 mb-2" />
-            <p className="text-sm text-center">Failed to load: {image.description}</p>
-            <p className="text-xs text-center text-gray-500 mt-1">{imageSrc}</p>
+            <p className="text-sm text-center">Image not found or unavailable</p>
             <Button 
               variant="outline" 
               size="sm" 
@@ -130,7 +96,6 @@ const ImageCard = ({
             className="w-full h-full object-cover"
             onLoad={handleImageLoad}
             onError={handleImageError}
-            loading="lazy"
           />
         )}
       </AspectRatio>

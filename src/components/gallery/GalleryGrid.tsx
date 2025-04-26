@@ -31,14 +31,13 @@ const GalleryGrid = ({
 }: GalleryGridProps) => {
   
   useEffect(() => {
-    console.log(`GalleryGrid: Rendering with ${images.length} images`);
+    console.log(`GalleryGrid rendering with ${images.length} images`);
     images.forEach(img => {
-      console.log(`GalleryGrid: Image ID: ${img.id}, Source: ${img.source}`);
+      console.log(`Image ID: ${img.id}, Source: ${img.source}`);
     });
   }, [images]);
 
   if (!images || images.length === 0) {
-    console.log("GalleryGrid: No images available to display");
     return (
       <div className="flex items-center justify-center h-64 w-full">
         <p className="text-gray-500">No images available</p>
@@ -48,32 +47,29 @@ const GalleryGrid = ({
 
   return (
     <div className={`grid gap-6 ${campaignLaunched ? calculateGridColumns(images.length) : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'}`}>
-      {images.map((image, index) => {
-        console.log(`GalleryGrid: Rendering image ${image.id} at index ${index}`);
-        return (
-          <div
-            key={image.id}
-            className={cn(
-              `${campaignLaunched && images.length % 3 === 1 && index === images.length - 1
-                ? 'col-start-2'
-                : ''}
-              ${campaignLaunched && images.length % 3 === 2 && index >= images.length - 2
-                ? 'col-span-1 first:col-start-1 last:col-start-3'
-                : ''}
-              relative`
-            )}
-            onClick={() => campaignLaunched ? onAdClick(image.id) : undefined}
-          >
-            <ImageCard 
-              image={image}
-              isSelected={selectedImages.includes(image.id)}
-              onSelect={() => campaignLaunched ? onAdClick(image.id) : onSelectImage(image.id)}
-              selectable={!campaignLaunched}
-              className={cn("cursor-pointer", campaignLaunched && "hover:scale-105 transition-all duration-200")}
-            />
-          </div>
-        );
-      })}
+      {images.map((image, index) => (
+        <div
+          key={image.id}
+          className={cn(
+            `${campaignLaunched && images.length % 3 === 1 && index === images.length - 1
+              ? 'col-start-2'
+              : ''}
+            ${campaignLaunched && images.length % 3 === 2 && index >= images.length - 2
+              ? 'col-span-1 first:col-start-1 last:col-start-3'
+              : ''}
+            relative`
+          )}
+          onClick={() => campaignLaunched ? onAdClick(image.id) : undefined}
+        >
+          <ImageCard 
+            image={image}
+            isSelected={selectedImages.includes(image.id)}
+            onSelect={() => campaignLaunched ? onAdClick(image.id) : onSelectImage(image.id)}
+            selectable={!campaignLaunched}
+            className={cn("cursor-pointer", campaignLaunched && "hover:scale-105 transition-all duration-200")}
+          />
+        </div>
+      ))}
     </div>
   );
 };

@@ -33,47 +33,35 @@ const GalleryPage = () => {
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>(initialMetrics);
   const [budget, setBudget] = useState<string>('');
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [loadingError, setLoadingError] = useState<string | null>(null);
   const { spendCredits } = useCredits();
   const navigate = useNavigate();
 
   useEffect(() => {
     console.log("GalleryPage: Loading initial images");
     
-    // Force imagesLoaded to false when starting to load
-    setImagesLoaded(false);
-    setLoadingError(null);
-    
-    try {
-      // Add a small delay to ensure we have UI feedback
-      setTimeout(() => {
-        if (initialSelectedImages.length > 0 && initialCampaignLaunched) {
-          console.log("GalleryPage: Loading evolution images for campaign");
-          const selectedImagesData = evoImages;
-          const mockBudget = distributeBudget(1000, selectedImagesData.length);
-          
-          const imagesWithBudget = selectedImagesData.map((img, index) => ({
-            ...img,
-            allocatedBudget: mockBudget[index]
-          }));
-          
-          console.log("GalleryPage: Setting displayed images:", imagesWithBudget);
-          setDisplayedImages(imagesWithBudget);
-        } else {
-          console.log("GalleryPage: Loading base images");
-          console.log("GalleryPage: Base images available:", baseImages.length);
-          baseImages.forEach(img => {
-            console.log(`GalleryPage: Base image ${img.id}: ${img.source}`);
-          });
-          setDisplayedImages(baseImages);
-        }
-        setImagesLoaded(true);
-      }, 300); // Small delay for better UX
-    } catch (error) {
-      console.error("GalleryPage: Error loading images", error);
-      setLoadingError("Failed to load images. Please try refreshing the page.");
+    const loadInitialImages = () => {
+      if (initialSelectedImages.length > 0 && initialCampaignLaunched) {
+        console.log("Loading evolution images for campaign");
+        const selectedImagesData = evoImages;
+        // Fixed: Pass both required arguments to distributeBudget
+        const mockBudget = distributeBudget(1000, selectedImagesData.length);
+        
+        const imagesWithBudget = selectedImagesData.map((img, index) => ({
+          ...img,
+          allocatedBudget: mockBudget[index]
+        }));
+        
+        console.log("Setting displayed images:", imagesWithBudget);
+        setDisplayedImages(imagesWithBudget);
+      } else {
+        console.log("Loading base images");
+        console.log("Base images:", baseImages);
+        setDisplayedImages(baseImages);
+      }
       setImagesLoaded(true);
-    }
+    };
+
+    loadInitialImages();
   }, [initialSelectedImages, initialCampaignLaunched]);
 
   const handleSelectImage = (imageId: number) => {
@@ -159,28 +147,7 @@ const GalleryPage = () => {
     return (
       <AppLayout title="Loading Gallery...">
         <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-6 shadow-lg flex justify-center items-center h-64">
-          <div className="flex flex-col items-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500 mb-4"></div>
-            <p className="text-purple-600 dark:text-purple-400">Loading gallery images...</p>
-          </div>
-        </div>
-      </AppLayout>
-    );
-  }
-
-  if (loadingError) {
-    return (
-      <AppLayout title="Gallery Error">
-        <div className="w-full bg-gradient-to-br from-red-100 via-red-50 to-white dark:from-red-900 dark:via-red-800 dark:to-gray-800 rounded-xl p-6 shadow-lg">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 space-y-8 flex flex-col items-center">
-            <div className="text-red-500 text-xl">⚠️ {loadingError}</div>
-            <button 
-              className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600"
-              onClick={() => window.location.reload()}
-            >
-              Refresh Page
-            </button>
-          </div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
         </div>
       </AppLayout>
     );
