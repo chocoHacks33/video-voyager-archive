@@ -1,8 +1,9 @@
+
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, FastForward } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import MetricsChart from '@/components/campaign/MetricsChart';
@@ -34,13 +35,13 @@ const CampaignEvolution = () => {
       setActiveTab(metrics[0]);
     }
     
-    // Only show initial toast, not on every skip
-    if (metrics.length > 0 && adId) {
+    // Only show initial toast on first load, not on every metric change
+    if (metrics.length > 0 && adId && daysToShow === 0) {
       toast.success(`Loaded evolution data for Ad ${adId}`, {
         description: `Tracking ${metrics.length} metric${metrics.length !== 1 ? 's' : ''}`
       });
     }
-  }, [metrics, activeTab, adId]); // Remove daysToShow dependency
+  }, [metrics, activeTab, adId, daysToShow]);
 
   const handleBack = () => {
     const currentMetrics = params.get('metrics') || '';

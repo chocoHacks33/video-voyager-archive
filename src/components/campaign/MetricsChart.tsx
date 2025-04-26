@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,68 +11,99 @@ interface MetricsChartProps {
 }
 
 const MetricsChart = ({ metric, data }: MetricsChartProps) => {
-  const [animatedData, setAnimatedData] = useState(data);
+  const [animatedData, setAnimatedData] = useState<any[]>([]);
   const maxValue = getMetricMaxValue(metric);
   const animationRef = useRef<number>();
+  const previousDataRef = useRef<any[]>([]);
 
-  // Create a fixed dataset with all possible days
-  const fullDataset = Array.from({ length: 29 }, (_, i) => ({
-    name: i,
-    value: null
-  }));
-
-  // Animation effect when data changes
   useEffect(() => {
-    const targetData = fullDataset.map(point => {
-      const actualDataPoint = data.find(d => d.name === point.name);
-      return actualDataPoint || point;
-    });
+    // Find the last day with data
+    const lastDataPoint = [...data].sort((a, b) => b.name - a.name)[0];
+    if (!lastDataPoint) {
+      setAnimatedData(data);
+      return;
+    }
 
-    let startTime: number;
+    const currentDay = lastDataPoint.name;
+    const prevDay = currentDay - 7 >= 0 ? currentDay - 7 : 0;
+
+    // Get current and previous checkpoint data
+    const currentCheckpointData = data.find(d => d.name === currentDay);
+    const prevCheckpointData = data.find(d => d.name === prevDay) || 
+      { name: prevDay, value: 0, mutationNumber: Math.floor(prevDay / 7), videoSrc: `/stock-videos/video${Math.floor(prevDay / 7)}.mp4` };
+
+    // Create a complete dataset with all days between prev and current checkpoints
+    const allDays = Array.from({ length: currentDay - prevDay + 1 }, (_, i) => prevDay + i);
+    
+    // Start with previous data state
+    let startData = previousDataRef.current.length > 0 
+      ? previousDataRef.current
+      : data.filter(d => d.name <= prevDay);
+
+    // Ensure we have the previous checkpoint in our start data
+    if (!startData.some(d => d.name === prevDay)) {
+      startData = [...startData, prevCheckpointData];
+    }
+
+    const startTime = performance.now();
     const animationDuration = 5000; // 5 seconds
-
+    
     const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
-
-      const newData = fullDataset.map((point, index) => {
-        const targetPoint = targetData[index];
-        if (!targetPoint?.value) return point;
-
-        // Find the previous checkpoint
-        const prevCheckpoint = Math.floor((index - 7) / 7) * 7;
-        const nextCheckpoint = Math.ceil(index / 7) * 7;
-        
-        // If this point is from a previous checkpoint, keep its value
-        if (index <= prevCheckpoint) {
-          return targetPoint;
+      
+      // Create animated points between previous and current checkpoint
+      const newAnimatedData = [...startData];
+      
+      // Only animate if we're moving to a new checkpoint
+      if (prevDay < currentDay) {
+        for (let i = 1; i < allDays.length; i++) {
+          const day = allDays[i];
+          // Determine if we should show this day based on animation progress
+          if (progress >= i / allDays.length) {
+            // Interpolate the value between prev and current checkpoints
+            const dayProgress = (day - prevDay) / (currentDay - prevDay);
+            const interpolatedValue = prevCheckpointData.value + 
+              (currentCheckpointData.value - prevCheckpointData.value) * dayProgress;
+            
+            // Add or update this day in our dataset
+            const existingIndex = newAnimatedData.findIndex(d => d.name === day);
+            const newPoint = {
+              name: day,
+              mutationNumber: Math.floor(day / 7),
+              value: Math.round(interpolatedValue),
+              videoSrc: `/stock-videos/video${Math.floor(day / 7)}.mp4`
+            };
+            
+            if (existingIndex >= 0) {
+              newAnimatedData[existingIndex] = newPoint;
+            } else {
+              newAnimatedData.push(newPoint);
+            }
+          }
         }
-        
-        // If this point is between checkpoints, animate it based on progress
-        const segmentProgress = progress * (nextCheckpoint - prevCheckpoint);
-        if (index <= prevCheckpoint + segmentProgress) {
-          return targetPoint;
-        }
-        
-        return point;
-      });
-
-      setAnimatedData(newData);
-
+      }
+      
+      // Sort by day
+      newAnimatedData.sort((a, b) => a.name - b.name);
+      setAnimatedData(newAnimatedData);
+      
       if (progress < 1) {
         animationRef.current = requestAnimationFrame(animate);
+      } else {
+        // Animation complete, save final state
+        previousDataRef.current = newAnimatedData;
       }
     };
-
+    
     // Cancel any existing animation
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
     }
-
+    
     // Start new animation
     animationRef.current = requestAnimationFrame(animate);
-
+    
     // Cleanup
     return () => {
       if (animationRef.current) {
