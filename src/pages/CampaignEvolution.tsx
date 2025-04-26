@@ -71,7 +71,7 @@ const CampaignEvolution = () => {
             onClick={handleSkipDays}
             disabled={daysToShow >= 28}
           >
-            »» Skip 7 Days
+            ▶▶ Skip 7 Days
           </Button>
         </div>
 
