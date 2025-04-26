@@ -22,7 +22,6 @@ interface ImageData {
   description: string;
 }
 
-// Sample data for 9 images with specific descriptions
 const imagesData: ImageData[] = [
   {
     id: 1,
@@ -78,22 +77,8 @@ const GalleryPage = () => {
   const [displayedImages, setDisplayedImages] = useState<ImageData[]>([]);
 
   useEffect(() => {
-    // Check if we have stored image URLs in localStorage
-    const storedUrls = JSON.parse(localStorage.getItem('generatedImageUrls') || '[]');
-    
-    if (storedUrls.length > 0) {
-      // Use the stored URLs to create image data
-      const generatedImages = storedUrls.map((url: string, index: number) => ({
-        id: 100 + index,
-        source: url,
-        description: imagesData[index % imagesData.length].description
-      }));
-      
-      setDisplayedImages(generatedImages);
-    } else {
-      // Fallback to default images
-      setDisplayedImages(imagesData);
-    }
+    // Initialize with empty array, ready for local images
+    setDisplayedImages([]);
   }, []);
 
   const handleSelectImage = (imageId: number) => {
