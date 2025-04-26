@@ -1,99 +1,13 @@
+
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-
-// Custom tooltip component that shows the mutation video
-const VideoTooltip = ({ active, payload, label }: any) => {
-  if (!active || !payload || !payload.length) return null;
-
-  const data = payload[0].payload;
-
-  return (
-    <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
-      <h3 className="font-bold text-gray-900">Mutation {label}</h3>
-      <p className="text-gray-600 mb-2">{payload[0].name}: {payload[0].value}</p>
-      <div className="w-64">
-        <AspectRatio ratio={16/9}>
-          <video 
-            src={data.videoSrc || "/stock-videos/video1.mp4"}
-            className="rounded-md w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-          />
-        </AspectRatio>
-      </div>
-    </div>
-  );
-};
-
-const generateRandomData = (metric: string) => {
-  return [
-    // Original state (day 0)
-    {
-      name: 0,
-      value: Math.floor(Math.random() * 500) + 100,
-      videoSrc: '/stock-videos/video0.mp4'
-    },
-    // Mutation 1 (day 7)
-    {
-      name: 7,
-      value: Math.floor(Math.random() * 800) + 200,
-      videoSrc: '/stock-videos/video1.mp4'
-    },
-    // Mutation 2 (day 14)
-    {
-      name: 14,
-      value: Math.floor(Math.random() * 1100) + 300,
-      videoSrc: '/stock-videos/video2.mp4'
-    },
-    // Mutation 3 (day 21)
-    {
-      name: 21,
-      value: Math.floor(Math.random() * 1400) + 400,
-      videoSrc: '/stock-videos/video3.mp4'
-    },
-    // Mutation 4 (day 28)
-    {
-      name: 28,
-      value: Math.floor(Math.random() * 1700) + 500,
-      videoSrc: '/stock-videos/video4.mp4'
-    }
-  ];
-};
-
-// Format metric name for display (capitalize or make uppercase for acronyms)
-const formatMetricName = (metric: string): string => {
-  if (metric === 'ctr') return 'CTR';
-  return metric.charAt(0).toUpperCase() + metric.slice(1);
-};
-
-// Get metric unit based on metric name
-const getMetricUnit = (metric: string): string => {
-  switch(metric.toLowerCase()) {
-    case 'ctr': return '%';
-    case 'engagement': return 'actions';
-    case 'views': return 'count';
-    case 'outreach': return 'users';
-    case 'convertibility': return 'conversions';
-    default: return '';
-  }
-};
-
-// Format Y-axis tick values based on metric
-const formatYAxisTick = (value: number, metric: string): string => {
-  switch(metric.toLowerCase()) {
-    case 'ctr': return `${value}%`;
-    default: return value.toLocaleString();
-  }
-};
+import MetricsChart from '@/components/campaign/MetricsChart';
+import { generateRandomData } from '@/utils/campaignMetrics';
 
 const CampaignEvolution = () => {
   const location = useLocation();
@@ -114,34 +28,21 @@ const CampaignEvolution = () => {
     return data;
   }, [metrics]);
 
-  // Set the active tab whenever metrics change
   useEffect(() => {
     if (metrics.length > 0 && !activeTab) {
       setActiveTab(metrics[0]);
     }
     
-    // Show a toast message when metrics are loaded
     if (metrics.length > 0 && adId) {
       toast.success(`Loaded evolution data for Ad ${adId}`, {
         description: `Tracking ${metrics.length} metric${metrics.length !== 1 ? 's' : ''}`
       });
     }
-
-    // Log the metrics for debugging
-    console.log('Current metrics:', metrics);
-    console.log('Active tab:', activeTab);
-  }, [metrics, activeTab]);
+  }, [metrics, activeTab, adId]);
 
   const handleBack = () => {
-    // Always navigate back to gallery with selected images and campaignLaunched=true
-    // Also preserve the metrics parameter to maintain consistency
     const currentMetrics = params.get('metrics') || '';
     navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true&metrics=${currentMetrics}`);
-  };
-
-  const handleTabChange = (value: string) => {
-    console.log('Tab changed to:', value);
-    setActiveTab(value);
   };
 
   return (
@@ -158,71 +59,22 @@ const CampaignEvolution = () => {
 
         {metrics.length > 0 ? (
           <div className="w-full">
-            <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
+            <Tabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="mb-4 flex flex-wrap gap-1">
                 {metrics.map(metric => (
                   <TabsTrigger 
                     key={metric} 
                     value={metric} 
                     className="capitalize"
-                    onClick={() => console.log('Tab clicked:', metric)}
                   >
-                    {formatMetricName(metric)}
+                    {metric === 'ctr' ? 'CTR' : metric}
                   </TabsTrigger>
                 ))}
               </TabsList>
               
               {metrics.map(metric => (
                 <TabsContent key={metric} value={metric} className="mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="capitalize">{formatMetricName(metric)} Evolution</CardTitle>
-                      <CardDescription>
-                        Track the {metric === 'ctr' ? 'CTR' : metric.toLowerCase()} performance over time
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-[400px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <LineChart
-                            data={metricsData[metric]}
-                            margin={{
-                              top: 20,
-                              right: 30,
-                              left: 20,
-                              bottom: 30,
-                            }}
-                          >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis 
-                              dataKey="name"
-                              domain={[0, 28]}
-                              ticks={[0, 7, 14, 21, 28]} // Show these specific days
-                              tickFormatter={(value) => `Day ${value}`}
-                              label={{ value: 'Timeline (Days)', position: 'insideBottom', offset: -15 }}
-                            />
-                            <YAxis 
-                              tickFormatter={(value) => formatYAxisTick(value, metric)}
-                              label={{ 
-                                value: `${formatMetricName(metric)} (${getMetricUnit(metric)})`, 
-                                angle: -90, 
-                                position: 'insideLeft',
-                                style: { textAnchor: 'middle' }
-                              }}
-                            />
-                            <Tooltip content={<VideoTooltip />} />
-                            <Line 
-                              type="monotone" 
-                              dataKey="value" 
-                              stroke="#8884d8" 
-                              activeDot={{ r: 8 }}
-                              name={metric === 'ctr' ? 'CTR' : metric}
-                            />
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <MetricsChart metric={metric} data={metricsData[metric]} />
                 </TabsContent>
               ))}
             </Tabs>

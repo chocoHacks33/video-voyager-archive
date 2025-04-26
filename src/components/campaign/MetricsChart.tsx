@@ -1,0 +1,67 @@
+
+import React from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import VideoTooltip from './VideoTooltip';
+import { formatMetricName, formatYAxisTick, getMetricUnit } from '@/utils/campaignMetrics';
+
+interface MetricsChartProps {
+  metric: string;
+  data: any[];
+}
+
+const MetricsChart = ({ metric, data }: MetricsChartProps) => {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="capitalize">{formatMetricName(metric)} Evolution</CardTitle>
+        <CardDescription>
+          Track the {metric === 'ctr' ? 'CTR' : metric.toLowerCase()} performance over time
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="h-[400px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={data}
+              margin={{
+                top: 20,
+                right: 30,
+                left: 20,
+                bottom: 30,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis 
+                dataKey="name"
+                domain={[0, 28]}
+                ticks={[0, 7, 14, 21, 28]}
+                tickFormatter={(value) => `Day ${value}`}
+                label={{ value: 'Timeline (Days)', position: 'insideBottom', offset: -15 }}
+              />
+              <YAxis 
+                tickFormatter={(value) => formatYAxisTick(value, metric)}
+                label={{ 
+                  value: `${formatMetricName(metric)} (${getMetricUnit(metric)})`, 
+                  angle: -90, 
+                  position: 'insideLeft',
+                  style: { textAnchor: 'middle' }
+                }}
+              />
+              <Tooltip content={<VideoTooltip />} />
+              <Line 
+                type="monotone" 
+                dataKey="value" 
+                stroke="#8884d8" 
+                activeDot={{ r: 8 }}
+                name={metric}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default MetricsChart;
