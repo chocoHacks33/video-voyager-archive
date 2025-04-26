@@ -55,10 +55,11 @@ const GalleryPage = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const initialSelectedImages = params.get('selectedImages')?.split(',').map(Number) || [];
+  const initialCampaignLaunched = params.get('campaignLaunched') === 'true';
   
   const [selectedImages, setSelectedImages] = useState<number[]>(initialSelectedImages);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [campaignLaunched, setCampaignLaunched] = useState(false);
+  const [campaignLaunched, setCampaignLaunched] = useState(initialCampaignLaunched);
   const [displayedImages, setDisplayedImages] = useState<ImageData[]>([]);
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
   const [budget, setBudget] = useState<string>('');
@@ -158,12 +159,18 @@ const GalleryPage = () => {
 
   // Filter displayed images if we have selectedImages from URL
   useEffect(() => {
-    if (initialSelectedImages.length > 0 && campaignLaunched) {
-      setDisplayedImages(prev => 
-        prev.filter(image => initialSelectedImages.includes(image.id))
-      );
+    const emptyImages: ImageData[] = Array.from({ length: 9 }, (_, index) => ({
+      id: index + 1,
+      source: `/public/stock-videos/image${index + 1}.jpg`,
+      description: `Ad Variation ${index + 1}`
+    }));
+
+    if (initialSelectedImages.length > 0 && initialCampaignLaunched) {
+      setDisplayedImages(emptyImages.filter(image => initialSelectedImages.includes(image.id)));
+    } else {
+      setDisplayedImages(emptyImages);
     }
-  }, [initialSelectedImages, campaignLaunched]);
+  }, [initialSelectedImages, initialCampaignLaunched]);
 
   return (
     <AppLayout title={campaignLaunched ? "Your Active Campaigns" : "Choose Your Ads"}>

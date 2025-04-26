@@ -1,3 +1,4 @@
+
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -59,8 +60,8 @@ const CampaignEvolution = () => {
   }, [metrics]);
 
   const handleBack = () => {
-    // Navigate back to gallery with selected images
-    navigate(`/gallery?selectedImages=${selectedImages.join(',')}`);
+    // Navigate back to gallery with selected images and set campaign as launched
+    navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true`);
   };
 
   return (
