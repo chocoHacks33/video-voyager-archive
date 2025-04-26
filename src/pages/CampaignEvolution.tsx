@@ -2,7 +2,7 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -47,6 +47,26 @@ const generateRandomData = (metric: string) => {
 const formatMetricName = (metric: string): string => {
   if (metric === 'ctr') return 'CTR';
   return metric.charAt(0).toUpperCase() + metric.slice(1);
+};
+
+// Get metric unit based on metric name
+const getMetricUnit = (metric: string): string => {
+  switch(metric.toLowerCase()) {
+    case 'ctr': return '%';
+    case 'engagement': return 'actions';
+    case 'views': return 'count';
+    case 'outreach': return 'users';
+    case 'convertibility': return 'conversions';
+    default: return '';
+  }
+};
+
+// Format Y-axis tick values based on metric
+const formatYAxisTick = (value: number, metric: string): string => {
+  switch(metric.toLowerCase()) {
+    case 'ctr': return `${value}%`;
+    default: return value.toLocaleString();
+  }
 };
 
 const CampaignEvolution = () => {
@@ -144,16 +164,26 @@ const CampaignEvolution = () => {
                               top: 20,
                               right: 30,
                               left: 20,
-                              bottom: 5,
+                              bottom: 30,
                             }}
                           >
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis 
                               dataKey="name" 
                               tickFormatter={(value) => `Day ${value + 1}`}
+                              label={{ value: 'Timeline (Days)', position: 'insideBottom', offset: -15 }}
                             />
-                            <YAxis />
+                            <YAxis 
+                              tickFormatter={(value) => formatYAxisTick(value, metric)}
+                              label={{ 
+                                value: `${formatMetricName(metric)} (${getMetricUnit(metric)})`, 
+                                angle: -90, 
+                                position: 'insideLeft',
+                                style: { textAnchor: 'middle' }
+                              }}
+                            />
                             <Tooltip content={<VideoTooltip />} />
+                            <Legend />
                             <Line 
                               type="monotone" 
                               dataKey="value" 
