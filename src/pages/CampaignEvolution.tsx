@@ -64,10 +64,6 @@ const CampaignEvolution = () => {
     navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true`);
   };
 
-  // Force the component to always show the first tab as default when rendered
-  // This ensures tabs are visible even after navigation
-  const defaultTab = metrics[0] || '';
-
   return (
     <AppLayout title="Ad Evolution Analysis">
       <div className="w-full space-y-6">
@@ -81,7 +77,7 @@ const CampaignEvolution = () => {
         </Button>
 
         {metrics.length > 0 ? (
-          <Tabs defaultValue={defaultTab} className="w-full">
+          <Tabs defaultValue={metrics[0]} className="w-full">
             <TabsList className="mb-4">
               {metrics.map(metric => (
                 <TabsTrigger key={metric} value={metric} className="capitalize">
