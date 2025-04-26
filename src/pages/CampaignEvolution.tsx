@@ -59,7 +59,7 @@ const CampaignEvolution = () => {
   }, [metrics]);
 
   const handleBack = () => {
-    navigate('/gallery');
+    navigate('/gallery'); // Redirects to Gallery page
   };
 
   return (
