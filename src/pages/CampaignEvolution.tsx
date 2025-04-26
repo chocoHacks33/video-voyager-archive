@@ -1,3 +1,4 @@
+
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -70,8 +71,7 @@ const CampaignEvolution = () => {
             onClick={handleSkipDays}
             disabled={daysToShow >= 28}
           >
-            <FastForward className="h-4 w-4" />
-            ➤➤ Skip 7 Days
+            »» Skip 7 Days
           </Button>
         </div>
 
