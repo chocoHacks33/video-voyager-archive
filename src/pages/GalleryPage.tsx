@@ -38,17 +38,18 @@ const metricTags: MetricTag[] = [
 ];
 
 const calculateGridColumns = (imageCount: number): string => {
-  // Determine optimal grid layout based on image count
-  switch (imageCount) {
-    case 1:
-      return 'grid-cols-1';
-    case 2:
-      return 'grid-cols-2';
-    case 4:
-      return 'grid-cols-2';
-    default:
-      return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3';
+  // For 1-2 images, use specific layouts
+  if (imageCount <= 2) {
+    return imageCount === 1 ? 'grid-cols-1' : 'grid-cols-2';
   }
+  
+  // For 3-4 images, use 2 columns
+  if (imageCount <= 4) {
+    return 'grid-cols-2';
+  }
+  
+  // For 5+ images, use 3 columns with centering for last row
+  return 'grid-cols-3';
 };
 
 const GalleryPage = () => {
@@ -130,19 +131,30 @@ const GalleryPage = () => {
     <AppLayout title={campaignLaunched ? "Your Active Campaigns" : "Choose Your Ads"}>
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-6 shadow-lg">
         <div className="bg-white dark:bg-gray-800 rounded-lg p-6 space-y-8">
-          {/* Gallery Grid with dynamic columns */}
+          {/* Gallery Grid with dynamic columns and last row centering */}
           <div className={`grid gap-6 ${campaignLaunched ? calculateGridColumns(displayedImages.length) : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'}`}>
-            {displayedImages.map(image => (
-              <ImageCard 
-                key={image.id} 
-                image={image} 
-                isSelected={selectedImages.includes(image.id)}
-                onSelect={() => handleSelectImage(image.id)}
-                selectable={!campaignLaunched}
-              />
+            {displayedImages.map((image, index) => (
+              <div
+                key={image.id}
+                className={`
+                  ${campaignLaunched && displayedImages.length % 3 === 1 && index === displayedImages.length - 1
+                    ? 'col-start-2'  // Center the last image if it's alone in the last row
+                    : ''}
+                  ${campaignLaunched && displayedImages.length % 3 === 2 && index >= displayedImages.length - 2
+                    ? 'col-span-1 first:col-start-1 last:col-start-3'  // Space out last two images
+                    : ''}
+                `}
+              >
+                <ImageCard 
+                  image={image}
+                  isSelected={selectedImages.includes(image.id)}
+                  onSelect={() => handleSelectImage(image.id)}
+                  selectable={!campaignLaunched}
+                />
+              </div>
             ))}
           </div>
-          
+
           {/* Campaign Settings Section */}
           {!campaignLaunched && (
             <div className="mt-10 space-y-8">
