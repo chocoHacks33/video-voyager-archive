@@ -1,9 +1,8 @@
-
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, SkipForward } from 'lucide-react';
+import { ArrowLeft, FastForward } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import MetricsChart from '@/components/campaign/MetricsChart';
@@ -18,15 +17,17 @@ const CampaignEvolution = () => {
   const selectedImages = params.get('selectedImages')?.split(',').map(Number) || [];
   
   const [activeTab, setActiveTab] = useState<string>('');
+
+  const [daysToShow, setDaysToShow] = useState(0);
   
   // Generate random data for each metric
   const metricsData = useMemo(() => {
     const data: Record<string, any[]> = {};
     metrics.forEach(metric => {
-      data[metric] = generateRandomData(metric);
+      data[metric] = generateRandomData(metric).filter(point => point.name <= daysToShow);
     });
     return data;
-  }, [metrics]);
+  }, [metrics, daysToShow]);
 
   useEffect(() => {
     if (metrics.length > 0 && !activeTab) {
@@ -45,6 +46,10 @@ const CampaignEvolution = () => {
     navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true&metrics=${currentMetrics}`);
   };
 
+  const handleSkipDays = () => {
+    setDaysToShow(prev => Math.min(prev + 7, 28));
+  };
+
   return (
     <AppLayout title="">
       <div className="w-full space-y-6">
@@ -59,9 +64,14 @@ const CampaignEvolution = () => {
 
         <div className="flex items-center gap-4 mb-6">
           <h1 className="text-2xl font-bold text-[#ea384c]">DEMO MODE</h1>
-          <Button variant="outline" className="gap-2">
-            <SkipForward className="h-4 w-4" />
-            Skip 7 Days
+          <Button 
+            variant="outline" 
+            className="gap-2"
+            onClick={handleSkipDays}
+            disabled={daysToShow >= 28}
+          >
+            <FastForward className="h-4 w-4" />
+            ➤➤ Skip 7 Days
           </Button>
         </div>
 
