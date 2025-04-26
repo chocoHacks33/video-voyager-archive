@@ -43,6 +43,12 @@ const generateRandomData = (metric: string) => {
   }));
 };
 
+// Format metric name for display (capitalize or make uppercase for acronyms)
+const formatMetricName = (metric: string): string => {
+  if (metric === 'ctr') return 'CTR';
+  return metric.charAt(0).toUpperCase() + metric.slice(1);
+};
+
 const CampaignEvolution = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -51,8 +57,6 @@ const CampaignEvolution = () => {
   const metrics = params.get('metrics')?.split(',').filter(Boolean) || [];
   const selectedImages = params.get('selectedImages')?.split(',').map(Number) || [];
   
-  // Use a ref for the render key to force complete re-renders when metrics change
-  const renderKeyRef = useRef(`metrics-tabs-${Date.now()}`);
   const [activeTab, setActiveTab] = useState<string>('');
   
   // Generate random data for each metric
@@ -64,11 +68,8 @@ const CampaignEvolution = () => {
     return data;
   }, [metrics]);
 
-  // Reset active tab and create a new render key whenever URL parameters change
+  // Set the active tab whenever metrics change
   useEffect(() => {
-    // Update the render key to force a complete component re-render
-    renderKeyRef.current = `metrics-tabs-${metrics.join('-')}-${Date.now()}`;
-    
     // Reset the active tab
     if (metrics.length > 0) {
       setActiveTab(metrics[0]);
@@ -108,7 +109,7 @@ const CampaignEvolution = () => {
 
         {metrics.length > 0 ? (
           <Tabs 
-            key={renderKeyRef.current} 
+            defaultValue={metrics[0]} 
             value={activeTab} 
             onValueChange={setActiveTab} 
             className="w-full"
@@ -116,7 +117,7 @@ const CampaignEvolution = () => {
             <TabsList className="mb-4">
               {metrics.map(metric => (
                 <TabsTrigger key={metric} value={metric} className="capitalize">
-                  {metric}
+                  {formatMetricName(metric)}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -125,9 +126,9 @@ const CampaignEvolution = () => {
               <TabsContent key={metric} value={metric}>
                 <Card>
                   <CardHeader>
-                    <CardTitle className="capitalize">{metric} Evolution</CardTitle>
+                    <CardTitle className="capitalize">{formatMetricName(metric)} Evolution</CardTitle>
                     <CardDescription>
-                      Track the {metric.toLowerCase()} performance over time
+                      Track the {metric === 'ctr' ? 'CTR' : metric.toLowerCase()} performance over time
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -154,7 +155,7 @@ const CampaignEvolution = () => {
                             dataKey="value" 
                             stroke="#8884d8" 
                             activeDot={{ r: 8 }}
-                            name={metric}
+                            name={metric === 'ctr' ? 'CTR' : metric}
                           />
                         </LineChart>
                       </ResponsiveContainer>
