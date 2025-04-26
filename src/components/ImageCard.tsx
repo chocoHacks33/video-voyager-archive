@@ -26,9 +26,7 @@ const ImageCard = ({
   const [isLoading, setIsLoading] = useState(true);
 
   // Format image source to ensure it's accessible
-  const imageSrc = image.source.startsWith('/public/') 
-    ? image.source.replace('/public/', '/') 
-    : image.source;
+  const imageSrc = image.source;
 
   // Add effect to log image source for debugging
   useEffect(() => {

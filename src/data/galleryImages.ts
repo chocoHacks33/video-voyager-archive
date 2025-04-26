@@ -20,4 +20,3 @@ export const evoImages: ImageData[] = [
   { id: 13, source: '/lovable-uploads/evo3.jpg', description: 'Evolution 3' },
   { id: 14, source: '/lovable-uploads/evo4.jpg', description: 'Evolution 4' }
 ];
-
