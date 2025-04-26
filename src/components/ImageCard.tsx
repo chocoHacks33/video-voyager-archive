@@ -25,25 +25,24 @@ const ImageCard = ({
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Make sure we're using the exact file name as it appears in the filesystem
+  // Use correct image path
   const imageSrc = image.source;
 
-  // Add effect to log image source for debugging
   useEffect(() => {
-    console.log(`ImageCard: Attempting to load image from: ${imageSrc}`);
+    console.log(`ImageCard: Loading image from path: ${imageSrc}`);
     
     // Create a new Image object to preload the image
     const img = new Image();
     img.src = imageSrc;
     
     img.onload = () => {
-      console.log(`ImageCard: Successfully preloaded image: ${imageSrc}`);
+      console.log(`ImageCard: Successfully loaded image: ${imageSrc}`);
       setIsLoading(false);
       setImageError(false);
     };
     
     img.onerror = () => {
-      console.error(`ImageCard: Failed to preload image: ${imageSrc}`);
+      console.error(`ImageCard: Failed to load image: ${imageSrc}`);
       setImageError(true);
       setIsLoading(false);
     };
@@ -58,7 +57,6 @@ const ImageCard = ({
   const handleImageError = () => {
     console.error(`ImageCard: Error event triggered for image: ${imageSrc}`);
     setImageError(true);
-    setIsLoading(false);
   };
 
   const handleRetry = (e: React.MouseEvent) => {
@@ -67,9 +65,9 @@ const ImageCard = ({
     setIsLoading(true);
     setImageError(false);
     
-    // Force reload by creating a new image with a cache-busting parameter
+    const timestamp = new Date().getTime();
     const img = new Image();
-    img.src = `${imageSrc}?reload=${new Date().getTime()}`;
+    img.src = `${imageSrc}?t=${timestamp}`;
     
     img.onload = () => {
       setIsLoading(false);
@@ -89,7 +87,7 @@ const ImageCard = ({
   };
 
   const handleImageLoad = () => {
-    console.log(`ImageCard: Successfully loaded image in DOM: ${imageSrc}`);
+    console.log(`ImageCard: Successfully rendered image in DOM: ${imageSrc}`);
     setIsLoading(false);
   };
 
@@ -113,7 +111,7 @@ const ImageCard = ({
         ) : imageError ? (
           <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex flex-col items-center justify-center p-4">
             <AlertTriangle className="w-10 h-10 text-amber-500 mb-2" />
-            <p className="text-sm text-center">Image not found: {image.description}</p>
+            <p className="text-sm text-center">Failed to load: {image.description}</p>
             <p className="text-xs text-center text-gray-500 mt-1">{imageSrc}</p>
             <Button 
               variant="outline" 
