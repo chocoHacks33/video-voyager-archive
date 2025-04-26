@@ -3,7 +3,7 @@
 
 export const generateRandomData = (metric: string) => {
   return [
-    // Original state (day 0)
+    // Mutation 0 (day 0)
     {
       name: 0,
       value: Math.floor(Math.random() * 500) + 100,
