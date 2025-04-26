@@ -50,7 +50,7 @@ export const generateRandomData = (metric: string) => {
       };
     }
 
-    // For other metrics, keep existing random generation logic
+    // For other metrics, keep existing random generation logic but always use evolution images
     const maxValue = metricMaxValues[metric.toLowerCase()] || 1000;
     const value = Math.floor(Math.random() * (maxValue * 0.8)) + (maxValue * 0.1);
     dataCache[metric][day] = value;

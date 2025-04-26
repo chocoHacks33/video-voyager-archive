@@ -41,9 +41,11 @@ const GalleryPage = () => {
     
     const loadInitialImages = () => {
       if (initialSelectedImages.length > 0 && initialCampaignLaunched) {
-        console.log("Loading evolution images for campaign");
-        const selectedImagesData = evoImages;
-        // Fixed: Pass both required arguments to distributeBudget
+        console.log("Loading selected images for campaign");
+        // Only show the originally selected base images
+        const selectedImagesData = baseImages.filter(img => 
+          initialSelectedImages.includes(img.id)
+        );
         const mockBudget = distributeBudget(1000, selectedImagesData.length);
         
         const imagesWithBudget = selectedImagesData.map((img, index) => ({
