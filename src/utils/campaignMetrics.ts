@@ -1,3 +1,4 @@
+
 // Cache to store generated values for each metric
 const dataCache: Record<string, Record<number, number>> = {};
 
@@ -15,6 +16,7 @@ export const generateRandomData = (metric: string) => {
     dataCache[metric] = {};
   }
 
+  // Only the 5 checkpoint days for mutations 0-4
   const days = [0, 7, 14, 21, 28];
   return days.map(day => {
     // If we already have a value for this day and metric, use it

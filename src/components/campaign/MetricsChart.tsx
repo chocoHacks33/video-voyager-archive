@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,13 +31,11 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
     const prevCheckpointData = data.find(d => d.name === prevDay) || 
       { name: prevDay, value: 0, mutationNumber: Math.floor(prevDay / 7), videoSrc: `/stock-videos/video${Math.floor(prevDay / 7)}.mp4` };
 
-    // Create a complete dataset with all days between prev and current checkpoints
-    const allDays = Array.from({ length: currentDay - prevDay + 1 }, (_, i) => prevDay + i);
-    
-    // Start with previous data state
+    // Start with previous data state, filtering to only include checkpoint days (0, 7, 14, 21, 28)
+    // This ensures we only show the 5 key mutation points
     let startData = previousDataRef.current.length > 0 
-      ? previousDataRef.current
-      : data.filter(d => d.name <= prevDay);
+      ? previousDataRef.current.filter(d => d.name % 7 === 0)
+      : data.filter(d => d.name <= prevDay && d.name % 7 === 0);
 
     // Ensure we have the previous checkpoint in our start data
     if (!startData.some(d => d.name === prevDay)) {
@@ -57,28 +54,38 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
       
       // Only animate if we're moving to a new checkpoint
       if (prevDay < currentDay) {
-        for (let i = 1; i < allDays.length; i++) {
-          const day = allDays[i];
-          // Determine if we should show this day based on animation progress
-          if (progress >= i / allDays.length) {
-            // Interpolate the value between prev and current checkpoints
-            const dayProgress = (day - prevDay) / (currentDay - prevDay);
-            const interpolatedValue = prevCheckpointData.value + 
-              (currentCheckpointData.value - prevCheckpointData.value) * dayProgress;
-            
-            // Add or update this day in our dataset
-            const existingIndex = newAnimatedData.findIndex(d => d.name === day);
-            const newPoint = {
-              name: day,
-              mutationNumber: Math.floor(day / 7),
-              value: Math.round(interpolatedValue),
-              videoSrc: `/stock-videos/video${Math.floor(day / 7)}.mp4`
-            };
-            
+        // Calculate interpolated points only for the animation
+        const interpolatedDay = prevDay + Math.floor((currentDay - prevDay) * progress);
+        const interpolatedValue = prevCheckpointData.value + 
+          (currentCheckpointData.value - prevCheckpointData.value) * progress;
+        
+        // Only add the current point if we've progressed to it
+        if (progress > 0) {
+          const interpolatedPoint = {
+            name: interpolatedDay,
+            mutationNumber: Math.floor(interpolatedDay / 7),
+            value: Math.round(interpolatedValue),
+            videoSrc: `/stock-videos/video${Math.floor(interpolatedDay / 7)}.mp4`
+          };
+          
+          // Add the animated point
+          if (progress < 1) {
+            // During animation, add the interpolated point
+            const existingIndex = newAnimatedData.findIndex(d => d.name === currentDay);
             if (existingIndex >= 0) {
-              newAnimatedData[existingIndex] = newPoint;
+              // Replace existing endpoint with interpolated point
+              newAnimatedData[existingIndex] = interpolatedPoint;
             } else {
-              newAnimatedData.push(newPoint);
+              // Add interpolated point
+              newAnimatedData.push(interpolatedPoint);
+            }
+          } else {
+            // At end of animation, add the final checkpoint
+            const existingIndex = newAnimatedData.findIndex(d => d.name === currentDay);
+            if (existingIndex >= 0) {
+              newAnimatedData[existingIndex] = currentCheckpointData;
+            } else {
+              newAnimatedData.push(currentCheckpointData);
             }
           }
         }
@@ -92,7 +99,8 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
         animationRef.current = requestAnimationFrame(animate);
       } else {
         // Animation complete, save final state
-        previousDataRef.current = newAnimatedData;
+        // Make sure we only keep the checkpoint days (0, 7, 14, 21, 28)
+        previousDataRef.current = newAnimatedData.filter(d => d.name % 7 === 0);
       }
     };
     
@@ -139,6 +147,8 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
                 ticks={[0, 7, 14, 21, 28]}
                 tickFormatter={(value) => `Day ${value}`}
                 label={{ value: 'Timeline (Days)', position: 'insideBottom', offset: -15 }}
+                type="number"
+                scale="linear" 
               />
               <YAxis 
                 domain={[0, maxValue]}

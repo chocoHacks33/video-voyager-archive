@@ -21,10 +21,11 @@ const CampaignEvolution = () => {
 
   const [daysToShow, setDaysToShow] = useState(0);
   
-  // Generate random data for each metric
+  // Generate random data for each metric - restricted to only checkpoint days
   const metricsData = useMemo(() => {
     const data: Record<string, any[]> = {};
     metrics.forEach(metric => {
+      // Only include the checkpoint days (0, 7, 14, 21, 28) up to the current daysToShow
       data[metric] = generateRandomData(metric).filter(point => point.name <= daysToShow);
     });
     return data;
@@ -35,7 +36,7 @@ const CampaignEvolution = () => {
       setActiveTab(metrics[0]);
     }
     
-    // Only show initial toast on first load, not on every metric change
+    // First load toast - only show once
     if (metrics.length > 0 && adId && daysToShow === 0) {
       toast.success(`Loaded evolution data for Ad ${adId}`, {
         description: `Tracking ${metrics.length} metric${metrics.length !== 1 ? 's' : ''}`
