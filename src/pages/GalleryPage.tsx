@@ -18,6 +18,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useNavigate } from 'react-router-dom';
+import { cn } from "@/lib/utils";
 
 interface ImageData {
   id: number;
@@ -259,13 +260,13 @@ const GalleryPage = () => {
                           <Badge
                             key={metric.id}
                             variant={selectedMetrics.includes(metric.id) ? "default" : "outline"}
-                            className={`
-                              px-3 py-1.5 text-sm cursor-pointer transition-all duration-200
-                              hover:scale-105 active:scale-95
-                              ${selectedMetrics.includes(metric.id) 
+                            className={cn(
+                              "px-3 py-1.5 text-sm cursor-pointer transition-all duration-200",
+                              "hover:scale-105 active:scale-95",
+                              selectedMetrics.includes(metric.id) 
                                 ? 'bg-purple-600 hover:bg-purple-700' 
-                                : 'hover:border-purple-400'}
-                            `}
+                                : 'hover:border-purple-400'
+                            )}
                             onClick={() => handleToggleMetric(metric.id)}
                           >
                             <Icon className="h-3.5 w-3.5" />
