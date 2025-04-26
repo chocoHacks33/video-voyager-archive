@@ -25,57 +25,37 @@ const ImageCard = ({
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Ensure the image path is correct
-  const imageSrc = image.source;
+  // Format image source to ensure it's accessible
+  const imageSrc = image.source.startsWith('/public/') 
+    ? image.source.replace('/public/', '/') 
+    : image.source;
 
+  // Add effect to log image source for debugging
   useEffect(() => {
-    console.log(`Loading image: ${imageSrc}`);
-    // Create a new Image object to preload
-    const img = new Image();
-    img.src = imageSrc;
-    
-    img.onload = () => {
-      console.log(`Successfully loaded image: ${imageSrc}`);
-      setIsLoading(false);
-      setImageError(false);
-    };
-    
-    img.onerror = () => {
-      console.error(`Failed to load image: ${imageSrc}`);
-      setImageError(true);
-      setIsLoading(false);
-    };
-    
-    return () => {
-      img.onload = null;
-      img.onerror = null;
-    };
+    console.log(`Loading image from: ${imageSrc}`);
   }, [imageSrc]);
+
+  const handleImageError = () => {
+    console.error(`Failed to load image: ${imageSrc}`);
+    setImageError(true);
+    setIsLoading(false);
+  };
 
   const handleRetry = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent selection when clicking retry button
     setIsLoading(true);
     setImageError(false);
-    
-    // Create a new image with a cache-busting query parameter
-    const img = new Image();
-    img.src = `${imageSrc}?t=${Date.now()}`;
-    
-    img.onload = () => {
-      setIsLoading(false);
-      setImageError(false);
-    };
-    
-    img.onerror = () => {
-      setImageError(true);
-      setIsLoading(false);
-    };
   };
 
   const handleCardClick = () => {
     if (onSelect) {
       onSelect();
     }
+  };
+
+  const handleImageLoad = () => {
+    console.log(`Successfully loaded image: ${imageSrc}`);
+    setIsLoading(false);
   };
 
   return (
@@ -114,6 +94,8 @@ const ImageCard = ({
             src={imageSrc}
             alt={image.description}
             className="w-full h-full object-cover"
+            onLoad={handleImageLoad}
+            onError={handleImageError}
           />
         )}
       </AspectRatio>
