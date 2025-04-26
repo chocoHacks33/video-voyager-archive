@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import { useCredits } from '@/contexts/CreditsContext';
@@ -39,7 +40,8 @@ const GalleryPage = () => {
     const loadInitialImages = () => {
       if (initialSelectedImages.length > 0 && initialCampaignLaunched) {
         const selectedImagesData = evoImages;
-        const mockBudget = distributeBudget(selectedImagesData.length);
+        // Fixed: Pass both required arguments to distributeBudget
+        const mockBudget = distributeBudget(1000, selectedImagesData.length);
         
         const imagesWithBudget = selectedImagesData.map((img, index) => ({
           ...img,
