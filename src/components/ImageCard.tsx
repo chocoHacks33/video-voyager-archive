@@ -25,35 +25,21 @@ const ImageCard = ({
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  React.useEffect(() => {
-    // Check if the image file actually exists
-    const checkImageFile = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(image.source);
-        if (!response.ok) {
-          console.error(`Image file not found: ${image.source}`);
-          setImageError(true);
-        } else {
-          setImageError(false);
-        }
-      } catch (error) {
-        console.error("Error checking image:", error);
-        setImageError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    checkImageFile();
-  }, [image.source]);
+  // Format image source to ensure it's accessible
+  const imageSrc = image.source.startsWith('/public/') 
+    ? image.source.replace('/public/', '/') 
+    : image.source;
+
+  const handleImageError = () => {
+    console.error(`Failed to load image: ${imageSrc}`);
+    setImageError(true);
+    setIsLoading(false);
+  };
 
   const handleRetry = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent selection when clicking retry button
     setIsLoading(true);
     setImageError(false);
-    // Force reload the current page
-    window.location.reload();
   };
 
   const handleCardClick = () => {
@@ -95,11 +81,11 @@ const ImageCard = ({
           </div>
         ) : (
           <img 
-            src={image.source}
+            src={imageSrc}
             alt={image.description}
             className="w-full h-full object-cover"
             onLoad={() => setIsLoading(false)}
-            onError={() => setImageError(true)}
+            onError={handleImageError}
           />
         )}
       </AspectRatio>
