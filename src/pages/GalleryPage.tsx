@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Activity, TrendingUp, Zap, Eye, Tag } from 'lucide-react';
+import { Activity, TrendingUp, Zap, Eye, Tag, Flame } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
 import { toast } from "sonner";
 import { useCredits } from '@/contexts/CreditsContext';
@@ -24,6 +23,7 @@ const metricTags: MetricTag[] = [
   { id: 'ctr', label: 'CTR', icon: Zap },
   { id: 'views', label: 'Views', icon: Eye },
   { id: 'convertibility', label: 'Convertibility', icon: Tag },
+  { id: 'wild', label: 'Wild', icon: Flame }
 ];
 
 const distributeBudget = (totalBudget: number, imageCount: number): number[] => {
@@ -71,16 +71,31 @@ const GalleryPage = () => {
   // Load all images initially
   useEffect(() => {
     const loadInitialImages = () => {
-      const allImages: ImageData[] = Array.from({ length: 9 }, (_, index) => ({
-        id: index + 1,
-        source: `/public/stock-videos/image${index + 1}.jpg`,
-        description: `Ad Variation ${index + 1}`
-      }));
+      // Main images for initial selection
+      const baseImages: ImageData[] = [
+        { id: 1, source: '/public/lovable-uploads/9af20831-762c-481a-8f9b-0cb240e5267f.png', description: 'Gaming Experience' },
+        { id: 2, source: '/public/lovable-uploads/8600ad3d-3ba1-4674-a8a0-d9779309b15c.png', description: 'Classroom Joy' },
+        { id: 3, source: '/public/lovable-uploads/c47b3954-28ce-4d2f-a490-cabf3a4dc486.png', description: 'Chess Masters' },
+        { id: 4, source: '/public/lovable-uploads/a34e68ca-9753-403e-a2d5-ac773164c30c.png', description: 'Leadership' },
+        { id: 5, source: '/public/lovable-uploads/831c08bb-b207-4663-bb8a-4b682f632a33.png', description: 'Summer Vibes' },
+        { id: 6, source: '/public/lovable-uploads/a9248c85-8849-4fb4-bea4-2a338b959089.png', description: 'Home Comfort' },
+        { id: 7, source: '/public/lovable-uploads/d121295b-ef5a-40a6-9ff9-a5c060084eea.png', description: 'Autumn Reflection' },
+        { id: 8, source: '/public/lovable-uploads/5374ae12-71ee-4ddf-9aab-b3a09a6af836.png', description: 'Youth Energy' },
+        { id: 9, source: '/public/lovable-uploads/a52bf1e2-6afc-4bbd-bec8-961d1767ac2c.png', description: 'Anime Entertainment' }
+      ];
+
+      // Evolution images for campaign view
+      const evoImages: ImageData[] = [
+        { id: 10, source: '/public/lovable-uploads/07eddad6-7feb-4734-b135-98d5881e30a0.png', description: 'Evolution 0' },
+        { id: 11, source: '/public/lovable-uploads/bb88b842-11ea-4909-b1d8-320ce63ee527.png', description: 'Evolution 1' },
+        { id: 12, source: '/public/lovable-uploads/670877c1-37cc-4aad-bacd-f1bb1aa8daba.png', description: 'Evolution 2' },
+        { id: 13, source: '/public/lovable-uploads/46aa19d0-db67-4c9f-adb5-6cd27bc10a78.png', description: 'Evolution 3' },
+        { id: 14, source: '/public/lovable-uploads/a1ed0bfe-9482-4bbb-97b6-18537cbcfb80.png', description: 'Evolution 4' }
+      ];
 
       if (initialSelectedImages.length > 0 && initialCampaignLaunched) {
-        // If campaign is already launched, only show the selected images
-        const selectedImagesData = allImages.filter(img => initialSelectedImages.includes(img.id));
-        // Add mock budget allocation for returned campaign data
+        // If campaign is launched, show evolution images
+        const selectedImagesData = evoImages;
         const mockBudget = distributeRandomBudgets(selectedImagesData.length);
         
         const imagesWithBudget = selectedImagesData.map((img, index) => ({
@@ -90,8 +105,8 @@ const GalleryPage = () => {
         
         setDisplayedImages(imagesWithBudget);
       } else {
-        // If not launched, show all images
-        setDisplayedImages(allImages);
+        // If not launched, show base images
+        setDisplayedImages(baseImages);
       }
     };
 
