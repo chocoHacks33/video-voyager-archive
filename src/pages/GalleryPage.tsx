@@ -68,20 +68,19 @@ const GalleryPage = () => {
   const { spendCredits } = useCredits();
   const navigate = useNavigate();
 
-  // Load all images initially
   useEffect(() => {
     const loadInitialImages = () => {
-      // Main images for initial selection
+      // Main images for initial selection, now using the uploaded images
       const baseImages: ImageData[] = [
-        { id: 1, source: '/public/lovable-uploads/9af20831-762c-481a-8f9b-0cb240e5267f.png', description: 'Gaming Experience' },
-        { id: 2, source: '/public/lovable-uploads/8600ad3d-3ba1-4674-a8a0-d9779309b15c.png', description: 'Classroom Joy' },
-        { id: 3, source: '/public/lovable-uploads/c47b3954-28ce-4d2f-a490-cabf3a4dc486.png', description: 'Chess Masters' },
-        { id: 4, source: '/public/lovable-uploads/a34e68ca-9753-403e-a2d5-ac773164c30c.png', description: 'Leadership' },
-        { id: 5, source: '/public/lovable-uploads/831c08bb-b207-4663-bb8a-4b682f632a33.png', description: 'Summer Vibes' },
-        { id: 6, source: '/public/lovable-uploads/a9248c85-8849-4fb4-bea4-2a338b959089.png', description: 'Home Comfort' },
-        { id: 7, source: '/public/lovable-uploads/d121295b-ef5a-40a6-9ff9-a5c060084eea.png', description: 'Autumn Reflection' },
-        { id: 8, source: '/public/lovable-uploads/5374ae12-71ee-4ddf-9aab-b3a09a6af836.png', description: 'Youth Energy' },
-        { id: 9, source: '/public/lovable-uploads/a52bf1e2-6afc-4bbd-bec8-961d1767ac2c.png', description: 'Anime Entertainment' }
+        { id: 1, source: '/public/lovable-uploads/9da504bc-82c3-45aa-a0e2-37780ae1e297.png', description: 'Gaming Experience' },
+        { id: 2, source: '/public/lovable-uploads/c4a72d70-7e42-4eef-923a-6b0ecfa9cfe9.png', description: 'Classroom Joy' },
+        { id: 3, source: '/public/lovable-uploads/5737fa2f-eb77-4912-a895-d29211ffc78a.png', description: 'Chess Masters' },
+        { id: 4, source: '/public/lovable-uploads/98840411-b0be-4149-8d19-6a0689ff1aac.png', description: 'Leadership' },
+        { id: 5, source: '/public/lovable-uploads/3458d241-5855-4eae-add3-641531d930d3.png', description: 'Summer Vibes' },
+        { id: 6, source: '/public/lovable-uploads/93554f30-535b-4830-a5d7-8bb020d6923d.png', description: 'Home Comfort' },
+        { id: 7, source: '/public/lovable-uploads/ed20f719-1d5d-43f8-ba9a-60e65b233b5f.png', description: 'Autumn Reflection' },
+        { id: 8, source: '/public/lovable-uploads/8472d902-e251-485c-9190-7fca155d4bb0.png', description: 'Youth Energy' },
+        { id: 9, source: '/public/lovable-uploads/31d6fd8a-d034-4119-905b-5f196771f402.png', description: 'Anime Entertainment' }
       ];
 
       // Evolution images for campaign view
