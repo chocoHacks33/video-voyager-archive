@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Rocket, Activity, TrendingUp, Zap, Eye, Coins, Tag } from 'lucide-react';
 import AppLayout from '@/components/AppLayout';
@@ -55,7 +54,7 @@ const calculateGridColumns = (imageCount: number): string => {
   return 'grid-cols-3';
 };
 
-// Distribute budget unevenly but within 100 credits difference
+// Modify the distributeBudget function to make it uneven
 const distributeBudget = (totalBudget: number, imageCount: number): number[] => {
   if (imageCount === 0) return [];
   if (imageCount === 1) return [totalBudget];
