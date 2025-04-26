@@ -1,6 +1,15 @@
 // Cache to store generated values for each metric
 const dataCache: Record<string, Record<number, number>> = {};
 
+// Fixed maximum values for each metric type
+const metricMaxValues: Record<string, number> = {
+  ctr: 100, // percentage
+  engagement: 1000, // score
+  views: 10000, // count
+  outreach: 5000, // users
+  convertibility: 2000, // buyers
+};
+
 export const generateRandomData = (metric: string) => {
   if (!dataCache[metric]) {
     dataCache[metric] = {};
@@ -18,8 +27,9 @@ export const generateRandomData = (metric: string) => {
       };
     }
 
-    // Generate and cache new value for this day
-    const value = Math.floor(Math.random() * 1000) + 100;
+    // Generate and cache new value for this day based on metric type
+    const maxValue = metricMaxValues[metric.toLowerCase()] || 1000;
+    const value = Math.floor(Math.random() * (maxValue * 0.8)) + (maxValue * 0.1); // Values between 10% and 90% of max
     dataCache[metric][day] = value;
     
     return {
@@ -53,4 +63,8 @@ export const formatYAxisTick = (value: number, metric: string): string => {
     case 'ctr': return `${value}%`;
     default: return value.toLocaleString();
   }
+};
+
+export const getMetricMaxValue = (metric: string): number => {
+  return metricMaxValues[metric.toLowerCase()] || 1000;
 };

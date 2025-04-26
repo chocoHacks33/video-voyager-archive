@@ -1,9 +1,9 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import VideoTooltip from './VideoTooltip';
-import { formatMetricName, formatYAxisTick, getMetricUnit } from '@/utils/campaignMetrics';
+import { formatMetricName, formatYAxisTick, getMetricUnit, getMetricMaxValue } from '@/utils/campaignMetrics';
 
 interface MetricsChartProps {
   metric: string;
@@ -11,20 +11,52 @@ interface MetricsChartProps {
 }
 
 const MetricsChart = ({ metric, data }: MetricsChartProps) => {
+  const [animatedData, setAnimatedData] = useState(data);
+  const maxValue = getMetricMaxValue(metric);
+
   // Create a fixed dataset with all possible days
   const fullDataset = Array.from({ length: 29 }, (_, i) => ({
     name: i,
     value: null
   }));
 
-  // Merge actual data with the full dataset
-  const mergedData = fullDataset.map(point => {
-    const actualDataPoint = data.find(d => d.name === point.name);
-    return actualDataPoint || point;
-  });
+  // Animation effect when data changes
+  useEffect(() => {
+    const targetData = fullDataset.map(point => {
+      const actualDataPoint = data.find(d => d.name === point.name);
+      return actualDataPoint || point;
+    });
 
-  // Find the max value in the actual data for setting the domain
-  const maxValue = Math.max(...data.map(d => d.value)) * 1.2; // Add 20% padding
+    let startTime: number;
+    const animationDuration = 5000; // 5 seconds
+
+    const animate = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / animationDuration, 1);
+
+      const newData = targetData.map((target, index) => {
+        const prev = animatedData[index];
+        if (!target.value || !prev) return target;
+
+        const prevValue = prev.value ?? 0;
+        const targetValue = target.value;
+        
+        return {
+          ...target,
+          value: prevValue + (targetValue - prevValue) * progress
+        };
+      });
+
+      setAnimatedData(newData);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [data]);
 
   return (
     <Card>
@@ -38,7 +70,7 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
-              data={mergedData}
+              data={animatedData}
               margin={{
                 top: 20,
                 right: 30,
@@ -72,6 +104,7 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
                 activeDot={{ r: 8 }}
                 name={metric}
                 connectNulls={true}
+                isAnimationActive={false} // We're handling our own animation
               />
             </LineChart>
           </ResponsiveContainer>
