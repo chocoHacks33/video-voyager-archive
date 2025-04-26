@@ -14,19 +14,19 @@ const metricMaxValues: Record<string, number> = {
 // Define specific engagement values for each evolution point
 const engagementPattern = {
   0: 400,  // Starting point
-  7: 420,  // Evolution 1 (relatively constant from 0)
-  14: 500, // Evolution 2 (slight increase)
-  21: 800, // Evolution 3 (sharp increase)
-  28: 820  // Evolution 4 (relatively constant from 3)
+  7: 405,  // Evolution 1 (plateau from 0)
+  14: 480, // Evolution 2 (slight increase)
+  21: 350, // Evolution 3 (dip)
+  28: 850  // Evolution 4 (massive spike)
 };
 
 // Agent explanations for engagement evolution points
 export const agentExplanations: Record<number, string> = {
   0: "We've just launched an ad targeting the kids' gaming demographic. Excited to monitor performance and optimize as the data starts coming in.",
-  7: "Initial data shows stable engagement. The ad seems to resonate with our target audience, but there's room for improvement.",
-  14: "Minor uptick in engagement after our first optimization. The tweaks are working, but we can push for better results.",
-  21: "Significant breakthrough! Our latest evolution has dramatically increased engagement levels. The ad is really connecting with viewers now.",
-  28: "Maintaining our strong performance. The high engagement levels from our previous evolution are holding steady."
+  7: "I incorporated Minecraft into the ad creative, aligning with current gaming trends where sandbox and creative games are seeing a surge among younger demographics. We're already noticing a slight lift in engagement, and I'll continue optimizing around trending titles to capture even more momentum.",
+  14: "We are doing great! Lets continue the same ad!",
+  21: "To spark curiosity and amplify engagement, I altered the Coke color to green in the ads. Leveraging novelty and visual disruption is a proven way to drive higher interaction, and early signals will tell us how strongly the audience responds to the unexpected.",
+  28: "After successfully leveraging the green Coke twist to boost engagement, I transitioned the campaign visuals back to the classic Coke once the trend had been established. Performance remains strong, and this final phase should sustain momentum and allow us to close the campaign on a high note."
 };
 
 export const generateRandomData = (metric: string) => {
