@@ -17,12 +17,25 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useNavigate } from 'react-router-dom';
 
 interface ImageData {
   id: number;
   source: string;
   description: string;
   allocatedBudget?: number;
+}
+
+interface AdMutation {
+  id: number;
+  source: string;
+  metrics: {
+    engagement: number;
+    outreach: number;
+    ctr: number;
+    views: number;
+    convertibility: number;
+  };
 }
 
 interface MetricTag {
@@ -98,6 +111,7 @@ const GalleryPage = () => {
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
   const [budget, setBudget] = useState<string>('');
   const { spendCredits } = useCredits();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Prepare 9 empty image slots
@@ -187,6 +201,13 @@ const GalleryPage = () => {
     });
   };
 
+  const handleAdClick = (imageId: number) => {
+    if (campaignLaunched && displayedImages.find(img => img.id === imageId)) {
+      // Navigate to evolution page with the ad ID and selected metrics
+      navigate(`/campaign-evolution?adId=${imageId}&metrics=${selectedMetrics.join(',')}`);
+    }
+  };
+
   return (
     <AppLayout title={campaignLaunched ? "Your Active Campaigns" : "Choose Your Ads"}>
       <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900 dark:via-purple-800 dark:to-gray-800 rounded-xl p-6 shadow-lg">
@@ -215,8 +236,9 @@ const GalleryPage = () => {
                 <ImageCard 
                   image={image}
                   isSelected={selectedImages.includes(image.id)}
-                  onSelect={() => handleSelectImage(image.id)}
+                  onSelect={() => campaignLaunched ? handleAdClick(image.id) : handleSelectImage(image.id)}
                   selectable={!campaignLaunched}
+                  className="cursor-pointer"
                 />
               </div>
             ))}
