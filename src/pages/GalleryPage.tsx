@@ -173,11 +173,8 @@ const GalleryPage = () => {
   const handleConfirmLaunch = () => {
     const budgetValue = parseFloat(budget);
     
-    // Try to spend credits
-    if (!spendCredits(budgetValue)) {
-      setShowSuccessDialog(false);
-      return;
-    }
+    // Still call spendCredits to update the UI, but ignore the result
+    spendCredits(budgetValue);
     
     // Get selected images
     const selectedImagesData = displayedImages
