@@ -46,19 +46,14 @@ const GalleryGrid = ({
   }
 
   return (
-    <div className={`grid gap-6 ${campaignLaunched ? calculateGridColumns(images.length) : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'}`}>
-      {images.map((image, index) => (
+    <div className={cn(
+      "grid gap-6", 
+      campaignLaunched ? calculateGridColumns(images.length) : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'
+    )}>
+      {images.map((image) => (
         <div
           key={image.id}
-          className={cn(
-            `${campaignLaunched && images.length % 3 === 1 && index === images.length - 1
-              ? 'col-start-2'
-              : ''}
-            ${campaignLaunched && images.length % 3 === 2 && index >= images.length - 2
-              ? 'col-span-1 first:col-start-1 last:col-start-3'
-              : ''}
-            relative`
-          )}
+          className="relative"
           onClick={() => campaignLaunched ? onAdClick(image.id) : undefined}
         >
           <ImageCard 

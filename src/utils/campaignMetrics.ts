@@ -1,3 +1,4 @@
+
 // Cache to store generated values for each metric
 const dataCache: Record<string, Record<number, number>> = {};
 
@@ -8,7 +9,6 @@ const metricMaxValues: Record<string, number> = {
   views: 10000, // count
   outreach: 5000, // users
   convertibility: 2000, // buyers
-  wild: 3000, // wild factor
 };
 
 // Define specific engagement values for each evolution point

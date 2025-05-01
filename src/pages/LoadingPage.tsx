@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/custom-toast';
 import { QwenAIService } from '@/services/qwenAIService';
-import { CircleX, Check } from 'lucide-react';
+import { CircleX, Check, Loader } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 
@@ -73,12 +73,9 @@ const LoadingPage = () => {
 
   useEffect(() => {
     if (!imageFile) {
-      toast.custom((id) => (
-        <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-          <CircleX className="h-5 w-5 text-white" />
-          <span className="font-medium">No image file provided</span>
-        </div>
-      ), { duration: 3000 });
+      toast.error("No image file provided", {
+        description: "Please upload an image first."
+      });
       navigate('/upload');
       return;
     }
@@ -151,12 +148,9 @@ const LoadingPage = () => {
         setProcessingComplete(true);
       } catch (error) {
         console.error("Image processing error:", error);
-        toast.custom((id) => (
-          <div className="bg-red-500 text-white rounded-md p-4 flex items-center gap-2 shadow-md">
-            <CircleX className="h-5 w-5 text-white" />
-            <span className="font-medium">Error processing image</span>
-          </div>
-        ), { duration: 3000 });
+        toast.error("Error processing image", {
+          description: "There was a problem processing your image. Please try again."
+        });
         navigate('/upload');
       }
     };
@@ -180,101 +174,114 @@ const LoadingPage = () => {
     return result;
   };
   
-  // Calculate stroke dasharray for circle animation
-  const calculateStrokeDasharray = (percent: number) => {
-    const circumference = 2 * Math.PI * 45; // Circle with r=45
-    return `${(percent / 100) * circumference} ${circumference}`;
-  };
-  
   return (
     <AppLayout title="">
       <div className="flex flex-col items-center justify-center p-4 w-full mx-auto min-h-[60vh]">
-        <Card className="w-full max-w-4xl p-6 md:p-8 shadow-md rounded-lg mx-auto">
-          <div className="w-full space-y-8">
-            {/* Main circular progress indicator */}
-            <div className="flex justify-center mb-6">
-              <div className="relative w-72 h-72">
-                {/* Background circle */}
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    strokeWidth="6" 
-                    className="stroke-gray-200 dark:stroke-gray-700"
-                  />
-                  {/* Progress circle with gradient */}
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    strokeWidth="6" 
-                    strokeLinecap="round" 
-                    strokeDasharray={calculateStrokeDasharray(progress)} 
-                    className="stroke-[url(#progress-gradient)] transition-all duration-300 ease-in-out"
-                  />
-                  {/* Define gradient for the circle */}
-                  <defs>
-                    <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#4ade80" />
-                      <stop offset="100%" stopColor="#10b981" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                
-                {/* Progress percentage in center */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-4xl font-bold text-gray-800 dark:text-gray-200">
-                    {Math.round(progress)}%
-                  </span>
-                </div>
+        <Card className="w-full max-w-4xl shadow-lg rounded-xl overflow-hidden bg-gradient-to-b from-purple-50 to-indigo-50 dark:from-purple-950 dark:to-indigo-950 mx-auto">
+          <div className="relative w-full h-32 bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 animate-gradient overflow-hidden">
+            <div className="absolute inset-0">
+              <div className="absolute top-10 left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse-slow"></div>
+              <div className="absolute top-20 right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+              <div className="absolute bottom-10 left-1/2 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <h2 className="text-3xl font-bold text-white tracking-wide drop-shadow-md">Morphing Your Content</h2>
+            </div>
+          </div>
+
+          <div className="p-8">
+            <div className="mb-8">
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-purple-500 to-indigo-600 transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              <div className="mt-2 text-right text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                {progress}% Complete
               </div>
             </div>
             
-            {/* Phase cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mx-auto max-w-4xl">
+            {/* Three phase cards with modern design */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
-                { id: 'decoded', label: 'Product Decoded' },
-                { id: 'mapped', label: 'Platform Settings Mapped' },
-                { id: 'generated', label: 'Assets Generated' }
-              ].map((phase, index) => (
-                <Card
-                  key={phase.id}
-                  className={cn(
-                    "transition-all duration-500 shadow-md overflow-hidden",
-                    phases[phase.id as keyof typeof phases]
-                      ? "bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800" 
-                      : "bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-                  )}
-                >
-                  <div className="p-6 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className={cn(
-                        "w-10 h-10 rounded-full flex items-center justify-center",
-                        phases[phase.id as keyof typeof phases] 
-                          ? "bg-green-100 dark:bg-green-800/30" 
-                          : "bg-gray-100 dark:bg-gray-700"
-                      )}>
-                        {phases[phase.id as keyof typeof phases] ? (
-                          <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                        ) : (
-                          <span className="text-lg font-bold text-gray-500 dark:text-gray-400">{index + 1}</span>
-                        )}
+                { id: 'decoded', label: 'Product Analysis', description: 'Decoding visual elements and content structure' },
+                { id: 'mapped', label: 'Platform Mapping', description: 'Adapting to platform requirements and audience preferences' },
+                { id: 'generated', label: 'Asset Generation', description: 'Creating optimized marketing materials' }
+              ].map((phase, index) => {
+                const isComplete = phases[phase.id as keyof typeof phases];
+                const isActive = progress >= (index * 33) && !isComplete;
+                
+                return (
+                  <Card
+                    key={phase.id}
+                    className={cn(
+                      "transition-all duration-500 overflow-hidden border-0",
+                      isComplete
+                        ? "bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 shadow-md shadow-green-100 dark:shadow-green-900/10" 
+                        : isActive 
+                          ? "bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 shadow-md shadow-purple-100 dark:shadow-purple-900/10"
+                          : "bg-white/80 dark:bg-gray-800/40 shadow-sm"
+                    )}
+                  >
+                    <div className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={cn(
+                          "w-10 h-10 rounded-full flex items-center justify-center",
+                          isComplete 
+                            ? "bg-green-100 dark:bg-green-800/30" 
+                            : isActive
+                              ? "bg-purple-100 dark:bg-purple-800/30"
+                              : "bg-gray-100 dark:bg-gray-700/30"
+                        )}>
+                          {isComplete ? (
+                            <Check className={cn("h-5 w-5 text-green-600 dark:text-green-400", "animate-appear")} />
+                          ) : isActive ? (
+                            <Loader className={cn("h-5 w-5 text-purple-600 dark:text-purple-400", "animate-spin")} />
+                          ) : (
+                            <span className="text-lg font-bold text-gray-400 dark:text-gray-500">{index + 1}</span>
+                          )}
+                        </div>
+                        <div className={cn(
+                          "text-xs font-medium px-2 py-1 rounded-full",
+                          isComplete 
+                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" 
+                            : isActive
+                              ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                              : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                        )}>
+                          {isComplete ? "Complete" : isActive ? "Processing" : "Waiting"}
+                        </div>
                       </div>
-                      <div className={cn(
-                        "font-medium",
-                        phases[phase.id as keyof typeof phases] 
+                      <h3 className={cn(
+                        "text-lg font-semibold mb-1",
+                        isComplete 
                           ? "text-green-700 dark:text-green-400" 
-                          : "text-gray-700 dark:text-gray-300"
+                          : isActive
+                            ? "text-purple-700 dark:text-purple-400"
+                            : "text-gray-600 dark:text-gray-300"
                       )}>
                         {phase.label}
-                      </div>
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {phase.description}
+                      </p>
                     </div>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                );
+              })}
+            </div>
+
+            {/* Animated elements at the bottom */}
+            <div className="flex justify-center mt-10">
+              <div className="relative">
+                <div className="absolute -top-6 -left-6 w-4 h-4 rounded-full bg-purple-400 dark:bg-purple-600 animate-float" style={{ animationDelay: '0.5s' }}></div>
+                <div className="absolute -top-4 -right-8 w-3 h-3 rounded-full bg-indigo-400 dark:bg-indigo-600 animate-float" style={{ animationDelay: '1.5s' }}></div>
+                <div className="absolute -bottom-2 left-10 w-2 h-2 rounded-full bg-violet-400 dark:bg-violet-600 animate-float" style={{ animationDelay: '1s' }}></div>
+                <div className="text-center text-gray-500 dark:text-gray-400 text-sm italic">
+                  Transforming your content into platform-optimized assets...
+                </div>
+              </div>
             </div>
           </div>
         </Card>

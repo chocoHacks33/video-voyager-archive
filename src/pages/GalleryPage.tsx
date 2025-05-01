@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { toast } from "sonner";
+import { toast } from "@/components/ui/custom-toast";
 import { useCredits } from '@/contexts/CreditsContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -88,22 +89,22 @@ const GalleryPage = () => {
 
   const handleLaunchCampaign = () => {
     if (selectedImages.length === 0) {
-      toast.warning("Please select at least one image before launching", {
-        description: "Click on one or more images to select them"
+      toast.warning("Please select images", {
+        description: "Click on one or more images to select them for your campaign"
       });
       return;
     }
 
     if (selectedMetrics.length === 0) {
-      toast.warning("Please select at least one metric", {
-        description: "Choose metrics to track for your campaign"
+      toast.warning("Select metrics to track", {
+        description: "Choose at least one metric to track your campaign performance"
       });
       return;
     }
 
     if (!budget || parseFloat(budget) <= 0) {
-      toast.warning("Please enter a valid budget", {
-        description: "Enter the amount of credits you want to spend"
+      toast.warning("Enter a budget", {
+        description: "Specify how many credits you want to spend on this campaign"
       });
       return;
     }
@@ -115,7 +116,7 @@ const GalleryPage = () => {
     const budgetValue = parseFloat(budget);
     spendCredits(budgetValue);
     
-    const selectedImagesData = evoImages;
+    const selectedImagesData = baseImages.filter(img => selectedImages.includes(img.id));
     const budgetDistribution = distributeBudget(budgetValue, selectedImagesData.length);
     
     const imagesWithBudget = selectedImagesData.map((img, index) => ({
@@ -127,10 +128,10 @@ const GalleryPage = () => {
     setCampaignLaunched(true);
     setDisplayedImages(imagesWithBudget);
     
-    navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true`, { replace: true });
+    navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true&metrics=${selectedMetrics.join(',')}`, { replace: true });
     
-    toast.success("Ad campaign launched successfully!", {
-      description: `Launched ${selectedImages.length} ad${selectedImages.length > 1 ? 's' : ''}`
+    toast.success("Campaign launched!", {
+      description: `Started campaign with ${selectedImages.length} ad${selectedImages.length > 1 ? 's' : ''}`
     });
   };
 
@@ -182,28 +183,47 @@ const GalleryPage = () => {
       </div>
 
       <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <AlertDialogContent className="bg-white dark:bg-gray-800 border-0 shadow-2xl">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-              Launch Ad Campaign
+        <AlertDialogContent className="bg-white dark:bg-gray-800 border-0 shadow-2xl max-w-md mx-auto">
+          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
+            <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-green-200 dark:shadow-green-900/20">
+              <Check className="h-12 w-12 text-white" />
+            </div>
+          </div>
+          
+          <AlertDialogHeader className="mt-12 text-center">
+            <AlertDialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              Ready to Launch
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
-              You've selected {selectedImages.length} ad{selectedImages.length !== 1 ? 's' : ''} for your campaign. 
-              Launch now to start showing these ads to your audience and begin evolution cycle!
-              <div className="mt-4 space-y-2">
-                <p><span className="font-medium">Budget:</span> {budget} credits</p>
-                <p><span className="font-medium">Tracking metrics:</span> {selectedMetrics.map(m => 
-                  metricTags.find(tag => tag.id === m)?.label
-                ).join(', ')}</p>
+            <AlertDialogDescription className="text-gray-600 dark:text-gray-300 mt-4">
+              <div className="space-y-4">
+                <p className="text-center">
+                  You've selected {selectedImages.length} ad{selectedImages.length !== 1 ? 's' : ''} for your campaign.
+                </p>
+                
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400">Budget:</span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">{budget} credits</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400">Metrics:</span>
+                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                      {selectedMetrics.map(m => 
+                        metricTags.find(tag => tag.id === m)?.label
+                      ).join(', ')}
+                    </span>
+                  </div>
+                </div>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          
+          <AlertDialogFooter className="mt-6 flex flex-col space-y-2">
             <AlertDialogAction 
               onClick={handleConfirmLaunch}
-              className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium px-6 py-2.5 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-300 h-auto"
             >
-              Confirm Launch
+              Launch Campaign
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

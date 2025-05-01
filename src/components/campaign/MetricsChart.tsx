@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import VideoTooltip from './VideoTooltip';
 import { formatMetricName, formatYAxisTick, getMetricUnit, getMetricMaxValue, agentExplanations } from '@/utils/campaignMetrics';
 import { MessageSquare } from 'lucide-react';
@@ -13,6 +14,7 @@ interface MetricsChartProps {
 
 const MetricsChart = ({ metric, data }: MetricsChartProps) => {
   const [animatedData, setAnimatedData] = useState<any[]>([]);
+  const [isAnimating, setIsAnimating] = useState(false);
   const maxValue = getMetricMaxValue(metric);
   const animationRef = useRef<number>();
   const previousDataRef = useRef<any[]>([]);
@@ -27,6 +29,8 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
 
     const currentDay = lastDataPoint.name;
     const prevDay = currentDay - 7 >= 0 ? currentDay - 7 : 0;
+
+    setIsAnimating(true);
 
     // Get current and previous checkpoint data
     const currentCheckpointData = data.find(d => d.name === currentDay);
@@ -93,6 +97,7 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
         animationRef.current = requestAnimationFrame(animate);
       } else {
         // Animation complete, save final state
+        setIsAnimating(false);
         previousDataRef.current = newAnimatedData.filter(d => d.name % 7 === 0);
       }
     };
@@ -112,6 +117,10 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
       }
     };
   }, [data]);
+
+  const lastDataPoint = [...(data || [])].sort((a, b) => b.name - a.name)[0];
+  const currentEvolution = lastDataPoint ? Math.floor(lastDataPoint.name / 7) : 0;
+  const explanation = lastDataPoint ? agentExplanations[lastDataPoint.name] : "";
 
   return (
     <Card>
@@ -167,19 +176,37 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
           </ResponsiveContainer>
         </div>
 
-        {metric === 'engagement' && data.length > 0 && (
-          <div className="mt-6 p-4 bg-purple-50 dark:bg-purple-950 rounded-lg">
-            <div className="flex items-start gap-3">
-              <div className="mt-1">
-                <MessageSquare className="h-5 w-5 text-purple-500" />
+        {metric === 'engagement' && (
+          <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950 dark:to-indigo-950 rounded-lg shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 mt-1">
+                <Avatar className="h-12 w-12 ring-2 ring-purple-300 dark:ring-purple-600 animate-appear">
+                  <AvatarImage src="/lovable-uploads/c25d2e17-82b8-489b-8bce-468f02b3ba12.png" />
+                  <AvatarFallback className="bg-gradient-to-br from-purple-500 to-indigo-600">
+                    AI
+                  </AvatarFallback>
+                </Avatar>
               </div>
-              <div>
-                <h4 className="font-semibold text-sm text-purple-700 dark:text-purple-300">
-                  AI Agent Analysis - Evolution {Math.floor(data[data.length - 1].name / 7)}
+              <div className="flex-1">
+                <h4 className="font-semibold text-sm text-purple-700 dark:text-purple-300 mb-2 flex items-center">
+                  <MessageSquare className="h-4 w-4 mr-2 text-purple-500" />
+                  AI Agent Analysis - Evolution {currentEvolution}
                 </h4>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                  {agentExplanations[data[data.length - 1].name]}
-                </p>
+                <div className={cn(
+                  "rounded-lg p-3 bg-white dark:bg-gray-800 shadow-sm relative",
+                  "before:content-[''] before:absolute before:left-[-8px] before:top-4 before:w-3 before:h-3 before:rotate-45 before:bg-white dark:before:bg-gray-800"
+                )}>
+                  {isAnimating ? (
+                    <div className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-300">
+                      <span>Analyzing campaign data</span>
+                      <span className="animate-ellipsis">...</span>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-600 dark:text-gray-300 animate-slideUp">
+                      {explanation}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
