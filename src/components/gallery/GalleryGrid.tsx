@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import ImageCard from '@/components/ImageCard';
 import { ImageData } from './types';
+import CreditsDisplay from '@/components/CreditsDisplay';
 
 interface GalleryGridProps {
   images: ImageData[];
@@ -63,6 +64,16 @@ const GalleryGrid = ({
             selectable={!campaignLaunched}
             className={cn("cursor-pointer", campaignLaunched && "hover:scale-105 transition-all duration-200")}
           />
+          
+          {campaignLaunched && image.allocatedBudget && (
+            <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full shadow-lg">
+              <CreditsDisplay 
+                value={image.allocatedBudget} 
+                variant="compact"
+                className="text-white"
+              />
+            </div>
+          )}
         </div>
       ))}
     </div>

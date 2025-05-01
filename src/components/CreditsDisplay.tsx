@@ -8,14 +8,17 @@ interface CreditsDisplayProps {
   className?: string;
   variant?: 'default' | 'compact';
   showIcon?: boolean;
+  value?: number;
 }
 
 const CreditsDisplay: React.FC<CreditsDisplayProps> = ({ 
   className, 
   variant = 'default',
-  showIcon = true 
+  showIcon = true,
+  value
 }) => {
   const { credits } = useCredits();
+  const displayValue = value !== undefined ? value : credits;
 
   return (
     <div className={cn(
@@ -23,12 +26,29 @@ const CreditsDisplay: React.FC<CreditsDisplayProps> = ({
       variant === 'default' ? "text-base" : "text-sm",
       className
     )}>
-      {showIcon && <Coins className={cn("text-yellow-500", variant === 'default' ? "h-5 w-5" : "h-4 w-4")} />}
+      {showIcon && (
+        <div className="relative">
+          <Coins className={cn(
+            "transition-all duration-300",
+            variant === 'default' ? "h-5 w-5" : "h-4 w-4",
+            "text-yellow-400 drop-shadow-md"
+          )} />
+          <div className={cn(
+            "absolute inset-0 text-yellow-500 animate-pulse opacity-50", 
+            variant === 'default' ? "h-5 w-5" : "h-4 w-4"
+          )}>
+            <Coins className={cn(
+              variant === 'default' ? "h-5 w-5" : "h-4 w-4"
+            )} />
+          </div>
+        </div>
+      )}
       <span className={cn(
-        "transition-all duration-300",
-        credits < 200 ? "text-red-500" : credits < 500 ? "text-amber-500" : "text-green-600"
+        "transition-all duration-300 font-bold",
+        displayValue < 200 ? "text-red-500" : displayValue < 500 ? "text-amber-500" : "bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent",
+        variant === 'default' ? "drop-shadow-sm" : ""
       )}>
-        {credits.toLocaleString()}
+        {displayValue.toLocaleString()}
       </span>
     </div>
   );
