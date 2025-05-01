@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from "@/components/ui/custom-toast";
 import { useCredits } from '@/contexts/CreditsContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Check } from 'lucide-react'; // Add this import
 import {
   AlertDialog,
   AlertDialogAction,

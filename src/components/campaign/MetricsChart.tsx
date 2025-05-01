@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { cn } from "@/lib/utils"; // Add this import
 import VideoTooltip from './VideoTooltip';
 import { formatMetricName, formatYAxisTick, getMetricUnit, getMetricMaxValue, agentExplanations } from '@/utils/campaignMetrics';
 import { MessageSquare } from 'lucide-react';
