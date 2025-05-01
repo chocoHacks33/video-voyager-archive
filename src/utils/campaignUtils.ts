@@ -3,24 +3,39 @@ export const distributeBudget = (totalBudget: number, imageCount: number): numbe
   if (imageCount === 0) return [];
   if (imageCount === 1) return [totalBudget];
   
-  const baseBudgetPool = totalBudget * 0.7;
-  const baseBudget = Math.floor(baseBudgetPool / imageCount);
-  const distribution = Array(imageCount).fill(baseBudget);
-  let toDistribute = totalBudget - (baseBudget * imageCount);
+  // Calculate average budget per image
+  const averageBudget = Math.floor(totalBudget / imageCount);
   
-  while (toDistribute > 0) {
-    for (let i = 0; i < imageCount && toDistribute > 0; i++) {
-      const maxExtra = Math.min(toDistribute, Math.floor(baseBudget * 0.3));
-      const extra = Math.floor(Math.random() * maxExtra);
-      distribution[i] += extra;
-      toDistribute -= extra;
-    }
-    if (toDistribute > 0 && toDistribute < imageCount) {
-      const randomIndex = Math.floor(Math.random() * imageCount);
-      distribution[randomIndex] += toDistribute;
-      toDistribute = 0;
+  // Maximum variation allowed (30% of average)
+  const maxVariation = Math.floor(averageBudget * 0.3);
+  
+  // Initialize with average budget
+  const distribution = Array(imageCount).fill(averageBudget);
+  
+  // Track remaining budget to ensure we use exactly the total amount
+  let remainingBudget = totalBudget - (averageBudget * imageCount);
+  
+  // Apply random variations within the 30% constraint
+  for (let i = 0; i < imageCount && remainingBudget > 0; i++) {
+    // Random variation between 0 and maxVariation
+    const variation = Math.min(
+      Math.floor(Math.random() * maxVariation),
+      remainingBudget
+    );
+    
+    distribution[i] += variation;
+    remainingBudget -= variation;
+  }
+  
+  // If there's still budget left, distribute it evenly
+  if (remainingBudget > 0) {
+    let i = 0;
+    while (remainingBudget > 0) {
+      distribution[i % imageCount] += 1;
+      remainingBudget -= 1;
+      i++;
     }
   }
   
-  return distribution.sort(() => Math.random() - 0.5);
+  return distribution;
 };

@@ -12,7 +12,7 @@ import { Card } from '@/components/ui/card';
 const extractTextFromImage = async (imageFile: File): Promise<string> => {
   // In a real implementation, this would use OCR services
   console.log('Extracting text from image:', imageFile.name);
-  await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate processing time
+  await new Promise(resolve => setTimeout(resolve, 2500)); // Increased processing time
   
   return "This is simulated text extracted from the uploaded image. In a real implementation, we would use OCR services to extract actual content from the image.";
 };
@@ -82,7 +82,8 @@ const LoadingPage = () => {
 
     const processImage = async () => {
       try {
-        // Phase 1: Decode Product
+        // Extended loading time to 8 seconds total
+        // Phase 1: Decode Product (about 2.5 seconds)
         setProgress(10);
         
         // Process phase 1
@@ -92,7 +93,7 @@ const LoadingPage = () => {
           return extractedText;
         });
         
-        // Phase 2: Map Platform Settings
+        // Phase 2: Map Platform Settings (about 2.5 seconds)
         const extractedText = await extractTextFromImage(imageFile);
         
         // Process phase 2
@@ -102,7 +103,7 @@ const LoadingPage = () => {
           return { imageFile, imageAnalysis };
         });
         
-        // Phase 3: Generate Assets
+        // Phase 3: Generate Assets (about 3 seconds)
         const imageAnalysis = await QwenAIService.getVideoDescription([imageFile]);
         
         // Process phase 3
@@ -117,6 +118,9 @@ const LoadingPage = () => {
           };
           
           setImageGenerationId(imageResponse.id);
+          
+          // Longer delay to ensure full 8 seconds
+          await new Promise(resolve => setTimeout(resolve, 3000));
           
           // Save image to storage (mock implementation for demo)
           await saveImageToStorage(
@@ -177,32 +181,87 @@ const LoadingPage = () => {
   return (
     <AppLayout title="">
       <div className="flex flex-col items-center justify-center p-4 w-full mx-auto min-h-[60vh]">
-        <Card className="w-full max-w-4xl shadow-lg rounded-xl overflow-hidden bg-gradient-to-b from-purple-50 to-indigo-50 dark:from-purple-950 dark:to-indigo-950 mx-auto">
-          <div className="relative w-full h-32 bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 animate-gradient overflow-hidden">
+        <Card className="w-full max-w-4xl shadow-xl rounded-xl overflow-hidden bg-gradient-to-b from-purple-50 to-indigo-50 dark:from-purple-950 dark:to-indigo-950 mx-auto border-0">
+          <div className="relative w-full h-40 bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 overflow-hidden">
+            {/* Animated background elements */}
             <div className="absolute inset-0">
-              <div className="absolute top-10 left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse-slow"></div>
-              <div className="absolute top-20 right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
-              <div className="absolute bottom-10 left-1/2 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+              <div className="absolute top-1/4 left-1/5 w-60 h-60 bg-white/10 rounded-full blur-3xl animate-pulse-slow"></div>
+              <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1.5s' }}></div>
+              <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-purple-300/20 rounded-full blur-2xl animate-float" style={{ animationDelay: '0.7s' }}></div>
+              
+              {/* Particle effects */}
+              <div className="absolute top-10 left-20 w-2 h-2 bg-purple-200 rounded-full animate-float"></div>
+              <div className="absolute top-20 right-40 w-3 h-3 bg-blue-200 rounded-full animate-float" style={{ animationDelay: '1.2s' }}></div>
+              <div className="absolute bottom-10 left-1/3 w-4 h-4 bg-indigo-200 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
+              <div className="absolute top-1/2 right-1/4 w-2 h-2 bg-violet-200 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
             </div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <h2 className="text-3xl font-bold text-white tracking-wide drop-shadow-md">Morphing Your Content</h2>
+            
+            {/* Morphing text animation */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+              <h2 className="text-4xl font-bold text-white tracking-wide drop-shadow-lg bg-clip-text">
+                Morphing Your Content
+              </h2>
+              <div className="flex gap-2 mt-2">
+                {['A', 'I', ' ', 'P', 'O', 'W', 'E', 'R', 'E', 'D'].map((letter, index) => (
+                letter === ' ' ? 
+                  <span key={index} className="w-2"></span> : 
+                  <span key={index} className="text-sm font-light text-white/80 tracking-wider animate-pulse" style={{ animationDelay: `${index * 0.1}s` }}>
+                    {letter}
+                  </span>
+                ))}
+              </div>
             </div>
+            
+            {/* Foreground visual elements */}
+            <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white/10 to-transparent"></div>
+            <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0,64L60,69.3C120,75,240,85,360,80C480,75,600,53,720,48C840,43,960,53,1080,58.7C1200,64,1320,64,1440,69.3L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z" 
+                    fill="url(#paint0_linear)" fillOpacity="0.2" />
+              <defs>
+                <linearGradient id="paint0_linear" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#8B5CF6" />
+                  <stop offset="1" stopColor="#3B82F6" />
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
 
           <div className="p-8">
-            <div className="mb-8">
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div className="mb-8 relative">
+              {/* Fancy progress bar */}
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden backdrop-blur-sm">
                 <div 
-                  className="h-full bg-gradient-to-r from-purple-500 to-indigo-600 transition-all duration-500 ease-out"
+                  className="h-full bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-600 transition-all duration-500 ease-out relative"
                   style={{ width: `${progress}%` }}
-                ></div>
+                >
+                  <div className="absolute inset-0 overflow-hidden">
+                    <div className="w-full h-full animate-pulse opacity-50">
+                      <div className="h-full w-1/3 bg-white/30 transform -skew-x-12 animate-shimmer"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="mt-2 text-right text-sm font-medium text-indigo-600 dark:text-indigo-400">
                 {progress}% Complete
               </div>
+              
+              {/* Decorative dots showing phases */}
+              <div className="absolute top-0 left-0 w-full flex justify-between px-2 transform -translate-y-1/2">
+                {[0, 1, 2].map((phase, index) => {
+                  const isComplete = progress >= ((index + 1) * 33);
+                  return (
+                    <div key={index} className={cn(
+                      "w-3 h-3 rounded-full transition-all duration-300",
+                      isComplete 
+                        ? "bg-gradient-to-r from-purple-500 to-indigo-500 shadow-lg shadow-purple-500/50" 
+                        : "bg-gray-300 dark:bg-gray-600"
+                    )}></div>
+                  );
+                })}
+              </div>
             </div>
             
-            {/* Three phase cards with modern design */}
+            {/* Three phase cards with enhanced modern design */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
                 { id: 'decoded', label: 'Product Analysis', description: 'Decoding visual elements and content structure' },
@@ -216,18 +275,36 @@ const LoadingPage = () => {
                   <Card
                     key={phase.id}
                     className={cn(
-                      "transition-all duration-500 overflow-hidden border-0",
+                      "transition-all duration-500 overflow-hidden border-0 group relative",
                       isComplete
-                        ? "bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 shadow-md shadow-green-100 dark:shadow-green-900/10" 
+                        ? "bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 shadow-lg shadow-green-100/50 dark:shadow-green-900/20" 
                         : isActive 
-                          ? "bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 shadow-md shadow-purple-100 dark:shadow-purple-900/10"
+                          ? "bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 shadow-lg shadow-purple-100/50 dark:shadow-purple-900/20"
                           : "bg-white/80 dark:bg-gray-800/40 shadow-sm"
                     )}
                   >
-                    <div className="p-6">
+                    {/* Background pattern */}
+                    <div className={cn(
+                      "absolute inset-0 opacity-10 pointer-events-none transition-opacity duration-300",
+                      isComplete || isActive ? "opacity-20" : "opacity-5"
+                    )}>
+                      <div className="absolute inset-0 w-full h-full">
+                        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                          <defs>
+                            <pattern id={`grid-${phase.id}`} width="20" height="20" patternUnits="userSpaceOnUse">
+                              <circle cx="10" cy="10" r="1" fill={isComplete ? "#10B981" : isActive ? "#8B5CF6" : "#9CA3AF"} />
+                            </pattern>
+                          </defs>
+                          <rect width="100%" height="100%" fill={`url(#grid-${phase.id})`} />
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    {/* Card content */}
+                    <div className="p-6 relative z-10">
                       <div className="flex items-center justify-between mb-4">
                         <div className={cn(
-                          "w-10 h-10 rounded-full flex items-center justify-center",
+                          "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110",
                           isComplete 
                             ? "bg-green-100 dark:bg-green-800/30" 
                             : isActive
@@ -266,20 +343,56 @@ const LoadingPage = () => {
                       <p className="text-sm text-gray-500 dark:text-gray-400">
                         {phase.description}
                       </p>
+                      
+                      {/* Animated progress bar for active phase */}
+                      {isActive && (
+                        <div className="mt-3 h-1 w-full bg-gray-200 dark:bg-gray-700 overflow-hidden rounded-full">
+                          <div className="h-full bg-purple-500 dark:bg-purple-400 animate-progress-indeterminate"></div>
+                        </div>
+                      )}
                     </div>
                   </Card>
                 );
               })}
             </div>
 
-            {/* Animated elements at the bottom */}
-            <div className="flex justify-center mt-10">
-              <div className="relative">
-                <div className="absolute -top-6 -left-6 w-4 h-4 rounded-full bg-purple-400 dark:bg-purple-600 animate-float" style={{ animationDelay: '0.5s' }}></div>
-                <div className="absolute -top-4 -right-8 w-3 h-3 rounded-full bg-indigo-400 dark:bg-indigo-600 animate-float" style={{ animationDelay: '1.5s' }}></div>
-                <div className="absolute -bottom-2 left-10 w-2 h-2 rounded-full bg-violet-400 dark:bg-violet-600 animate-float" style={{ animationDelay: '1s' }}></div>
-                <div className="text-center text-gray-500 dark:text-gray-400 text-sm italic">
-                  Transforming your content into platform-optimized assets...
+            {/* Enhanced bottom section with animated particles */}
+            <div className="flex justify-center mt-10 relative overflow-hidden py-6">
+              {/* Animated particle background */}
+              <div className="absolute inset-0 overflow-hidden">
+                {[...Array(15)].map((_, i) => (
+                  <div 
+                    key={i}
+                    className="absolute rounded-full bg-gradient-to-r from-purple-300 to-indigo-300 dark:from-purple-700 dark:to-indigo-700 opacity-30 animate-float" 
+                    style={{
+                      width: `${Math.random() * 10 + 4}px`,
+                      height: `${Math.random() * 10 + 4}px`,
+                      left: `${Math.random() * 100}%`,
+                      top: `${Math.random() * 100}%`,
+                      animationDelay: `${Math.random() * 5}s`,
+                      animationDuration: `${Math.random() * 10 + 10}s`
+                    }}
+                  />
+                ))}
+              </div>
+              
+              {/* Main text */}
+              <div className="text-center z-10">
+                <div className="text-gray-600 dark:text-gray-300 text-sm font-medium tracking-wide">
+                  <span className="mr-1.5">Transforming your content into</span>
+                  <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent font-bold">platform-optimized</span>
+                  <span className="ml-1.5">assets</span>
+                </div>
+                
+                {/* Animated dots */}
+                <div className="flex justify-center mt-1.5">
+                  {[0, 1, 2].map((dot) => (
+                    <div 
+                      key={dot}
+                      className="w-1.5 h-1.5 rounded-full bg-purple-500 dark:bg-purple-400 mx-0.5 animate-bounce"
+                      style={{ animationDelay: `${dot * 0.2}s` }}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
