@@ -31,7 +31,7 @@
   white-space: nowrap;
   border-right: 2px solid;
   width: 0;
-  animation: typeChar 4.5s steps(60, end) forwards,
+  animation: typeChar 2.5s steps(60, end) forwards,
              cursorBlink 1s step-end infinite;
 }
 

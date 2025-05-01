@@ -6,7 +6,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from "@/lib/utils";
 import VideoTooltip from './VideoTooltip';
 import { formatMetricName, formatYAxisTick, getMetricUnit, getMetricMaxValue, agentExplanations } from '@/utils/campaignMetrics';
-import { MessageSquare, Laptop, BrainCircuit } from 'lucide-react';
+import { BrainCircuit } from 'lucide-react';
 
 interface MetricsChartProps {
   metric: string;
@@ -130,7 +130,7 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
     };
   }, [data]);
 
-  // Simulate typing character by character
+  // Simulate typing character by character - but much faster now
   const simulateTyping = (text: string) => {
     setTypedText("");
     setIsTyping(true);
@@ -145,14 +145,15 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
       if (i < text.length) {
         setTypedText(prev => prev + text.charAt(i));
         i++;
-        typingRef.current = setTimeout(typeNextChar, 30 + Math.random() * 50); // Randomize timing slightly
+        // Much faster typing speed (10-20ms instead of 30-80ms)
+        typingRef.current = setTimeout(typeNextChar, 10 + Math.random() * 10);
       } else {
         setIsTyping(false);
       }
     };
     
-    // Start typing
-    typingRef.current = setTimeout(typeNextChar, 300);
+    // Start typing immediately
+    typeNextChar();
   };
 
   const lastDataPoint = [...(data || [])].sort((a, b) => b.name - a.name)[0];
@@ -247,7 +248,7 @@ const MetricsChart = ({ metric, data }: MetricsChartProps) => {
                     <div className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-300">
                       <div className="typing-container">
                         <div className="typing-text">
-                          {isAnimating ? "Analyzing campaign data" : typedText}
+                          {typedText || "..."} 
                         </div>
                       </div>
                     </div>

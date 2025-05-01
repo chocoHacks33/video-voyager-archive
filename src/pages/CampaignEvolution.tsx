@@ -72,38 +72,40 @@ const CampaignEvolution = () => {
         </Button>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-r from-red-500 to-pink-600 p-1 rounded-lg shadow-lg">
-              <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950/50 dark:to-pink-950/50 px-3 py-1.5 rounded-md backdrop-blur-sm">
-                <h1 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-pink-600 dark:from-red-400 dark:to-pink-400">
-                  DEMO MODE
-                </h1>
+          <div className="relative z-10 py-2">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 blur-lg rounded-xl"></div>
+            <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 p-1 rounded-xl shadow-lg">
+              <div className="bg-white dark:bg-gray-900 px-4 py-2 rounded-lg backdrop-blur-md">
+                <div className="flex items-center gap-3">
+                  <BarChart2 className="h-5 w-5 text-purple-500" />
+                  <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+                    DEMO MODE
+                  </h1>
+                </div>
               </div>
             </div>
-            <BarChart2 className="h-6 w-6 text-indigo-500 animate-pulse-slow" />
           </div>
           
           <Button 
             variant="outline" 
             className={`
-              relative overflow-hidden group transition-all duration-300
-              border-2 border-indigo-500 dark:border-indigo-400 hover:border-indigo-600 dark:hover:border-indigo-300  
-              text-indigo-700 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-200
-              bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30
-              hover:from-indigo-100 hover:to-purple-100 dark:hover:from-indigo-900/30 dark:hover:to-purple-900/30
-              shadow-md hover:shadow-lg hover:shadow-indigo-200 dark:hover:shadow-indigo-900
-              animate-button-pulse
-              ${isSkipping ? 'animate-glow pointer-events-none' : ''}
+              relative overflow-hidden z-10 group transition-colors duration-300
+              px-6 py-3 h-auto rounded-xl
+              backdrop-blur-md shadow-lg
+              border-none
+              ${isSkipping ? 'pointer-events-none' : ''}
+              after:absolute after:inset-0 after:bg-gradient-to-r after:from-purple-600 after:to-indigo-600 after:opacity-90 after:-z-10
+              before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-500/40 before:to-indigo-500/40 before:-z-20 before:blur-xl
             `}
             onClick={handleSkipDays}
             disabled={daysToShow >= 28 || isSkipping}
           >
-            <PlayCircle className="h-4 w-4 mr-2 group-hover:scale-125 transition-transform duration-300" />
-            <PlayCircle className="h-4 w-4 mr-2 opacity-70 group-hover:scale-110 transition-transform duration-300" />
-            {isSkipping ? "Skipping..." : "Skip 7 Days"}
-            
-            {/* Background pulsing effect */}
-            <span className="absolute inset-0 bg-gradient-to-r from-indigo-200/20 to-purple-200/20 dark:from-indigo-400/10 dark:to-purple-400/10 transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></span>
+            <span className="relative z-10 flex items-center gap-2 text-white">
+              <PlayCircle className="h-5 w-5 animate-pulse" />
+              <span className="font-medium">
+                {isSkipping ? "Skipping..." : "Skip 7 Days"}
+              </span>
+            </span>
           </Button>
         </div>
 

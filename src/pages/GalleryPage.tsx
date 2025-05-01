@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from "@/components/ui/custom-toast";
 import { useCredits } from '@/contexts/CreditsContext';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Check } from 'lucide-react'; // Add this import
+import { Check } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -184,49 +184,51 @@ const GalleryPage = () => {
       </div>
 
       <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <AlertDialogContent className="bg-white dark:bg-gray-800 border-0 shadow-2xl max-w-md mx-auto">
+        <AlertDialogContent className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/50 dark:to-indigo-950/50 border-purple-200 dark:border-purple-800 shadow-2xl max-w-md mx-auto p-0 overflow-hidden">
           <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
-            <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-green-200 dark:shadow-green-900/20">
+            <div className="w-24 h-24 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-300 dark:shadow-purple-900/30">
               <Check className="h-12 w-12 text-white" />
             </div>
           </div>
           
-          <AlertDialogHeader className="mt-12 text-center">
-            <AlertDialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-              Ready to Launch
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-600 dark:text-gray-300 mt-4">
-              <div className="space-y-4">
-                <p className="text-center">
-                  You've selected {selectedImages.length} ad{selectedImages.length !== 1 ? 's' : ''} for your campaign.
-                </p>
-                
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 dark:text-gray-400">Budget:</span>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">{budget} credits</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 dark:text-gray-400">Metrics:</span>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">
-                      {selectedMetrics.map(m => 
-                        metricTags.find(tag => tag.id === m)?.label
-                      ).join(', ')}
-                    </span>
+          <div className="pt-16 pb-8 px-6">
+            <AlertDialogHeader className="text-center">
+              <AlertDialogTitle className="text-2xl font-bold text-gradient bg-gradient-to-r from-purple-700 to-indigo-600 bg-clip-text text-transparent">
+                Ready to Launch
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-600 dark:text-gray-300 mt-4">
+                <div className="space-y-4">
+                  <p className="text-center">
+                    You've selected {selectedImages.length} ad{selectedImages.length !== 1 ? 's' : ''} for your campaign.
+                  </p>
+                  
+                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-lg p-4 space-y-2 border border-purple-100 dark:border-purple-900/30">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 dark:text-gray-400">Budget:</span>
+                      <span className="font-medium text-purple-800 dark:text-purple-300">{budget} credits</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 dark:text-gray-400">Metrics:</span>
+                      <span className="font-medium text-purple-800 dark:text-purple-300">
+                        {selectedMetrics.map(m => 
+                          metricTags.find(tag => tag.id === m)?.label
+                        ).join(', ')}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          
-          <AlertDialogFooter className="mt-6 flex flex-col space-y-2">
-            <AlertDialogAction 
-              onClick={handleConfirmLaunch}
-              className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium px-6 py-2.5 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-300 h-auto"
-            >
-              Launch Campaign
-            </AlertDialogAction>
-          </AlertDialogFooter>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            
+            <AlertDialogFooter className="mt-6 flex flex-col space-y-2">
+              <AlertDialogAction 
+                onClick={handleConfirmLaunch}
+                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-300 h-auto"
+              >
+                Launch Campaign
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
     </AppLayout>
