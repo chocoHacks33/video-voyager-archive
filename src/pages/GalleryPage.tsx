@@ -184,14 +184,14 @@ const GalleryPage = () => {
       </div>
 
       <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <AlertDialogContent className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/50 dark:to-indigo-950/50 border-purple-200 dark:border-purple-800 shadow-2xl max-w-md mx-auto p-0 overflow-hidden">
+        <AlertDialogContent className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/50 dark:to-indigo-950/50 border-purple-200 dark:border-purple-800 shadow-2xl max-w-md mx-auto p-0 overflow-visible">
           <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
             <div className="w-24 h-24 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-300 dark:shadow-purple-900/30">
               <Check className="h-12 w-12 text-white" />
             </div>
           </div>
           
-          <div className="pt-16 pb-8 px-6">
+          <div className="pt-16 pb-8 px-6 mt-6">
             <AlertDialogHeader className="text-center">
               <AlertDialogTitle className="text-2xl font-bold text-gradient bg-gradient-to-r from-purple-700 to-indigo-600 bg-clip-text text-transparent">
                 Ready to Launch
