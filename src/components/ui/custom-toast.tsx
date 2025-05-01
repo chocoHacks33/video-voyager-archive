@@ -24,14 +24,14 @@ const ToastIcon = ({ type }: { type: ToastType }) => {
   };
 
   const iconColors = {
-    success: "bg-green-100 text-green-600 dark:bg-green-800/30 dark:text-green-400",
-    error: "bg-red-100 text-red-600 dark:bg-red-800/30 dark:text-red-400",
-    warning: "bg-amber-100 text-amber-600 dark:bg-amber-800/30 dark:text-amber-400",
-    info: "bg-blue-100 text-blue-600 dark:bg-blue-800/30 dark:text-blue-400",
+    success: "bg-green-100 text-green-600 dark:bg-green-800/30 dark:text-green-400 ring-1 ring-green-200 dark:ring-green-800/60",
+    error: "bg-red-100 text-red-600 dark:bg-red-800/30 dark:text-red-400 ring-1 ring-red-200 dark:ring-red-800/60",
+    warning: "bg-amber-100 text-amber-600 dark:bg-amber-800/30 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800/60",
+    info: "bg-blue-100 text-blue-600 dark:bg-blue-800/30 dark:text-blue-400 ring-1 ring-blue-200 dark:ring-blue-800/60",
   };
 
   return (
-    <div className={cn("rounded-full p-1.5", iconColors[type])}>
+    <div className={cn("rounded-full p-2", iconColors[type])}>
       {icons[type]}
     </div>
   );
@@ -40,7 +40,7 @@ const ToastIcon = ({ type }: { type: ToastType }) => {
 const toast = {
   success: (title: string, options?: ToastOptions) => {
     return sonnerToast.custom((id) => (
-      <div className="group pointer-events-auto flex w-full items-center justify-between space-x-4 overflow-hidden rounded-lg border border-green-200 bg-white p-4 pr-6 shadow-lg dark:border-green-800 dark:bg-gray-950">
+      <div className="group pointer-events-auto flex w-full items-center justify-between space-x-4 overflow-hidden rounded-xl border border-green-200 bg-white/90 p-4 pr-6 shadow-lg backdrop-blur-sm dark:border-green-800/50 dark:bg-gray-900/90">
         <div className="flex items-start gap-3">
           <ToastIcon type="success" />
           <div className="flex-1">
@@ -66,7 +66,7 @@ const toast = {
   
   error: (title: string, options?: ToastOptions) => {
     return sonnerToast.custom((id) => (
-      <div className="group pointer-events-auto flex w-full items-center justify-between space-x-4 overflow-hidden rounded-lg border border-red-200 bg-white p-4 pr-6 shadow-lg dark:border-red-800 dark:bg-gray-950">
+      <div className="group pointer-events-auto flex w-full items-center justify-between space-x-4 overflow-hidden rounded-xl border border-red-200 bg-white/90 p-4 pr-6 shadow-lg backdrop-blur-sm dark:border-red-800/50 dark:bg-gray-900/90">
         <div className="flex items-start gap-3">
           <ToastIcon type="error" />
           <div className="flex-1">
@@ -92,7 +92,7 @@ const toast = {
   
   warning: (title: string, options?: ToastOptions) => {
     return sonnerToast.custom((id) => (
-      <div className="group pointer-events-auto flex w-full items-center justify-between space-x-4 overflow-hidden rounded-lg border border-amber-200 bg-white p-4 pr-6 shadow-lg dark:border-amber-800 dark:bg-gray-950">
+      <div className="group pointer-events-auto flex w-full items-center justify-between space-x-4 overflow-hidden rounded-xl border border-amber-200 bg-white/90 p-4 pr-6 shadow-lg backdrop-blur-sm dark:border-amber-800/50 dark:bg-gray-900/90">
         <div className="flex items-start gap-3">
           <ToastIcon type="warning" />
           <div className="flex-1">
@@ -118,7 +118,7 @@ const toast = {
   
   info: (title: string, options?: ToastOptions) => {
     return sonnerToast.custom((id) => (
-      <div className="group pointer-events-auto flex w-full items-center justify-between space-x-4 overflow-hidden rounded-lg border border-blue-200 bg-white p-4 pr-6 shadow-lg dark:border-blue-800 dark:bg-gray-950">
+      <div className="group pointer-events-auto flex w-full items-center justify-between space-x-4 overflow-hidden rounded-xl border border-blue-200 bg-white/90 p-4 pr-6 shadow-lg backdrop-blur-sm dark:border-blue-800/50 dark:bg-gray-900/90">
         <div className="flex items-start gap-3">
           <ToastIcon type="info" />
           <div className="flex-1">
