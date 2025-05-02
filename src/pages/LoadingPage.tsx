@@ -181,7 +181,8 @@ const LoadingPage = () => {
   return (
     <AppLayout title="">
       <div className="flex flex-col items-center justify-center p-4 w-full mx-auto min-h-[60vh]">
-        <Card className="w-full max-w-4xl shadow-xl rounded-xl overflow-hidden bg-gradient-to-b from-purple-50 to-indigo-50 dark:from-purple-950 dark:to-indigo-950 mx-auto border-0">
+        {/* Removed the outermost card and made the background itself more fancy */}
+        <div className="w-full max-w-4xl relative rounded-xl overflow-hidden bg-gradient-to-br from-purple-500/10 via-indigo-500/5 to-blue-500/10 dark:from-purple-900/40 dark:via-indigo-900/30 dark:to-blue-900/40">
           <div className="relative w-full h-40 bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 overflow-hidden">
             {/* Animated background elements */}
             <div className="absolute inset-0">
@@ -189,16 +190,20 @@ const LoadingPage = () => {
               <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1.5s' }}></div>
               <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-purple-300/20 rounded-full blur-2xl animate-float" style={{ animationDelay: '0.7s' }}></div>
               
-              {/* Particle effects */}
+              {/* Enhanced particle effects */}
               <div className="absolute top-10 left-20 w-2 h-2 bg-purple-200 rounded-full animate-float"></div>
               <div className="absolute top-20 right-40 w-3 h-3 bg-blue-200 rounded-full animate-float" style={{ animationDelay: '1.2s' }}></div>
               <div className="absolute bottom-10 left-1/3 w-4 h-4 bg-indigo-200 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
               <div className="absolute top-1/2 right-1/4 w-2 h-2 bg-violet-200 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
+              
+              {/* Additional floating elements */}
+              <div className="absolute top-5 right-10 w-6 h-6 bg-gradient-to-br from-pink-300 to-purple-400 rounded-full animate-float opacity-70" style={{ animationDelay: '1.7s' }}></div>
+              <div className="absolute bottom-5 right-20 w-5 h-5 bg-gradient-to-br from-blue-300 to-cyan-400 rounded-full animate-float opacity-70" style={{ animationDelay: '2.2s' }}></div>
             </div>
             
-            {/* Morphing text animation */}
+            {/* Morphing text animation with enhanced styling */}
             <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-              <h2 className="text-4xl font-bold text-white tracking-wide drop-shadow-lg bg-clip-text">
+              <h2 className="text-4xl font-bold text-transparent bg-gradient-to-r from-white via-purple-100 to-blue-100 bg-clip-text tracking-wide drop-shadow-lg">
                 Morphing Your Content
               </h2>
               <div className="flex gap-2 mt-2">
@@ -226,10 +231,10 @@ const LoadingPage = () => {
             </svg>
           </div>
 
-          <div className="p-8">
+          <div className="p-8 backdrop-blur-sm bg-white/5 dark:bg-black/10">
             <div className="mb-8 relative">
-              {/* Fancy progress bar */}
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden backdrop-blur-sm">
+              {/* Enhanced progress bar with glow effect */}
+              <div className="h-4 bg-gray-200/30 dark:bg-gray-700/30 rounded-full overflow-hidden backdrop-blur-sm shadow-inner">
                 <div 
                   className="h-full bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-600 transition-all duration-500 ease-out relative"
                   style={{ width: `${progress}%` }}
@@ -240,22 +245,35 @@ const LoadingPage = () => {
                     </div>
                   </div>
                 </div>
+                
+                {/* Glow effect */}
+                <div 
+                  className="absolute inset-0 rounded-full opacity-30 blur-md"
+                  style={{ 
+                    width: `${progress}%`, 
+                    background: 'linear-gradient(90deg, rgba(139,92,246,0.5) 0%, rgba(79,70,229,0.5) 100%)' 
+                  }}
+                ></div>
               </div>
               <div className="mt-2 text-right text-sm font-medium text-indigo-600 dark:text-indigo-400">
                 {progress}% Complete
               </div>
               
-              {/* Decorative dots showing phases */}
+              {/* Decorative dots showing phases with enhanced styling */}
               <div className="absolute top-0 left-0 w-full flex justify-between px-2 transform -translate-y-1/2">
                 {[0, 1, 2].map((phase, index) => {
                   const isComplete = progress >= ((index + 1) * 33);
                   return (
                     <div key={index} className={cn(
-                      "w-3 h-3 rounded-full transition-all duration-300",
+                      "w-4 h-4 rounded-full transition-all duration-300 flex items-center justify-center",
                       isComplete 
                         ? "bg-gradient-to-r from-purple-500 to-indigo-500 shadow-lg shadow-purple-500/50" 
-                        : "bg-gray-300 dark:bg-gray-600"
-                    )}></div>
+                        : "bg-gray-300/50 dark:bg-gray-600/50"
+                    )}>
+                      {isComplete && (
+                        <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
@@ -277,13 +295,13 @@ const LoadingPage = () => {
                     className={cn(
                       "transition-all duration-500 overflow-hidden border-0 group relative",
                       isComplete
-                        ? "bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 shadow-lg shadow-green-100/50 dark:shadow-green-900/20" 
+                        ? "bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/30 shadow-lg shadow-green-100/50 dark:shadow-green-900/20" 
                         : isActive 
-                          ? "bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 shadow-lg shadow-purple-100/50 dark:shadow-purple-900/20"
+                          ? "bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/30 shadow-lg shadow-purple-100/50 dark:shadow-purple-900/20"
                           : "bg-white/80 dark:bg-gray-800/40 shadow-sm"
                     )}
                   >
-                    {/* Background pattern */}
+                    {/* Background pattern with enhanced styling */}
                     <div className={cn(
                       "absolute inset-0 opacity-10 pointer-events-none transition-opacity duration-300",
                       isComplete || isActive ? "opacity-20" : "opacity-5"
@@ -300,7 +318,7 @@ const LoadingPage = () => {
                       </div>
                     </div>
                     
-                    {/* Card content */}
+                    {/* Card content with enhanced styling */}
                     <div className="p-6 relative z-10">
                       <div className="flex items-center justify-between mb-4">
                         <div className={cn(
@@ -322,9 +340,9 @@ const LoadingPage = () => {
                         <div className={cn(
                           "text-xs font-medium px-2 py-1 rounded-full",
                           isComplete 
-                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" 
+                            ? "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400" 
                             : isActive
-                              ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                              ? "bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-400"
                               : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
                         )}>
                           {isComplete ? "Complete" : isActive ? "Processing" : "Waiting"}
@@ -344,10 +362,10 @@ const LoadingPage = () => {
                         {phase.description}
                       </p>
                       
-                      {/* Animated progress bar for active phase */}
+                      {/* Animated progress bar for active phase with enhanced styling */}
                       {isActive && (
                         <div className="mt-3 h-1 w-full bg-gray-200 dark:bg-gray-700 overflow-hidden rounded-full">
-                          <div className="h-full bg-purple-500 dark:bg-purple-400 animate-progress-indeterminate"></div>
+                          <div className="h-full bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 dark:from-purple-500 dark:via-purple-400 dark:to-purple-300 animate-progress-indeterminate"></div>
                         </div>
                       )}
                     </div>
@@ -358,15 +376,15 @@ const LoadingPage = () => {
 
             {/* Enhanced bottom section with animated particles */}
             <div className="flex justify-center mt-10 relative overflow-hidden py-6">
-              {/* Animated particle background */}
+              {/* Animated particle background with enhanced styling */}
               <div className="absolute inset-0 overflow-hidden">
-                {[...Array(15)].map((_, i) => (
+                {[...Array(20)].map((_, i) => (
                   <div 
                     key={i}
-                    className="absolute rounded-full bg-gradient-to-r from-purple-300 to-indigo-300 dark:from-purple-700 dark:to-indigo-700 opacity-30 animate-float" 
+                    className="absolute rounded-full bg-gradient-to-r from-purple-300 to-indigo-300 dark:from-purple-500 dark:to-indigo-400 opacity-30 animate-float" 
                     style={{
-                      width: `${Math.random() * 10 + 4}px`,
-                      height: `${Math.random() * 10 + 4}px`,
+                      width: `${Math.random() * 12 + 4}px`,
+                      height: `${Math.random() * 12 + 4}px`,
                       left: `${Math.random() * 100}%`,
                       top: `${Math.random() * 100}%`,
                       animationDelay: `${Math.random() * 5}s`,
@@ -376,20 +394,20 @@ const LoadingPage = () => {
                 ))}
               </div>
               
-              {/* Main text */}
+              {/* Main text with enhanced styling */}
               <div className="text-center z-10">
                 <div className="text-gray-600 dark:text-gray-300 text-sm font-medium tracking-wide">
                   <span className="mr-1.5">Transforming your content into</span>
-                  <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent font-bold">platform-optimized</span>
+                  <span className="bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-400 dark:to-indigo-300 bg-clip-text text-transparent font-bold">platform-optimized</span>
                   <span className="ml-1.5">assets</span>
                 </div>
                 
-                {/* Animated dots */}
+                {/* Animated dots with enhanced styling */}
                 <div className="flex justify-center mt-1.5">
                   {[0, 1, 2].map((dot) => (
                     <div 
                       key={dot}
-                      className="w-1.5 h-1.5 rounded-full bg-purple-500 dark:bg-purple-400 mx-0.5 animate-bounce"
+                      className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-400 dark:to-indigo-300 mx-0.5 animate-bounce"
                       style={{ animationDelay: `${dot * 0.2}s` }}
                     />
                   ))}
@@ -397,7 +415,7 @@ const LoadingPage = () => {
               </div>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
     </AppLayout>
   );
