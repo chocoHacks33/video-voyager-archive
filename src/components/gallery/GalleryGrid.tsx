@@ -36,12 +36,18 @@ const GalleryGrid = ({
     images.forEach(img => {
       console.log(`Image ID: ${img.id}, Source: ${img.source}`);
     });
+    
+    // Preload images to prevent loading issues
+    images.forEach(image => {
+      const img = new Image();
+      img.src = image.source;
+    });
   }, [images]);
 
   if (!images || images.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 w-full">
-        <p className="text-gray-500">No images available</p>
+        <p className="text-gray-500 dark:text-gray-400">No images available</p>
       </div>
     );
   }
@@ -62,7 +68,10 @@ const GalleryGrid = ({
             isSelected={selectedImages.includes(image.id)}
             onSelect={() => campaignLaunched ? onAdClick(image.id) : onSelectImage(image.id)}
             selectable={!campaignLaunched}
-            className={cn("cursor-pointer", campaignLaunched && "hover:scale-105 transition-all duration-200")}
+            className={cn(
+              "cursor-pointer transition-all duration-200 hover:shadow-xl dark:hover:shadow-purple-900/20 dark:border-purple-800/30",
+              campaignLaunched && "hover:scale-105"
+            )}
           />
           
           {campaignLaunched && image.allocatedBudget && (

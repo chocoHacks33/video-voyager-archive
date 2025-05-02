@@ -91,6 +91,39 @@
   }
 }
 
+@keyframes cosmic-drift {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    text-shadow: 0 0 5px rgba(147, 51, 234, 0.5), 0 0 10px rgba(147, 51, 234, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(147, 51, 234, 0.8), 0 0 30px rgba(147, 51, 234, 0.5);
+  }
+}
+
+@keyframes morph {
+  0% {
+    border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%;
+  }
+  50% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+  100% {
+    border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%;
+  }
+}
+
 .animate-shimmer {
   animation: shimmer 3s infinite;
 }
@@ -122,4 +155,30 @@
 .animate-gradient-shift {
   background-size: 200% 200%;
   animation: gradient-shift 3s ease infinite;
+}
+
+.animate-cosmic-drift {
+  background-size: 300% 300%;
+  animation: cosmic-drift 20s ease infinite;
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+.animate-morph {
+  animation: morph 8s ease-in-out infinite;
+}
+
+.dark .animate-dark-glow {
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+  transition: box-shadow 0.3s ease;
+}
+
+.dark .animate-dark-glow:hover {
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.8);
+}
+
+.dark .text-glow {
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.7);
 }
