@@ -1,132 +1,143 @@
 
-import React from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
-import CampaignChart from '@/components/campaign/CampaignChart';
-import VideoTooltip from '@/components/campaign/VideoTooltip';
-import AIAnalyst from '@/components/campaign/AIAnalyst';
-import { generateRandomData, formatMetricName, getMetricUnit, formatYAxisTick, getMetricMaxValue, agentExplanations } from '@/utils/campaignMetrics';
-import { useState } from 'react';
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft, PlayCircle, BarChart2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import MetricsChart from '@/components/campaign/MetricsChart';
+import { generateRandomData } from '@/utils/campaignMetrics';
 
 const CampaignEvolution = () => {
-  const [metric, setMetric] = useState('ctr');
-  const data = generateRandomData(metric);
-  const [activeDay, setActiveDay] = useState<number | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const adId = params.get('adId');
+  const metrics = params.get('metrics')?.split(',').filter(Boolean) || [];
+  const selectedImages = params.get('selectedImages')?.split(',').map(Number) || [];
   
-  const handleDotClick = (day: number) => {
-    setActiveDay(day);
-  };
+  const [activeTab, setActiveTab] = useState<string>('');
+  const [daysToShow, setDaysToShow] = useState(0);
+  const [isSkipping, setIsSkipping] = useState(false);
   
-  return (
-    <AppLayout title="Campaign Evolution">
-      <div className="flex flex-col md:flex-row gap-4">
-        
-        <div className="md:w-3/4">
-          <CampaignChart
-            data={data}
-            metric={metric}
-            onDotClick={handleDotClick}
-            formatYAxisTick={(value) => formatYAxisTick(value, metric)}
-            getMetricMaxValue={getMetricMaxValue}
-            TooltipContent={<VideoTooltip />}
-          />
-          <div className="mt-4">
-            <RadioGroup 
-              defaultValue="ctr" 
-              className="flex gap-2" 
-              onValueChange={setMetric}
-            >
-              <RadioGroupItem value="ctr" id="ctr" className="peer sr-only" />
-              <label 
-                htmlFor="ctr"
-                className="px-4 py-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring peer-data-[state=checked]:bg-secondary peer-data-[state=checked]:text-secondary-foreground"
-              >
-                CTR
-              </label>
-              
-              <RadioGroupItem value="engagement" id="engagement" className="peer sr-only" />
-              <label 
-                htmlFor="engagement"
-                className="px-4 py-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring peer-data-[state=checked]:bg-secondary peer-data-[state=checked]:text-secondary-foreground"
-              >
-                Engagement
-              </label>
-              
-              <RadioGroupItem value="views" id="views" className="peer sr-only" />
-              <label 
-                htmlFor="views"
-                className="px-4 py-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring peer-data-[state=checked]:bg-secondary peer-data-[state=checked]:text-secondary-foreground"
-              >
-                Views
-              </label>
-              
-              <RadioGroupItem value="outreach" id="outreach" className="peer sr-only" />
-              <label 
-                htmlFor="outreach"
-                className="px-4 py-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring peer-data-[state=checked]:bg-secondary peer-data-[state=checked]:text-secondary-foreground"
-              >
-                Outreach
-              </label>
-              
-              <RadioGroupItem value="convertibility" id="convertibility" className="peer sr-only" />
-              <label 
-                htmlFor="convertibility"
-                className="px-4 py-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring peer-data-[state=checked]:bg-secondary peer-data-[state=checked]:text-secondary-foreground"
-              >
-                Conversion
-              </label>
-            </RadioGroup>
-            
-            <p className="text-sm text-muted-foreground mt-2">
-              Selected Metric: {formatMetricName(metric)} ({getMetricUnit(metric)})
-            </p>
-          </div>
-        </div>
-        
-        <div className="md:w-1/4">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Campaign Insights</h3>
-              <Separator className="my-2" />
-              <ScrollArea className="h-[400px] space-y-3">
-                {data.map((item) => (
-                  <div key={item.name} className="mb-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium">Day {item.name}</h4>
-                      <Badge variant="secondary">Mutation {item.mutationNumber}</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {formatMetricName(metric)}: {item.value.toLocaleString()}
-                    </p>
-                  </div>
-                ))}
-              </ScrollArea>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+  // Generate random data for each metric - restricted to only checkpoint days
+  const metricsData = useMemo(() => {
+    const data: Record<string, any[]> = {};
+    metrics.forEach(metric => {
+      // Only include the checkpoint days (0, 7, 14, 21, 28) up to the current daysToShow
+      data[metric] = generateRandomData(metric).filter(point => point.name <= daysToShow);
+    });
+    return data;
+  }, [metrics, daysToShow]);
 
-      <div className="mt-8">
-        <Accordion type="single" collapsible>
-          {Object.entries(agentExplanations).map(([day, explanation]) => (
-            <AccordionItem key={day} value={day}>
-              <AccordionTrigger>
-                Day {day}: Mutation {Math.floor(Number(day) / 7)} Explanation
-              </AccordionTrigger>
-              <AccordionContent>
-                {explanation}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+  useEffect(() => {
+    if (metrics.length > 0 && !activeTab) {
+      setActiveTab(metrics[0]);
+    }
+    
+    // First load toast - only show once
+    if (metrics.length > 0 && adId && daysToShow === 0) {
+      toast.success(`Loaded evolution data for Ad ${adId}`, {
+        description: `Tracking ${metrics.length} metric${metrics.length !== 1 ? 's' : ''}`
+      });
+    }
+  }, [metrics, activeTab, adId, daysToShow]);
+
+  const handleBack = () => {
+    const currentMetrics = params.get('metrics') || '';
+    navigate(`/gallery?selectedImages=${selectedImages.join(',')}&campaignLaunched=true&metrics=${currentMetrics}`);
+  };
+
+  const handleSkipDays = () => {
+    setIsSkipping(true);
+    
+    // Simulate a loading effect for the button
+    setTimeout(() => {
+      setDaysToShow(prev => Math.min(prev + 7, 28));
+      setIsSkipping(false);
+    }, 600);
+  };
+
+  return (
+    <AppLayout title="">
+      <div className="w-full space-y-6">
+        <Button 
+          variant="ghost" 
+          onClick={handleBack}
+          className="mb-6 hover:bg-gray-100 dark:hover:bg-gray-800 group transition-all duration-300"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
+          Back to Gallery
+        </Button>
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <div className="relative z-10 py-2">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 blur-lg rounded-xl"></div>
+            <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 p-1 rounded-xl shadow-lg">
+              <div className="bg-white dark:bg-gray-900 px-4 py-2 rounded-lg backdrop-blur-md">
+                <div className="flex items-center gap-3">
+                  <BarChart2 className="h-5 w-5 text-purple-500" />
+                  <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+                    DEMO MODE
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <Button 
+            variant="outline" 
+            className={`
+              relative overflow-hidden z-10 group transition-colors duration-300
+              px-6 py-3 h-auto rounded-xl
+              backdrop-blur-md shadow-lg
+              border-none
+              ${isSkipping ? 'pointer-events-none' : ''}
+              after:absolute after:inset-0 after:bg-gradient-to-r after:from-purple-600 after:to-indigo-600 after:opacity-90 after:-z-10
+              before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-500/40 before:to-indigo-500/40 before:-z-20 before:blur-xl
+            `}
+            onClick={handleSkipDays}
+            disabled={daysToShow >= 28 || isSkipping}
+          >
+            <span className="relative z-10 flex items-center gap-2 text-white">
+              <PlayCircle className="h-5 w-5 animate-pulse" />
+              <span className="font-medium">
+                {isSkipping ? "Skipping..." : "Skip 7 Days"}
+              </span>
+            </span>
+          </Button>
+        </div>
+
+        {metrics.length > 0 ? (
+          <div className="w-full bg-white/50 dark:bg-gray-900/50 rounded-2xl p-6 shadow-xl backdrop-blur-sm border border-indigo-50 dark:border-indigo-900/50">
+            <Tabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="mb-6 flex flex-wrap gap-2 bg-indigo-50/80 dark:bg-indigo-950/30 p-1.5 backdrop-blur-sm">
+                {metrics.map(metric => (
+                  <TabsTrigger 
+                    key={metric} 
+                    value={metric} 
+                    className="capitalize data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md data-[state=active]:text-indigo-700 dark:data-[state=active]:text-indigo-300 transition-all duration-300"
+                  >
+                    {metric === 'ctr' ? 'CTR' : metric}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              
+              {metrics.map(metric => (
+                <TabsContent key={metric} value={metric} className="mt-4">
+                  <MetricsChart metric={metric} data={metricsData[metric]} />
+                </TabsContent>
+              ))}
+            </Tabs>
+          </div>
+        ) : (
+          <div className="text-center p-8 bg-gray-50/50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 shadow-md backdrop-blur-sm">
+            <p className="text-lg text-gray-500 dark:text-gray-400">No metrics selected for this campaign.</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Please go back and select metrics to track.</p>
+          </div>
+        )}
       </div>
-      
-      <AIAnalyst />
     </AppLayout>
   );
 };
