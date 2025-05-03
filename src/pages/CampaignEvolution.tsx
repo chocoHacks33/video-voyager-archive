@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import MetricsChart from '@/components/campaign/MetricsChart';
 import { generateRandomData } from '@/utils/campaignMetrics';
+import AIAnalystChat from '@/components/campaign/AIAnalystChat';
 
 const CampaignEvolution = () => {
   const location = useLocation();
@@ -20,6 +21,7 @@ const CampaignEvolution = () => {
   const [activeTab, setActiveTab] = useState<string>('');
   const [daysToShow, setDaysToShow] = useState(0);
   const [isSkipping, setIsSkipping] = useState(false);
+  const [showAIChat, setShowAIChat] = useState(false);
   
   // Generate random data for each metric - restricted to only checkpoint days
   const metricsData = useMemo(() => {
@@ -57,6 +59,10 @@ const CampaignEvolution = () => {
       setDaysToShow(prev => Math.min(prev + 7, 28));
       setIsSkipping(false);
     }, 600);
+  };
+
+  const toggleAIChat = () => {
+    setShowAIChat(prev => !prev);
   };
 
   return (
@@ -125,7 +131,20 @@ const CampaignEvolution = () => {
               </TabsList>
               
               {metrics.map(metric => (
-                <TabsContent key={metric} value={metric} className="mt-4">
+                <TabsContent key={metric} value={metric} className="mt-4 relative">
+                  <button 
+                    className="absolute top-2 right-2 z-10 h-12 w-12 flex items-center justify-center rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer group"
+                    onClick={toggleAIChat}
+                    title="Ask the AI Analyst"
+                  >
+                    <div className={`absolute inset-0 bg-indigo-500 rounded-full animate-pulse ${showAIChat ? 'opacity-100' : 'opacity-70'}`}></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 z-10 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 001.357 2.059l.502.252a2.25 2.25 0 001.599 0l.502-.252a2.25 2.25 0 001.357-2.059V3.104m-7.5 0a23.743 23.743 0 011.722.104 23.743 23.743 0 01-1.722-.104m7.5 0a24.301 24.301 0 00-4.5 0m4.5 0a23.743 23.743 0 00-1.722.104 23.743 23.743 0 00-1.722-.104" />
+                    </svg>
+                  </button>
+                  
+                  {showAIChat && <AIAnalystChat onClose={() => setShowAIChat(false)} />}
+                  
                   <MetricsChart metric={metric} data={metricsData[metric]} />
                 </TabsContent>
               ))}
