@@ -1,7 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send } from 'lucide-react';
+import { X, Send, Bot } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface Message {
   id: number;
@@ -115,79 +116,101 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
 
   return (
     <Dialog open={true} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-md sm:max-w-lg p-0 overflow-hidden rounded-2xl border border-indigo-500/30 backdrop-blur-lg bg-black/90 shadow-2xl shadow-indigo-500/20 animate-appear">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center mr-3">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 001.357 2.059l.502.252a2.25 2.25 0 001.599 0l.502-.252a2.25 2.25 0 001.357-2.059V3.104m-7.5 0a23.743 23.743 0 011.722.104 23.743 23.743 0 01-1.722-.104m7.5 0a24.301 24.301 0 00-4.5 0m4.5 0a23.743 23.743 0 00-1.722.104 23.743 23.743 0 00-1.722-.104" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-white">Campaign AI Analyst</h3>
-              <p className="text-xs text-white/70">Powered by insight engine</p>
-            </div>
-          </div>
-          <button 
-            onClick={onClose} 
-            className="rounded-full p-1 hover:bg-white/10 transition-colors"
-          >
-            <X className="h-4 w-4 text-white" />
-          </button>
-        </div>
-        
-        {/* Messages container */}
-        <div className="h-80 overflow-y-auto p-4 space-y-4">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
-                  message.sender === 'user'
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-gray-800 text-gray-100 border border-gray-700'
-                }`}
-              >
-                <div className="whitespace-pre-wrap">{message.text}</div>
+      <DialogContent className="max-w-md sm:max-w-lg p-0 overflow-hidden rounded-2xl border-0 shadow-2xl animate-appear bg-transparent">
+        <div className="flex flex-col h-full backdrop-blur-xl bg-black/80 rounded-2xl border border-indigo-500/20">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-indigo-700 to-violet-700 p-4 flex justify-between items-center rounded-t-2xl">
+            <div className="flex items-center">
+              <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center mr-3 relative">
+                <div className="absolute inset-0 bg-white/10 rounded-full animate-pulse"></div>
+                <Bot className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-white">Campaign AI Analyst</h3>
+                <p className="text-xs text-white/70">Analyzing trends & insights</p>
               </div>
             </div>
-          ))}
+            <button 
+              onClick={onClose} 
+              className="rounded-full p-1.5 hover:bg-white/10 transition-colors duration-300"
+            >
+              <X className="h-4 w-4 text-white" />
+            </button>
+          </div>
           
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-gray-800 text-white rounded-2xl px-4 py-2 text-sm border border-gray-700">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+          {/* Messages container */}
+          <div className="h-[350px] overflow-y-auto py-5 px-4 space-y-4 scrollbar-thin scrollbar-thumb-indigo-600/20 scrollbar-track-transparent">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-appear`}
+              >
+                {message.sender === 'ai' && (
+                  <div className="h-8 w-8 rounded-full bg-indigo-600/20 backdrop-blur-sm flex items-center justify-center mr-2 flex-shrink-0">
+                    <Bot className="h-4 w-4 text-indigo-400" />
+                  </div>
+                )}
+                <div
+                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
+                    message.sender === 'user'
+                      ? 'bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-900/20'
+                      : 'bg-gray-800/80 text-gray-100 border border-gray-700/50 shadow-lg shadow-black/5'
+                  }`}
+                >
+                  <div className="whitespace-pre-wrap">{message.text}</div>
+                </div>
+                {message.sender === 'user' && (
+                  <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center ml-2 flex-shrink-0">
+                    <span className="text-xs text-white font-medium">You</span>
+                  </div>
+                )}
+              </div>
+            ))}
+            
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="h-8 w-8 rounded-full bg-indigo-600/20 backdrop-blur-sm flex items-center justify-center mr-2">
+                  <Bot className="h-4 w-4 text-indigo-400" />
+                </div>
+                <div className="bg-gray-800/80 text-white rounded-2xl px-4 py-2 text-sm border border-gray-700/50 shadow-lg">
+                  <div className="flex space-x-1.5">
+                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  </div>
                 </div>
               </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+          
+          {/* Input area */}
+          <div className="p-4 border-t border-gray-800/50 mt-auto rounded-b-2xl bg-gray-900/50 backdrop-blur-md">
+            <div className="flex bg-gray-800/70 border border-gray-700/50 rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-indigo-500/50 transition-all duration-300">
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask about campaign metrics..."
+                className="flex-1 bg-transparent border-0 px-4 py-3 text-sm text-white placeholder:text-gray-400 focus:outline-none"
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim()}
+                className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:from-indigo-700 hover:to-violet-700"
+              >
+                <Send className="h-4 w-4" />
+              </button>
             </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-        
-        {/* Input area */}
-        <div className="p-4 border-t border-gray-700 flex">
-          <input
-            ref={inputRef}
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Ask about campaign metrics..."
-            className="flex-1 bg-gray-800 border border-gray-700 rounded-l-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-          <button
-            onClick={handleSendMessage}
-            disabled={!inputValue.trim()}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-r-lg px-4 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Send className="h-4 w-4" />
-          </button>
+            <div className="flex justify-center mt-2">
+              <div className="text-xs text-gray-500 flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                Try asking about engagement changes or sustainability
+              </div>
+            </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
