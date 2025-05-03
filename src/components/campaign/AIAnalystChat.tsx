@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, Bot } from 'lucide-react';
+import { X, Send, Bot, MessageCircle, Sparkles } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
@@ -117,24 +117,32 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
   return (
     <Dialog open={true} onOpenChange={() => onClose()}>
       <DialogContent className="max-w-md sm:max-w-lg p-0 overflow-hidden rounded-2xl border-0 shadow-2xl animate-in fade-in-0 zoom-in-95 duration-300 bg-transparent">
-        <div className="flex flex-col h-full backdrop-blur-xl bg-black/90 rounded-2xl border border-indigo-500/30 shadow-[0_0_35px_rgba(124,58,237,0.15)]">
+        <div className="flex flex-col h-full bg-gradient-to-br from-black/95 to-indigo-950/95 rounded-2xl border border-indigo-500/30 shadow-[0_0_35px_rgba(79,70,229,0.3)]">
           {/* Header */}
-          <div className="bg-gradient-to-r from-indigo-800 to-violet-800 p-4 flex justify-between items-center rounded-t-2xl border-b border-indigo-500/20">
+          <div className="bg-gradient-to-r from-indigo-800/80 to-violet-900/80 p-4 flex justify-between items-center rounded-t-2xl border-b border-indigo-500/20 backdrop-blur-md">
             <div className="flex items-center">
-              <Avatar className="h-10 w-10 border-2 border-indigo-400/40 shadow-inner shadow-indigo-500/50">
-                <AvatarImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst" alt="AI Analyst" className="object-cover" />
-                <AvatarFallback className="bg-indigo-700">
-                  <Bot className="h-5 w-5 text-indigo-200" />
-                </AvatarFallback>
-              </Avatar>
+              <div className="relative">
+                <div className="absolute inset-0 bg-blue-500/30 rounded-full blur-md animate-pulse"></div>
+                <Avatar className="h-10 w-10 border-2 border-indigo-400/40 shadow-inner shadow-indigo-500/50 bg-gradient-to-br from-indigo-600 to-violet-700">
+                  <AvatarImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst" alt="AI Analyst" className="object-cover" />
+                  <AvatarFallback className="bg-indigo-700">
+                    <Bot className="h-5 w-5 text-indigo-200" />
+                  </AvatarFallback>
+                </Avatar>
+              </div>
               <div className="ml-3">
-                <h3 className="text-base font-semibold text-white">Campaign AI Analyst</h3>
-                <p className="text-xs text-indigo-200 opacity-80">Analyzing campaign metrics</p>
+                <h3 className="text-base font-semibold text-white flex items-center">
+                  Campaign AI Analyst
+                  <span className="ml-2 bg-indigo-600/50 text-indigo-100 text-xs px-2 py-0.5 rounded-full border border-indigo-500/30 flex items-center">
+                    <Sparkles className="h-3 w-3 mr-1" /> AI
+                  </span>
+                </h3>
+                <p className="text-xs text-indigo-200 opacity-80">Analyzing campaign metrics in real-time</p>
               </div>
             </div>
             <button 
               onClick={onClose} 
-              className="rounded-full p-1.5 hover:bg-white/10 transition-colors duration-300"
+              className="rounded-full p-2 hover:bg-white/10 transition-colors duration-300"
             >
               <X className="h-4 w-4 text-indigo-100" />
             </button>
@@ -148,41 +156,50 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in-0 slide-in-from-bottom-3 duration-300 delay-75`}
               >
                 {message.sender === 'ai' && (
-                  <Avatar className="h-8 w-8 mr-2 flex-shrink-0">
-                    <AvatarImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst" alt="AI Analyst" className="object-cover" />
-                    <AvatarFallback className="bg-indigo-700">
-                      <Bot className="h-4 w-4 text-indigo-200" />
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="relative mr-2 flex-shrink-0">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full opacity-75 blur-sm"></div>
+                    <Avatar className="h-8 w-8 bg-gradient-to-br from-indigo-600 to-violet-700 border border-indigo-400/30">
+                      <AvatarImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst" alt="AI Analyst" className="object-cover" />
+                      <AvatarFallback className="bg-indigo-700">
+                        <Bot className="h-4 w-4 text-indigo-200" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
                 )}
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
                     message.sender === 'user'
-                      ? 'bg-gradient-to-br from-indigo-600 to-violet-700 text-white shadow-lg shadow-indigo-900/30'
-                      : 'bg-gray-800/80 text-gray-100 border border-gray-700/50 shadow-md'
+                      ? 'bg-gradient-to-br from-indigo-600 to-violet-700 text-white shadow-lg shadow-indigo-900/30 border border-white/10'
+                      : 'bg-gray-800/95 text-gray-100 border border-gray-700/50 shadow-md'
                   }`}
                 >
                   <div className="whitespace-pre-wrap">{message.text}</div>
                 </div>
                 {message.sender === 'user' && (
-                  <Avatar className="h-8 w-8 ml-2 flex-shrink-0">
-                    <AvatarFallback className="bg-indigo-600">
-                      <span className="text-xs text-white font-medium">You</span>
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="relative ml-2 flex-shrink-0">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full opacity-75 blur-sm"></div>
+                    <Avatar className="h-8 w-8 bg-gradient-to-br from-indigo-700 to-violet-800 border border-indigo-400/30">
+                      <AvatarFallback className="bg-indigo-600">
+                        <span className="text-xs text-white font-medium">You</span>
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
                 )}
               </div>
             ))}
             
             {isTyping && (
               <div className="flex justify-start animate-in fade-in-0 slide-in-from-bottom-3 duration-300">
-                <Avatar className="h-8 w-8 mr-2 flex-shrink-0">
-                  <AvatarImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst" alt="AI Analyst" className="object-cover" />
-                  <AvatarFallback className="bg-indigo-700">
-                    <Bot className="h-4 w-4 text-indigo-200" />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="bg-gray-800/80 text-white rounded-2xl px-4 py-2.5 text-sm border border-gray-700/50 shadow-lg">
+                <div className="relative mr-2 flex-shrink-0">
+                  <div className="absolute -inset-0.5 bg-blue-500/30 rounded-full blur-sm animate-pulse"></div>
+                  <Avatar className="h-8 w-8 bg-gradient-to-br from-indigo-600 to-violet-700 border border-indigo-400/30">
+                    <AvatarImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst" alt="AI Analyst" className="object-cover" />
+                    <AvatarFallback className="bg-indigo-700">
+                      <Bot className="h-4 w-4 text-indigo-200" />
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+                <div className="bg-gray-800/80 text-white rounded-2xl px-4 py-2.5 text-sm border border-gray-700/50 shadow-lg backdrop-blur-sm">
                   <div className="flex space-x-1.5">
                     <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
                     <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -195,8 +212,8 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
           </div>
           
           {/* Input area */}
-          <div className="p-4 border-t border-indigo-800/30 mt-auto rounded-b-2xl bg-indigo-950/50 backdrop-blur-md">
-            <div className="flex bg-gray-900/80 border border-indigo-500/30 rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-indigo-500/50 transition-all duration-300 shadow-inner">
+          <div className="p-4 border-t border-indigo-800/30 mt-auto rounded-b-2xl bg-gradient-to-b from-indigo-950/50 to-black/70 backdrop-blur-md">
+            <div className="flex bg-gray-900/80 border border-indigo-500/30 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500/50 transition-all duration-300 shadow-inner">
               <input
                 ref={inputRef}
                 type="text"
@@ -209,9 +226,9 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
               <button
                 onClick={handleSendMessage}
                 disabled={!inputValue.trim()}
-                className="bg-gradient-to-r from-indigo-600 to-violet-700 text-white px-4 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:from-indigo-700 hover:to-violet-800 active:scale-95"
+                className="bg-gradient-to-r from-indigo-600 to-violet-700 text-white px-4 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:from-indigo-700 hover:to-violet-800 active:scale-95 group"
               >
-                <Send className="h-4 w-4" />
+                <Send className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 duration-300" />
               </button>
             </div>
             <div className="flex justify-center mt-2">

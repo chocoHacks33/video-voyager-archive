@@ -3,7 +3,7 @@ import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, PlayCircle, BarChart2 } from 'lucide-react';
+import { ArrowLeft, PlayCircle, BarChart2, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import MetricsChart from '@/components/campaign/MetricsChart';
@@ -137,15 +137,13 @@ const CampaignEvolution = () => {
                     className="absolute top-2 right-2 z-10 cursor-pointer"
                     title="Ask the AI Analyst"
                   >
-                    <div className="flex items-center">
-                      <div className="h-8 w-8 flex-shrink-0 rounded-full bg-indigo-600 bg-opacity-80 backdrop-blur-sm flex items-center justify-center relative overflow-hidden hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <div className="absolute inset-0 animate-pulse bg-indigo-400/20"></div>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 001.357 2.059l.502.252a2.25 2.25 0 001.599 0l.502-.252a2.25 2.25 0 001.357-2.059V3.104m-7.5 0a23.743 23.743 0 011.722.104 23.743 23.743 0 01-1.722-.104m7.5 0a24.301 24.301 0 00-4.5 0m4.5 0a23.743 23.743 0 00-1.722.104 23.743 23.743 0 00-1.722-.104" />
-                        </svg>
+                    <button className="relative group">
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500 to-purple-700 animate-pulse opacity-75 group-hover:opacity-100 blur-md transition-opacity duration-300"></div>
+                      <div className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 relative overflow-hidden transform transition-all duration-300 group-hover:scale-110 shadow-lg border border-indigo-400/30">
+                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/80 to-purple-700/80 animate-gradient-shift"></div>
+                        <MessageSquare className="h-5 w-5 text-white z-10 group-hover:rotate-12 transition-transform duration-300" />
                       </div>
-                      <span className="ml-2 font-medium text-sm text-indigo-100 bg-indigo-600/80 backdrop-blur-md px-3 py-1 rounded-r-lg shadow-md">AI Campaign Analyst</span>
-                    </div>
+                    </button>
                   </div>
                   
                   {showAIChat && <AIAnalystChat onClose={() => setShowAIChat(false)} />}
