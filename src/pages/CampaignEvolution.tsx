@@ -1,3 +1,4 @@
+
 import React from 'react';
 import AppLayout from '@/components/AppLayout';
 import CampaignChart from '@/components/campaign/CampaignChart';
@@ -123,7 +124,7 @@ const CampaignEvolution = () => {
         </Accordion>
       </div>
       <AIAnalyst />
-    </>
+    </AppLayout>
   );
 };
 
