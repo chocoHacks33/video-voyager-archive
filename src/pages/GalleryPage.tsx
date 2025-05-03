@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from "@/components/ui/custom-toast";
 import { useCredits } from '@/contexts/CreditsContext';
@@ -214,7 +213,7 @@ const GalleryPage = () => {
           
           <div className="relative pt-16 pb-8 px-6 mt-6 z-10">
             <AlertDialogHeader className="text-center">
-              <AlertDialogTitle className="text-2xl font-bold text-gradient bg-gradient-to-r from-purple-700 to-indigo-600 dark:from-purple-400 dark:to-indigo-300 bg-clip-text text-transparent dark:animate-neon-pulse">
+              <AlertDialogTitle className="text-2xl font-bold text-gradient bg-gradient-to-r from-purple-700 to-indigo-600 dark:from-purple-400 dark:to-indigo-300 bg-clip-text text-transparent dark:animate-neon-pulse text-center">
                 Ready to Launch
               </AlertDialogTitle>
               <AlertDialogDescription className="text-gray-600 dark:text-gray-300 mt-4">

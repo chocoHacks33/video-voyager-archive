@@ -14,15 +14,15 @@ const VideoTooltip = ({ active, payload, label }: VideoTooltipProps) => {
   const data = payload[0].payload;
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg border border-gray-200">
-      <h3 className="font-bold text-gray-900">Mutation {data.mutationNumber}</h3>
-      <p className="text-gray-600 mb-2">{payload[0].name}: {payload[0].value}</p>
+    <div className="bg-white dark:bg-gray-800/90 p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700/50 backdrop-blur-sm">
+      <h3 className="font-bold text-gray-900 dark:text-gray-100">Mutation {data.mutationNumber}</h3>
+      <p className="text-gray-600 dark:text-gray-300 mb-2">{payload[0].name}: {payload[0].value}</p>
       <div className="w-64">
         <AspectRatio ratio={16/9}>
           <img
             src={data.imageSrc}
             alt={`Evolution ${data.mutationNumber}`}
-            className="rounded-md w-full h-full object-cover"
+            className="rounded-md w-full h-full object-cover border border-gray-200/50 dark:border-gray-700/30"
           />
         </AspectRatio>
       </div>

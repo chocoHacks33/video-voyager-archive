@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import ImageCard from '@/components/ImageCard';
 import { ImageData } from './types';
 import CreditsDisplay from '@/components/CreditsDisplay';
+import { toast } from '@/components/ui/custom-toast';
 
 interface GalleryGridProps {
   images: ImageData[];
@@ -33,14 +34,30 @@ const GalleryGrid = ({
   
   useEffect(() => {
     console.log(`GalleryGrid rendering with ${images.length} images`);
-    images.forEach(img => {
-      console.log(`Image ID: ${img.id}, Source: ${img.source}`);
+    
+    // Better preloading with error handling
+    const preloadPromises = images.map(image => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = image.source;
+        img.onload = () => {
+          console.log(`Successfully preloaded: ${image.source}`);
+          resolve(image.source);
+        };
+        img.onerror = () => {
+          console.error(`Failed to preload: ${image.source}`);
+          reject(image.source);
+        };
+      });
     });
     
-    // Preload images to prevent loading issues
-    images.forEach(image => {
-      const img = new Image();
-      img.src = image.source;
+    Promise.allSettled(preloadPromises).then(results => {
+      const failed = results.filter(r => r.status === 'rejected').length;
+      if (failed > 0) {
+        toast.warning(`${failed} images failed to preload`, {
+          description: "Some images might not display properly"
+        });
+      }
     });
   }, [images]);
 
