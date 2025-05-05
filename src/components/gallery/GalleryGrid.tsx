@@ -54,9 +54,7 @@ const GalleryGrid = ({
     Promise.allSettled(preloadPromises).then(results => {
       const failed = results.filter(r => r.status === 'rejected').length;
       if (failed > 0) {
-        toast.warning(`${failed} images failed to preload`, {
-          description: "Some images might not display properly"
-        });
+        toast.warning(`${failed} images failed to preload`);
       }
     });
   }, [images]);
