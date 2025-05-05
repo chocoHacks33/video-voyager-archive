@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from "@/components/ui/custom-toast";
+import { toast } from "sonner";
 import { useCredits } from '@/contexts/CreditsContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Check } from 'lucide-react';
@@ -89,23 +89,17 @@ const GalleryPage = () => {
 
   const handleLaunchCampaign = () => {
     if (selectedImages.length === 0) {
-      toast.warning("Please select images", {
-        description: "Click on one or more images to select them for your campaign"
-      });
+      // Don't show warning toast
       return;
     }
 
     if (selectedMetrics.length === 0) {
-      toast.warning("Select metrics to track", {
-        description: "Choose at least one metric to track your campaign performance"
-      });
+      // Don't show warning toast
       return;
     }
 
     if (!budget || parseFloat(budget) <= 0) {
-      toast.warning("Enter a budget", {
-        description: "Specify how many credits you want to spend on this campaign"
-      });
+      // Don't show warning toast
       return;
     }
 

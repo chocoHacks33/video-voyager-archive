@@ -1,4 +1,3 @@
-
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -56,7 +55,11 @@ const CampaignEvolution = () => {
     
     // Simulate a loading effect for the button
     setTimeout(() => {
-      setDaysToShow(prev => Math.min(prev + 7, 28));
+      setDaysToShow(prev => {
+        const newDays = Math.min(prev + 7, 28);
+        toast.success(`Mutation ${prev} → ${newDays} Complete!`);
+        return newDays;
+      });
       setIsSkipping(false);
     }, 600);
   };

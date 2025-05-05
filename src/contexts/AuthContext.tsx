@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 interface User {
   username: string;
@@ -29,7 +29,6 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const { toast } = useToast();
   
   // Check for existing session on load
   useEffect(() => {
@@ -45,17 +44,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const user = { username };
       setUser(user);
       localStorage.setItem('user', JSON.stringify(user));
-      toast({
-        title: "Login successful",
-        description: "Welcome back, " + username,
+      toast.success("Login successful", {
+        description: "Welcome back, " + username
       });
       return true;
     } else {
-      toast({
-        title: "Login failed",
-        description: "Invalid username or password",
-        variant: "destructive",
-      });
+      // Don't show error toast
       return false;
     }
   };
@@ -63,10 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
-    toast({
-      title: "Logged out",
-      description: "You have been logged out successfully",
-    });
+    // Don't show logout toast
   };
 
   return (

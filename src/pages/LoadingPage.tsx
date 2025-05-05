@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
-import { toast } from '@/components/ui/custom-toast';
+import { toast } from 'sonner';
 import { QwenAIService } from '@/services/qwenAIService';
 import { CircleX, Check, Loader } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -58,6 +58,12 @@ const LoadingPage = () => {
       
       // Ensure progress reaches 100% and wait a moment before navigating
       setProgress(100);
+
+      // Show morphing success toast
+      toast.success("Morphing complete", {
+        description: "Content has been successfully transformed"
+      });
+      
       navigateTimeout = window.setTimeout(() => {
         navigate('/gallery');
       }, 2500); // Wait 2.5 seconds before redirecting
@@ -72,9 +78,7 @@ const LoadingPage = () => {
 
   useEffect(() => {
     if (!imageFile) {
-      toast.error("No image file provided", {
-        description: "Please upload an image first."
-      });
+      // Don't show error toast
       navigate('/upload');
       return;
     }
@@ -151,9 +155,7 @@ const LoadingPage = () => {
         setProcessingComplete(true);
       } catch (error) {
         console.error("Image processing error:", error);
-        toast.error("Error processing image", {
-          description: "There was a problem processing your image. Please try again."
-        });
+        // Don't show error toast
         navigate('/upload');
       }
     };
@@ -180,7 +182,7 @@ const LoadingPage = () => {
   return (
     <AppLayout title="">
       <div className="flex flex-col items-center justify-center p-4 w-full mx-auto min-h-[60vh]">
-        {/* Removed the outer grey box/card - showing the morphing rectangle directly */}
+        {/* Morphing rectangle directly without the outer card/box */}
         <div className="relative w-full h-40 bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 overflow-hidden rounded-t-xl">
           {/* Animated background elements */}
           <div className="absolute inset-0">
@@ -372,7 +374,6 @@ const LoadingPage = () => {
             })}
           </div>
 
-          {/* Enhanced bottom section with animated particles */}
           <div className="flex justify-center mt-10 relative overflow-hidden py-6">
             {/* Animated particle background with enhanced styling */}
             <div className="absolute inset-0 overflow-hidden">

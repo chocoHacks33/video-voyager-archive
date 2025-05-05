@@ -1,5 +1,19 @@
 
+"use client";
+
+import { Toaster as Sonner } from "sonner";
+
 export function Toaster() {
-  // Return null to prevent rendering any toasts
-  return null;
+  return (
+    <Sonner 
+      position="bottom-right"
+      toastOptions={{
+        style: { 
+          background: "hsl(var(--background))",
+          color: "hsl(var(--foreground))",
+          border: "1px solid hsl(var(--border))"
+        }
+      }}
+    />
+  );
 }
