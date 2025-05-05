@@ -183,39 +183,65 @@ const LoadingPage = () => {
   return (
     <AppLayout title="">
       <div className="flex flex-col items-center justify-center p-4 w-full mx-auto min-h-[60vh]">
-        {/* Updated header with softer purple gradient */}
-        <div className="relative w-full h-32 bg-gradient-to-r from-purple-400/80 via-purple-300/70 to-violet-400/75 overflow-hidden rounded-t-xl">
-          {/* Softer animated background elements */}
-          <div className="absolute inset-0">
-            <div className="absolute top-1/4 left-1/5 w-60 h-60 bg-white/10 rounded-full blur-3xl animate-pulse-slow"></div>
-            <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1.5s' }}></div>
-            <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-purple-200/20 rounded-full blur-2xl animate-float" style={{ animationDelay: '0.7s' }}></div>
-            
-            {/* Subtle particle effects */}
-            <div className="absolute top-10 left-20 w-2 h-2 bg-purple-100 rounded-full animate-float"></div>
-            <div className="absolute top-20 right-40 w-3 h-3 bg-purple-100 rounded-full animate-float" style={{ animationDelay: '1.2s' }}></div>
-            <div className="absolute bottom-10 left-1/3 w-4 h-4 bg-purple-100 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
+        {/* Modern gradient header with mesh gradient style */}
+        <div className="relative w-full h-32 overflow-hidden rounded-t-xl">
+          {/* Base gradient with updated colors */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/85 via-violet-400/80 to-indigo-500/75"></div>
+          
+          {/* Mesh gradient overlay */}
+          <div className="absolute inset-0 mix-blend-overlay">
+            <div className="absolute -left-10 -top-10 w-64 h-64 bg-purple-300/30 rounded-full blur-3xl"></div>
+            <div className="absolute right-10 top-5 w-48 h-48 bg-indigo-400/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-1/4 w-56 h-56 bg-fuchsia-300/25 rounded-full blur-3xl"></div>
           </div>
           
-          {/* Updated text with ellipsis */}
+          {/* Modern geometric accent elements */}
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-6 left-8 w-24 h-1.5 bg-white/70 rounded-full transform -rotate-12"></div>
+            <div className="absolute top-16 right-20 w-16 h-1.5 bg-white/60 rounded-full transform rotate-12"></div>
+            <div className="absolute bottom-8 left-1/3 w-20 h-1.5 bg-white/50 rounded-full"></div>
+          </div>
+          
+          {/* Animated particle effect */}
+          <div className="absolute inset-0">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <div 
+                key={index}
+                className="absolute w-1.5 h-1.5 bg-white/60 rounded-full animate-float"
+                style={{ 
+                  top: `${Math.random() * 100}%`, 
+                  left: `${Math.random() * 100}%`,
+                  animationDuration: `${Math.random() * 5 + 5}s`,
+                  animationDelay: `${Math.random() * 2}s`
+                }}
+              ></div>
+            ))}
+          </div>
+
+          {/* Text content with subtle text shadow */}
           <div className="absolute inset-0 flex items-center justify-center z-10">
-            <h2 className="text-2xl font-medium text-white/95 tracking-wide">
+            <h2 className="text-2xl font-medium text-white/95 tracking-wide drop-shadow-md">
               Morphing Your Content...
             </h2>
           </div>
           
-          {/* Subtle foreground visual elements */}
-          <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white/10 to-transparent"></div>
-          <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,64L60,69.3C120,75,240,85,360,80C480,75,600,53,720,48C840,43,960,53,1080,58.7C1200,64,1320,64,1440,69.3L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z" 
-                  fill="url(#paint0_linear)" fillOpacity="0.2" />
-            <defs>
-              <linearGradient id="paint0_linear" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#d8b4fe" />
-                <stop offset="1" stopColor="#c4b5fd" />
-              </linearGradient>
-            </defs>
-          </svg>
+          {/* Modern bottom accent with subtle wave */}
+          <div className="absolute bottom-0 left-0 w-full">
+            <svg className="w-full h-12" viewBox="0 0 1440 120" fill="none" preserveAspectRatio="none">
+              <path 
+                d="M0,64 C180,100 360,110 720,70 C1080,30 1260,80 1440,90 L1440,120 L0,120 Z" 
+                fill="url(#modern-gradient)" 
+                fillOpacity="0.35"
+              />
+              <defs>
+                <linearGradient id="modern-gradient" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#d8b4fe" stopOpacity="0.8" offset="0%" />
+                  <stop stopColor="#c4b5fd" stopOpacity="0.6" offset="50%" />
+                  <stop stopColor="#a78bfa" stopOpacity="0.8" offset="100%" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
         </div>
 
         <div className="p-8 backdrop-blur-sm bg-white/5 dark:bg-black/10 w-full rounded-b-xl border border-purple-100/20 dark:border-purple-900/20">
