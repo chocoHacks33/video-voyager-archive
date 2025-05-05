@@ -134,34 +134,14 @@ const CampaignEvolution = () => {
                       className="group"
                       aria-label="Open AI Chat Analyst"
                     >
-                      <div className="relative h-12 w-12 rounded-full cursor-pointer overflow-hidden transition-transform duration-300 group-hover:scale-110">
-                        {/* Animated outer ring */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-violet-600 animate-spin-slow rounded-full opacity-70"></div>
-                        
-                        {/* Inner pulse glow */}
-                        <div className="absolute inset-1 rounded-full bg-gradient-to-br from-indigo-600/80 to-violet-500/80 animate-pulse-slow"></div>
-                        
-                        {/* AI Avatar with slight overlay */}
-                        <div className="absolute inset-1.5 rounded-full overflow-hidden">
-                          <img 
-                            src="/lovable-uploads/96df1a11-6aa6-4ffe-a590-a9b52232aa2b.png" 
-                            alt="AI Analyst" 
-                            className="h-full w-full object-cover"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 to-transparent"></div>
-                          
-                          {/* Simplified chat glyph */}
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="bg-indigo-600/80 backdrop-blur-sm p-1.5 rounded-full shadow-lg transform translate-y-[1px] group-hover:scale-110 transition-all duration-300">
-                              <MessageCircle className="h-4 w-4 text-white drop-shadow-md" />
-                            </div>
-                          </div>
-                        </div>
+                      {/* Simplified chat button with just a message icon */}
+                      <div className="relative h-10 w-10 flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 rounded-full shadow-lg transition-all duration-300 group-hover:scale-110">
+                        <MessageCircle className="h-5 w-5 text-white" />
                       </div>
 
-                      {/* Tooltip */}
-                      <div className="absolute right-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        <div className="bg-indigo-900/90 text-white text-xs px-2 py-1 rounded-md backdrop-blur-md whitespace-nowrap">
+                      {/* Simple tooltip */}
+                      <div className="absolute right-0 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                           Ask AI Analyst
                         </div>
                       </div>
