@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -182,18 +183,18 @@ const LoadingPage = () => {
   return (
     <AppLayout title="">
       <div className="flex flex-col items-center justify-center p-4 w-full mx-auto min-h-[60vh]">
-        {/* Updated header with improved gradient */}
-        <div className="relative w-full h-32 bg-gradient-to-r from-purple-500/90 via-violet-500/80 to-indigo-500/90 overflow-hidden rounded-t-xl">
+        {/* Updated header with softer purple gradient */}
+        <div className="relative w-full h-32 bg-gradient-to-r from-purple-400/80 via-purple-300/70 to-violet-400/75 overflow-hidden rounded-t-xl">
           {/* Softer animated background elements */}
           <div className="absolute inset-0">
             <div className="absolute top-1/4 left-1/5 w-60 h-60 bg-white/10 rounded-full blur-3xl animate-pulse-slow"></div>
             <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1.5s' }}></div>
-            <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-purple-300/20 rounded-full blur-2xl animate-float" style={{ animationDelay: '0.7s' }}></div>
+            <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-purple-200/20 rounded-full blur-2xl animate-float" style={{ animationDelay: '0.7s' }}></div>
             
             {/* Subtle particle effects */}
-            <div className="absolute top-10 left-20 w-2 h-2 bg-purple-200 rounded-full animate-float"></div>
-            <div className="absolute top-20 right-40 w-3 h-3 bg-purple-200 rounded-full animate-float" style={{ animationDelay: '1.2s' }}></div>
-            <div className="absolute bottom-10 left-1/3 w-4 h-4 bg-purple-200 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
+            <div className="absolute top-10 left-20 w-2 h-2 bg-purple-100 rounded-full animate-float"></div>
+            <div className="absolute top-20 right-40 w-3 h-3 bg-purple-100 rounded-full animate-float" style={{ animationDelay: '1.2s' }}></div>
+            <div className="absolute bottom-10 left-1/3 w-4 h-4 bg-purple-100 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
           </div>
           
           {/* Updated text with ellipsis */}
@@ -210,8 +211,8 @@ const LoadingPage = () => {
                   fill="url(#paint0_linear)" fillOpacity="0.2" />
             <defs>
               <linearGradient id="paint0_linear" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#c084fc" />
-                <stop offset="1" stopColor="#a5b4fc" />
+                <stop stopColor="#d8b4fe" />
+                <stop offset="1" stopColor="#c4b5fd" />
               </linearGradient>
             </defs>
           </svg>
