@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Send, Bot, MessageCircle } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -118,7 +117,7 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
     <Dialog open={true} onOpenChange={() => onClose()}>
       <DialogContent className="max-w-md sm:max-w-lg p-0 overflow-hidden rounded-2xl border-0 shadow-xl bg-transparent">
         <div className="flex flex-col h-full min-h-[450px] backdrop-blur-xl bg-gradient-to-br from-slate-950/90 via-indigo-950/80 to-slate-950/90 rounded-2xl border border-indigo-500/20">
-          {/* Simplified header */}
+          {/* Simplified header with only one close button */}
           <div className="relative rounded-t-2xl bg-gradient-to-r from-indigo-600 to-violet-600 p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
@@ -171,10 +170,8 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
                   <div className="whitespace-pre-wrap">{message.text}</div>
                 </div>
                 {message.sender === 'user' && (
-                  <Avatar className="h-8 w-8 ml-2 flex-shrink-0">
-                    <AvatarFallback className="bg-indigo-600">
-                      <span className="text-xs text-white font-medium">You</span>
-                    </AvatarFallback>
+                  <Avatar className="h-8 w-8 ml-2 flex-shrink-0 invisible">
+                    {/* Making the avatar invisible but keeping the spacing */}
                   </Avatar>
                 )}
               </div>
