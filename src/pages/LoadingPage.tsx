@@ -182,60 +182,104 @@ const LoadingPage = () => {
   return (
     <AppLayout title="">
       <div className="flex flex-col items-center justify-center p-4 w-full mx-auto min-h-[60vh]">
-        {/* Simplified minimalist header */}
-        <div className="relative w-full h-28 bg-gray-900 dark:bg-black overflow-hidden rounded-t-xl flex items-center justify-center">
-          {/* Simpler background with subtle pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <circle cx="10" cy="10" r="1" fill="#ffffff" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#grid-pattern)" />
-            </svg>
+        {/* Morphing rectangle directly without the outer card/box */}
+        <div className="relative w-full h-40 bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 overflow-hidden rounded-t-xl">
+          {/* Animated background elements */}
+          <div className="absolute inset-0">
+            <div className="absolute top-1/4 left-1/5 w-60 h-60 bg-white/10 rounded-full blur-3xl animate-pulse-slow"></div>
+            <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1.5s' }}></div>
+            <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-purple-300/20 rounded-full blur-2xl animate-float" style={{ animationDelay: '0.7s' }}></div>
+            
+            {/* Enhanced particle effects */}
+            <div className="absolute top-10 left-20 w-2 h-2 bg-purple-200 rounded-full animate-float"></div>
+            <div className="absolute top-20 right-40 w-3 h-3 bg-blue-200 rounded-full animate-float" style={{ animationDelay: '1.2s' }}></div>
+            <div className="absolute bottom-10 left-1/3 w-4 h-4 bg-indigo-200 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
+            <div className="absolute top-1/2 right-1/4 w-2 h-2 bg-violet-200 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
+            
+            {/* Additional floating elements */}
+            <div className="absolute top-5 right-10 w-6 h-6 bg-gradient-to-br from-pink-300 to-purple-400 rounded-full animate-float opacity-70" style={{ animationDelay: '1.7s' }}></div>
+            <div className="absolute bottom-5 right-20 w-5 h-5 bg-gradient-to-br from-blue-300 to-cyan-400 rounded-full animate-float opacity-70" style={{ animationDelay: '2.2s' }}></div>
           </div>
           
-          {/* Simplified text */}
-          <div className="relative z-10 text-center">
-            <h2 className="text-2xl font-medium text-white tracking-tight">
-              Processing Content
+          {/* Morphing text animation with enhanced styling */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+            <h2 className="text-4xl font-bold text-transparent bg-gradient-to-r from-white via-purple-100 to-blue-100 bg-clip-text tracking-wide drop-shadow-lg">
+              Morphing Your Content
             </h2>
-            <div className="text-xs text-gray-400 mt-1 tracking-wider">AI Engine</div>
+            <div className="flex gap-2 mt-2">
+              {['A', 'I', ' ', 'P', 'O', 'W', 'E', 'R', 'E', 'D'].map((letter, index) => (
+              letter === ' ' ? 
+                <span key={index} className="w-2"></span> : 
+                <span key={index} className="text-sm font-light text-white/80 tracking-wider animate-pulse" style={{ animationDelay: `${index * 0.1}s` }}>
+                  {letter}
+                </span>
+              ))}
+            </div>
           </div>
+          
+          {/* Foreground visual elements */}
+          <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white/10 to-transparent"></div>
+          <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,64L60,69.3C120,75,240,85,360,80C480,75,600,53,720,48C840,43,960,53,1080,58.7C1200,64,1320,64,1440,69.3L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z" 
+                  fill="url(#paint0_linear)" fillOpacity="0.2" />
+            <defs>
+              <linearGradient id="paint0_linear" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#8B5CF6" />
+                <stop offset="1" stopColor="#3B82F6" />
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
 
-        <div className="p-8 backdrop-blur-sm bg-white/5 dark:bg-black/10 w-full rounded-b-xl border border-gray-100/20 dark:border-gray-800/20">
-          {/* Progress bar section */}
+        <div className="p-8 backdrop-blur-sm bg-white/5 dark:bg-black/10 w-full rounded-b-xl border border-purple-100/20 dark:border-purple-900/20">
           <div className="mb-8 relative">
-            {/* Enhanced progress bar with minimal styling */}
-            <div className="h-3 bg-gray-200/30 dark:bg-gray-700/30 rounded-full overflow-hidden backdrop-blur-sm">
+            {/* Enhanced progress bar with glow effect */}
+            <div className="h-4 bg-gray-200/30 dark:bg-gray-700/30 rounded-full overflow-hidden backdrop-blur-sm shadow-inner">
               <div 
-                className="h-full bg-gray-800 dark:bg-gray-400 transition-all duration-500 ease-out"
+                className="h-full bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-600 transition-all duration-500 ease-out relative"
                 style={{ width: `${progress}%` }}
-              />
+              >
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="w-full h-full animate-pulse opacity-50">
+                    <div className="h-full w-1/3 bg-white/30 transform -skew-x-12 animate-shimmer"></div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Glow effect */}
+              <div 
+                className="absolute inset-0 rounded-full opacity-30 blur-md"
+                style={{ 
+                  width: `${progress}%`, 
+                  background: 'linear-gradient(90deg, rgba(139,92,246,0.5) 0%, rgba(79,70,229,0.5) 100%)' 
+                }}
+              ></div>
             </div>
-            <div className="mt-2 text-right text-sm font-medium text-gray-600 dark:text-gray-400">
+            <div className="mt-2 text-right text-sm font-medium text-indigo-600 dark:text-indigo-400">
               {progress}% Complete
             </div>
             
-            {/* Minimal phase dots */}
+            {/* Decorative dots showing phases with enhanced styling */}
             <div className="absolute top-0 left-0 w-full flex justify-between px-2 transform -translate-y-1/2">
               {[0, 1, 2].map((phase, index) => {
                 const isComplete = progress >= ((index + 1) * 33);
                 return (
                   <div key={index} className={cn(
-                    "w-3 h-3 rounded-full transition-all duration-300",
+                    "w-4 h-4 rounded-full transition-all duration-300 flex items-center justify-center",
                     isComplete 
-                      ? "bg-gray-800 dark:bg-gray-400" 
+                      ? "bg-gradient-to-r from-purple-500 to-indigo-500 shadow-lg shadow-purple-500/50" 
                       : "bg-gray-300/50 dark:bg-gray-600/50"
-                  )} />
+                  )}>
+                    {isComplete && (
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    )}
+                  </div>
                 );
               })}
             </div>
           </div>
           
-          {/* Three phase cards with minimal design */}
+          {/* Three phase cards with enhanced modern design */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
               { id: 'decoded', label: 'Product Analysis', description: 'Decoding visual elements and content structure' },
@@ -251,22 +295,22 @@ const LoadingPage = () => {
                   className={cn(
                     "transition-all duration-500 overflow-hidden border-0 group relative",
                     isComplete
-                      ? "bg-gray-50 dark:bg-gray-800/40 shadow-sm" 
+                      ? "bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/30 shadow-lg shadow-green-100/50 dark:shadow-green-900/20" 
                       : isActive 
-                        ? "bg-gray-50 dark:bg-gray-800/40 shadow-sm"
+                        ? "bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/30 shadow-lg shadow-purple-100/50 dark:shadow-purple-900/20"
                         : "bg-white/80 dark:bg-gray-800/40 shadow-sm"
                   )}
                 >
-                  {/* Minimal background pattern */}
+                  {/* Background pattern with enhanced styling */}
                   <div className={cn(
-                    "absolute inset-0 opacity-5 pointer-events-none",
-                    isComplete || isActive ? "opacity-10" : "opacity-5"
+                    "absolute inset-0 opacity-10 pointer-events-none transition-opacity duration-300",
+                    isComplete || isActive ? "opacity-20" : "opacity-5"
                   )}>
                     <div className="absolute inset-0 w-full h-full">
                       <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                           <pattern id={`grid-${phase.id}`} width="20" height="20" patternUnits="userSpaceOnUse">
-                            <circle cx="10" cy="10" r="1" fill={isComplete ? "#111111" : isActive ? "#333333" : "#9CA3AF"} />
+                            <circle cx="10" cy="10" r="1" fill={isComplete ? "#10B981" : isActive ? "#8B5CF6" : "#9CA3AF"} />
                           </pattern>
                         </defs>
                         <rect width="100%" height="100%" fill={`url(#grid-${phase.id})`} />
@@ -274,42 +318,42 @@ const LoadingPage = () => {
                     </div>
                   </div>
                   
-                  {/* Card content with minimalist styling */}
+                  {/* Card content with enhanced styling */}
                   <div className="p-6 relative z-10">
                     <div className="flex items-center justify-between mb-4">
                       <div className={cn(
-                        "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300",
+                        "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110",
                         isComplete 
-                          ? "bg-gray-100 dark:bg-gray-700" 
+                          ? "bg-green-100 dark:bg-green-800/30" 
                           : isActive
-                            ? "bg-gray-100 dark:bg-gray-700"
-                            : "bg-gray-100 dark:bg-gray-700"
+                            ? "bg-purple-100 dark:bg-purple-800/30"
+                            : "bg-gray-100 dark:bg-gray-700/30"
                       )}>
                         {isComplete ? (
-                          <Check className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+                          <Check className={cn("h-5 w-5 text-green-600 dark:text-green-400", "animate-appear")} />
                         ) : isActive ? (
-                          <Loader className="h-4 w-4 text-gray-700 dark:text-gray-300 animate-spin" />
+                          <Loader className={cn("h-5 w-5 text-purple-600 dark:text-purple-400", "animate-spin")} />
                         ) : (
-                          <span className="text-sm font-medium text-gray-400 dark:text-gray-500">{index + 1}</span>
+                          <span className="text-lg font-bold text-gray-400 dark:text-gray-500">{index + 1}</span>
                         )}
                       </div>
                       <div className={cn(
                         "text-xs font-medium px-2 py-1 rounded-full",
                         isComplete 
-                          ? "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300" 
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400" 
                           : isActive
-                            ? "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
-                            : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+                            ? "bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-400"
+                            : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
                       )}>
                         {isComplete ? "Complete" : isActive ? "Processing" : "Waiting"}
                       </div>
                     </div>
                     <h3 className={cn(
-                      "text-base font-medium mb-1",
+                      "text-lg font-semibold mb-1",
                       isComplete 
-                        ? "text-gray-800 dark:text-gray-200" 
+                        ? "text-green-700 dark:text-green-400" 
                         : isActive
-                          ? "text-gray-800 dark:text-gray-200"
+                          ? "text-purple-700 dark:text-purple-400"
                           : "text-gray-600 dark:text-gray-300"
                       )}>
                       {phase.label}
@@ -318,10 +362,10 @@ const LoadingPage = () => {
                       {phase.description}
                     </p>
                     
-                    {/* Simplified active progress indicator */}
+                    {/* Animated progress bar for active phase with enhanced styling */}
                     {isActive && (
                       <div className="mt-3 h-1 w-full bg-gray-200 dark:bg-gray-700 overflow-hidden rounded-full">
-                        <div className="h-full bg-gray-800 dark:bg-gray-400 animate-progress-indeterminate"></div>
+                        <div className="h-full bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 dark:from-purple-500 dark:via-purple-400 dark:to-purple-300 animate-progress-indeterminate"></div>
                       </div>
                     )}
                   </div>
@@ -330,19 +374,39 @@ const LoadingPage = () => {
             })}
           </div>
 
-          <div className="flex justify-center mt-10 relative py-6">
-            {/* Minimal text display */}
+          <div className="flex justify-center mt-10 relative overflow-hidden py-6">
+            {/* Animated particle background with enhanced styling */}
+            <div className="absolute inset-0 overflow-hidden">
+              {[...Array(20)].map((_, i) => (
+                <div 
+                  key={i}
+                  className="absolute rounded-full bg-gradient-to-r from-purple-300 to-indigo-300 dark:from-purple-500 dark:to-indigo-400 opacity-30 animate-float" 
+                  style={{
+                    width: `${Math.random() * 12 + 4}px`,
+                    height: `${Math.random() * 12 + 4}px`,
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 5}s`,
+                    animationDuration: `${Math.random() * 10 + 10}s`
+                  }}
+                />
+              ))}
+            </div>
+            
+            {/* Main text with enhanced styling */}
             <div className="text-center z-10">
-              <div className="text-gray-600 dark:text-gray-400 text-sm">
-                Transforming your content
+              <div className="text-gray-600 dark:text-gray-300 text-sm font-medium tracking-wide">
+                <span className="mr-1.5">Transforming your content into</span>
+                <span className="bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-400 dark:to-indigo-300 bg-clip-text text-transparent font-bold">platform-optimized</span>
+                <span className="ml-1.5">assets</span>
               </div>
               
-              {/* Minimal loading dots */}
+              {/* Animated dots with enhanced styling */}
               <div className="flex justify-center mt-1.5">
                 {[0, 1, 2].map((dot) => (
                   <div 
                     key={dot}
-                    className="w-1.5 h-1.5 rounded-full bg-gray-500 dark:bg-gray-400 mx-0.5 animate-bounce"
+                    className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-400 dark:to-indigo-300 mx-0.5 animate-bounce"
                     style={{ animationDelay: `${dot * 0.2}s` }}
                   />
                 ))}
