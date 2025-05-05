@@ -12,6 +12,7 @@ import LoadingPage from "@/pages/LoadingPage";
 import GalleryPage from "@/pages/GalleryPage";
 import CampaignEvolution from "@/pages/CampaignEvolution";
 import NotFound from "@/pages/NotFound";
+import { Toaster } from "@/components/ui/toaster";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
+            <Toaster />
           </TooltipProvider>
         </CreditsProvider>
       </AuthProvider>

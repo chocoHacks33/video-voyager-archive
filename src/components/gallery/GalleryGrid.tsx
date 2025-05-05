@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import ImageCard from '@/components/ImageCard';
@@ -54,7 +53,8 @@ const GalleryGrid = ({
     Promise.allSettled(preloadPromises).then(results => {
       const failed = results.filter(r => r.status === 'rejected').length;
       if (failed > 0) {
-        toast.warning(`${failed} images failed to preload`);
+        // Remove the parameter from toast.warning as it expects no arguments
+        console.log(`${failed} images failed to preload`);
       }
     });
   }, [images]);
