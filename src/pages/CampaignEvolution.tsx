@@ -1,8 +1,9 @@
+
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, PlayCircle, BarChart2 } from 'lucide-react';
+import { ArrowLeft, PlayCircle, BarChart2, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import MetricsChart from '@/components/campaign/MetricsChart';
@@ -128,23 +129,43 @@ const CampaignEvolution = () => {
               {metrics.map(metric => (
                 <TabsContent key={metric} value={metric} className="mt-4 relative">
                   <div className="absolute top-2 right-2 z-10">
-                    <div 
+                    <button 
                       onClick={() => setShowAIChat(true)}
-                      className="cursor-pointer"
-                      title="Ask the AI Analyst"
+                      className="group"
+                      aria-label="Open AI Chat Analyst"
                     >
-                      <div className="flex items-center">
-                        <div className="h-8 w-8 flex-shrink-0 rounded-full bg-indigo-600 bg-opacity-80 backdrop-blur-sm flex items-center justify-center relative overflow-hidden hover:scale-110 transition-transform duration-300 shadow-lg">
-                          <div className="absolute inset-0 animate-pulse bg-indigo-400/20"></div>
+                      <div className="relative h-12 w-12 rounded-full cursor-pointer overflow-hidden transition-transform duration-300 group-hover:scale-110">
+                        {/* Animated outer ring */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-violet-600 animate-spin-slow rounded-full opacity-70"></div>
+                        
+                        {/* Inner pulse glow */}
+                        <div className="absolute inset-1 rounded-full bg-gradient-to-br from-indigo-600/80 to-violet-500/80 animate-pulse-slow"></div>
+                        
+                        {/* AI Avatar with slight overlay */}
+                        <div className="absolute inset-1.5 rounded-full overflow-hidden">
                           <img 
                             src="/lovable-uploads/96df1a11-6aa6-4ffe-a590-a9b52232aa2b.png" 
                             alt="AI Analyst" 
-                            className="h-full w-full object-cover z-10"
+                            className="h-full w-full object-cover"
                           />
+                          <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 to-transparent"></div>
+                          
+                          {/* Message icon with subtle animation */}
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="bg-indigo-600/80 backdrop-blur-sm p-1.5 rounded-full shadow-lg transform translate-y-[1px] group-hover:scale-110 transition-all duration-300">
+                              <MessageCircle className="h-4 w-4 text-white drop-shadow-md animate-pulse-slow" />
+                            </div>
+                          </div>
                         </div>
-                        <span className="ml-2 font-medium text-sm text-indigo-100 bg-indigo-600/80 backdrop-blur-md px-3 py-1 rounded-r-lg shadow-md">AI Campaign Analyst</span>
                       </div>
-                    </div>
+
+                      {/* Tooltip */}
+                      <div className="absolute right-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        <div className="bg-indigo-900/90 text-white text-xs px-2 py-1 rounded-md backdrop-blur-md whitespace-nowrap">
+                          Ask AI Analyst
+                        </div>
+                      </div>
+                    </button>
                   </div>
                   
                   {showAIChat && <AIAnalystChat onClose={() => setShowAIChat(false)} />}
