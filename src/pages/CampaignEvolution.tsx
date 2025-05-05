@@ -1,9 +1,8 @@
-
 import React, { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, PlayCircle, BarChart2, MessageSquare } from 'lucide-react';
+import { ArrowLeft, PlayCircle, BarChart2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import MetricsChart from '@/components/campaign/MetricsChart';
@@ -59,10 +58,6 @@ const CampaignEvolution = () => {
       setDaysToShow(prev => Math.min(prev + 7, 28));
       setIsSkipping(false);
     }, 600);
-  };
-
-  const toggleAIChat = () => {
-    setShowAIChat(prev => !prev);
   };
 
   return (
@@ -132,18 +127,24 @@ const CampaignEvolution = () => {
               
               {metrics.map(metric => (
                 <TabsContent key={metric} value={metric} className="mt-4 relative">
-                  <div 
-                    onClick={toggleAIChat}
-                    className="absolute top-2 right-2 z-10 cursor-pointer"
-                    title="Ask the AI Analyst"
-                  >
-                    <button className="relative group">
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500 to-purple-700 animate-pulse opacity-75 group-hover:opacity-100 blur-md transition-opacity duration-300"></div>
-                      <div className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 relative overflow-hidden transform transition-all duration-300 group-hover:scale-110 shadow-lg border border-indigo-400/30">
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/80 to-purple-700/80 animate-gradient-shift"></div>
-                        <MessageSquare className="h-5 w-5 text-white z-10 group-hover:rotate-12 transition-transform duration-300" />
+                  <div className="absolute top-2 right-2 z-10">
+                    <div 
+                      onClick={() => setShowAIChat(true)}
+                      className="cursor-pointer"
+                      title="Ask the AI Analyst"
+                    >
+                      <div className="flex items-center">
+                        <div className="h-8 w-8 flex-shrink-0 rounded-full bg-indigo-600 bg-opacity-80 backdrop-blur-sm flex items-center justify-center relative overflow-hidden hover:scale-110 transition-transform duration-300 shadow-lg">
+                          <div className="absolute inset-0 animate-pulse bg-indigo-400/20"></div>
+                          <img 
+                            src="/lovable-uploads/96df1a11-6aa6-4ffe-a590-a9b52232aa2b.png" 
+                            alt="AI Analyst" 
+                            className="h-full w-full object-cover z-10"
+                          />
+                        </div>
+                        <span className="ml-2 font-medium text-sm text-indigo-100 bg-indigo-600/80 backdrop-blur-md px-3 py-1 rounded-r-lg shadow-md">AI Campaign Analyst</span>
                       </div>
-                    </button>
+                    </div>
                   </div>
                   
                   {showAIChat && <AIAnalystChat onClose={() => setShowAIChat(false)} />}
