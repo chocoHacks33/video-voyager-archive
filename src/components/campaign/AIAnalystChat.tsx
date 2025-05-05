@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, Bot, Sparkles } from 'lucide-react';
+import { X, Send, Bot, Sparkles, MessageCircle } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
@@ -116,57 +116,49 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
 
   return (
     <Dialog open={true} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-md sm:max-w-lg p-0 overflow-hidden rounded-2xl border-0 shadow-2xl animate-in fade-in-0 zoom-in-95 duration-300 bg-transparent">
-        <div className="flex flex-col h-full min-h-[450px] backdrop-blur-2xl bg-gradient-to-br from-black/95 via-indigo-950/90 to-black/95 rounded-2xl border border-indigo-500/30 shadow-[0_0_45px_rgba(124,58,237,0.3)]">
-          {/* Header with animated gradient */}
-          <div className="relative overflow-hidden rounded-t-2xl">
-            {/* Animated gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-800 via-violet-700 to-indigo-800 animate-gradient-shift opacity-90"></div>
-            
-            {/* Sparkle effects */}
-            <div className="absolute top-1/2 left-1/4 h-2 w-2 bg-white/80 rounded-full animate-sparkle"></div>
-            <div className="absolute top-1/3 right-1/3 h-1.5 w-1.5 bg-white/70 rounded-full animate-sparkle" style={{ animationDelay: '0.7s' }}></div>
-            <div className="absolute bottom-1/3 right-1/4 h-1 w-1 bg-white/60 rounded-full animate-sparkle" style={{ animationDelay: '1.4s' }}></div>
+      <DialogContent className="max-w-md sm:max-w-lg p-0 overflow-hidden rounded-2xl border-0 shadow-2xl bg-transparent">
+        <div className="flex flex-col h-full min-h-[450px] backdrop-blur-2xl bg-gradient-to-br from-black/95 via-indigo-950/90 to-black/95 rounded-2xl border border-indigo-500/30">
+          {/* Modern header with subtle gradient */}
+          <div className="relative rounded-t-2xl">
+            {/* Subtle gradient background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 opacity-90"></div>
             
             {/* Header content */}
-            <div className="relative z-10 p-4 flex justify-between items-center">
+            <div className="relative p-4 flex justify-between items-center">
               <div className="flex items-center">
-                <Avatar className="h-11 w-11 border-2 border-white/20 shadow-lg shadow-indigo-500/40 animate-glow">
+                <Avatar className="h-10 w-10 border border-white/20 shadow-lg">
                   <AvatarImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst&backgroundColor=gradient" alt="AI Analyst" className="object-cover" />
                   <AvatarFallback className="bg-gradient-to-br from-indigo-700 to-violet-700">
-                    <Bot className="h-6 w-6 text-indigo-100" />
+                    <Bot className="h-5 w-5 text-indigo-100" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="ml-3">
                   <h3 className="text-base font-semibold text-white">Campaign AI Analyst</h3>
                   <div className="flex items-center gap-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <p className="text-xs text-indigo-100 opacity-80">Analyzing metrics in real-time</p>
+                    <p className="text-xs text-indigo-100 opacity-80">Analyzing metrics in demo-mode</p>
                   </div>
                 </div>
               </div>
               <button 
                 onClick={onClose} 
-                className="rounded-full p-1.5 bg-white/10 hover:bg-white/20 transition-colors duration-300 group"
+                className="rounded-full p-1.5 bg-white/10 hover:bg-white/20 transition-colors duration-300"
                 aria-label="Close dialog"
               >
-                <X className="h-4 w-4 text-white group-hover:rotate-90 transition-transform duration-300" />
+                <X className="h-4 w-4 text-white" />
               </button>
             </div>
           </div>
           
-          {/* Messages container with glass effect */}
-          <div className="relative h-[350px] overflow-y-auto py-5 px-4 space-y-4 scrollbar-thin scrollbar-thumb-indigo-600/20 scrollbar-track-transparent flex-grow">
-            {/* Ambient background */}
-            <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/0 via-indigo-950/5 to-indigo-950/20 pointer-events-none"></div>
-            
+          {/* Messages container with minimalist design */}
+          <div className="h-[350px] overflow-y-auto py-4 px-4 space-y-4 flex-grow">
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in-0 slide-in-from-bottom-3 duration-300 delay-75`}
+                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in-0 slide-in-from-bottom-3 duration-300`}
               >
                 {message.sender === 'ai' && (
-                  <Avatar className="h-8 w-8 mr-2 flex-shrink-0 border border-indigo-500/30 shadow-md shadow-indigo-500/20">
+                  <Avatar className="h-8 w-8 mr-2 flex-shrink-0 border border-indigo-500/30">
                     <AvatarImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst&backgroundColor=gradient" alt="AI Analyst" className="object-cover" />
                     <AvatarFallback className="bg-gradient-to-br from-indigo-700 to-violet-700">
                       <Bot className="h-4 w-4 text-indigo-200" />
@@ -176,15 +168,15 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
                     message.sender === 'user'
-                      ? 'bg-gradient-to-br from-indigo-600 to-violet-700 text-white shadow-lg shadow-indigo-900/30'
-                      : 'bg-gradient-to-br from-gray-900/80 to-gray-800/80 text-gray-100 border border-indigo-500/20 shadow-md backdrop-blur-sm'
+                      ? 'bg-gradient-to-br from-indigo-600 to-violet-700 text-white shadow-md'
+                      : 'bg-gradient-to-br from-gray-900/90 to-gray-800/90 text-gray-100 border border-indigo-500/20'
                   }`}
                 >
                   <div className="whitespace-pre-wrap">{message.text}</div>
                 </div>
                 {message.sender === 'user' && (
-                  <Avatar className="h-8 w-8 ml-2 flex-shrink-0 shadow-md shadow-indigo-500/20">
-                    <AvatarFallback className="bg-gradient-to-br from-indigo-600 to-violet-500 shadow-inner shadow-white/10">
+                  <Avatar className="h-8 w-8 ml-2 flex-shrink-0">
+                    <AvatarFallback className="bg-gradient-to-br from-indigo-600 to-violet-500">
                       <span className="text-xs text-white font-medium">You</span>
                     </AvatarFallback>
                   </Avatar>
@@ -195,12 +187,12 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
             {isTyping && (
               <div className="flex justify-start animate-in fade-in-0 slide-in-from-bottom-3 duration-300">
                 <Avatar className="h-8 w-8 mr-2 flex-shrink-0 border border-indigo-500/30">
-                  <AvatarImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst&backgroundColor=gradient" alt="AI Analyst" className="object-cover" />
+                  <AvatImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst&backgroundColor=gradient" alt="AI Analyst" className="object-cover" />
                   <AvatarFallback className="bg-gradient-to-br from-indigo-700 to-violet-700">
                     <Bot className="h-4 w-4 text-indigo-200" />
                   </AvatarFallback>
                 </Avatar>
-                <div className="bg-gradient-to-r from-gray-900/70 to-gray-800/70 backdrop-blur-md text-white rounded-2xl px-4 py-2.5 text-sm border border-indigo-500/20 shadow-lg">
+                <div className="bg-gradient-to-r from-gray-900/90 to-gray-800/90 text-white rounded-2xl px-4 py-2.5 text-sm border border-indigo-500/20">
                   <div className="flex space-x-1.5">
                     <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
                     <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -212,35 +204,30 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
             <div ref={messagesEndRef} />
           </div>
           
-          {/* Input area with glowing effect */}
-          <div className="relative p-4 mt-auto rounded-b-2xl overflow-hidden">
-            {/* Ambient glow */}
-            <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 to-transparent pointer-events-none"></div>
-            
-            <div className="relative">
-              <div className="flex bg-gradient-to-r from-gray-900/80 to-gray-800/80 border border-indigo-500/50 rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-indigo-500 transition-all duration-300 shadow-[0_0_15px_rgba(124,58,237,0.2)] focus-within:shadow-[0_0_25px_rgba(124,58,237,0.4)]">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Ask about campaign metrics..."
-                  className="flex-1 bg-transparent border-0 px-4 py-3.5 text-sm text-white placeholder:text-indigo-300/40 focus:outline-none"
-                />
-                <button
-                  onClick={handleSendMessage}
-                  disabled={!inputValue.trim()}
-                  className="group bg-gradient-to-r from-indigo-600 to-violet-700 text-white px-5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:from-indigo-700 hover:to-violet-800 active:scale-95 flex items-center justify-center"
-                >
-                  <Send className="h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                </button>
-              </div>
-              <div className="flex justify-center mt-3">
-                <div className="text-xs text-indigo-300/60 flex items-center gap-1.5">
-                  <Sparkles className="h-3 w-3 text-indigo-400 animate-pulse" />
-                  <span>Try asking about engagement changes or sustainability</span>
-                </div>
+          {/* Modern, simplified input area */}
+          <div className="p-4 mt-auto">
+            <div className="flex bg-gradient-to-r from-gray-900/90 to-gray-800/90 border border-indigo-500/40 rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-indigo-500 transition-all duration-300">
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask about campaign metrics..."
+                className="flex-1 bg-transparent border-0 px-4 py-3 text-sm text-white placeholder:text-indigo-300/40 focus:outline-none"
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim()}
+                className="group bg-gradient-to-r from-indigo-600 to-violet-700 text-white px-5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Send className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex justify-center mt-3">
+              <div className="text-xs text-indigo-300/60 flex items-center gap-1.5">
+                <Sparkles className="h-3 w-3 text-indigo-400" />
+                <span>Try asking about engagement changes or sustainability</span>
               </div>
             </div>
           </div>

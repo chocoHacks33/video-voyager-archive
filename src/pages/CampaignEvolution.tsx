@@ -150,10 +150,10 @@ const CampaignEvolution = () => {
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 to-transparent"></div>
                           
-                          {/* Message icon with subtle animation */}
+                          {/* Simplified chat glyph */}
                           <div className="absolute inset-0 flex items-center justify-center">
                             <div className="bg-indigo-600/80 backdrop-blur-sm p-1.5 rounded-full shadow-lg transform translate-y-[1px] group-hover:scale-110 transition-all duration-300">
-                              <MessageCircle className="h-4 w-4 text-white drop-shadow-md animate-pulse-slow" />
+                              <MessageCircle className="h-4 w-4 text-white drop-shadow-md" />
                             </div>
                           </div>
                         </div>
