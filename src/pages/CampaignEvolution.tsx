@@ -58,7 +58,9 @@ const CampaignEvolution = () => {
     setTimeout(() => {
       setDaysToShow(prev => {
         const newDays = Math.min(prev + 7, 28);
-        toast.success(`Mutation ${prev} (Day ${prev ? prev : 1} → ${newDays}) Complete!`);
+        // Updated to use mutation number (0-based) instead of day number
+        const mutationNumber = prev / 7;
+        toast.success(`Mutation ${mutationNumber} (Day ${prev ? prev : 1} → ${newDays}) Complete!`);
         return newDays;
       });
       setIsSkipping(false);
