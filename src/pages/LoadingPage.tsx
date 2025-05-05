@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppLayout from '@/components/AppLayout';
@@ -292,12 +291,12 @@ const LoadingPage = () => {
             </div>
           </div>
           
-          {/* Three phase cards with updated purple styling */}
+          {/* Three phase cards with updated purple styling and UPDATED LABELS/DESCRIPTIONS */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
-              { id: 'decoded', label: 'Product Analysis', description: 'Decoding visual elements and content structure' },
-              { id: 'mapped', label: 'Platform Mapping', description: 'Adapting to platform requirements and audience preferences' },
-              { id: 'generated', label: 'Asset Generation', description: 'Creating optimized marketing materials' }
+              { id: 'decoded', label: 'Product Analysis', description: 'Decoding visual elements and content structure of product to be advertised' },
+              { id: 'mapped', label: 'Demographic Mapping', description: 'Obtaining Demographics Information from Platforms' },
+              { id: 'generated', label: 'Morphing Ad', description: 'Creating demographic specific advertisements' }
             ].map((phase, index) => {
               const isComplete = phases[phase.id as keyof typeof phases];
               const isActive = progress >= (index * 33) && !isComplete;
