@@ -187,7 +187,7 @@ const AIAnalystChat: React.FC<AIAnalystChatProps> = ({ onClose }) => {
             {isTyping && (
               <div className="flex justify-start animate-in fade-in-0 slide-in-from-bottom-3 duration-300">
                 <Avatar className="h-8 w-8 mr-2 flex-shrink-0 border border-indigo-500/30">
-                  <AvatImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst&backgroundColor=gradient" alt="AI Analyst" className="object-cover" />
+                  <AvatarImage src="https://api.dicebear.com/7.x/bottts/svg?seed=analyst&backgroundColor=gradient" alt="AI Analyst" className="object-cover" />
                   <AvatarFallback className="bg-gradient-to-br from-indigo-700 to-violet-700">
                     <Bot className="h-4 w-4 text-indigo-200" />
                   </AvatarFallback>
