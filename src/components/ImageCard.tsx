@@ -33,7 +33,7 @@ const ImageCard = ({
     console.log(`Loading image from: ${imageSrc}`);
     
     // Preload image
-    const preloadImg = new window.Image();
+    const preloadImg = new Image();
     preloadImg.src = imageSrc;
     preloadImg.onload = handleImageLoad;
     preloadImg.onerror = handleImageError;
@@ -56,7 +56,7 @@ const ImageCard = ({
     setImageError(false);
     
     // Force reload the image by adding a timestamp to the URL
-    const img = new window.Image();
+    const img = new Image();
     img.src = `${imageSrc}?t=${new Date().getTime()}`;
     img.onload = handleImageLoad;
     img.onerror = handleImageError;
@@ -75,32 +75,29 @@ const ImageCard = ({
 
   return (
     <div 
-      className={cn(
-        "rounded-lg overflow-hidden relative group transition-all duration-500 transform",
-        isHovered ? 'translate-y-[-3px] shadow-lg dark:shadow-purple-800/20 z-10' : 'shadow-md',
-        selectable ? 'cursor-pointer' : '',
-        isSelected && selectable ? 'ring-2 ring-purple-400 dark:ring-purple-500' : '',
-        className
-      )}
+      className={cn(`rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform ${
+        isHovered ? 'scale-105 -translate-y-2 shadow-xl dark:shadow-purple-900/30 z-10' : ''
+      } ${selectable ? 'cursor-pointer' : ''} ${
+        isSelected && selectable ? 'ring-4 ring-purple-500 dark:ring-purple-600' : ''
+      }`, className)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
     >
+      
       <AspectRatio ratio={16/9} className="w-full">
         {isLoading && (
-          <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center absolute top-0 left-0 z-10 animate-pulse-slow">
-            <div className="h-10 w-10 rounded-full border-2 border-t-transparent border-purple-500/60 animate-spin"></div>
+          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center absolute top-0 left-0 z-10 animate-pulse-slow">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 dark:border-purple-400"></div>
           </div>
         )}
         
         <img 
           src={imageSrc}
           alt={image.description}
-          className={cn(
-            "w-full h-full object-cover", 
+          className={cn("w-full h-full object-cover", 
             isLoading ? "opacity-0" : "opacity-100",
-            "transition-all duration-500 scale-100",
-            isHovered ? "scale-[1.03]" : ""
+            "transition-all duration-500"
           )}
           onLoad={handleImageLoad}
           onError={handleImageError}
@@ -108,7 +105,7 @@ const ImageCard = ({
         />
         
         {imageError && (
-          <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex flex-col items-center justify-center p-4">
+          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex flex-col items-center justify-center p-4">
             <AlertTriangle className="w-10 h-10 text-amber-500 mb-2" />
             <p className="text-sm text-center dark:text-gray-300">Image not found or unavailable</p>
             <Button 
@@ -124,25 +121,23 @@ const ImageCard = ({
         )}
       </AspectRatio>
       
-      <div className={cn(
-        "absolute bottom-0 left-0 right-0 backdrop-blur-[2px] bg-gradient-to-t from-black/70 to-transparent p-4 text-white transition-all duration-300",
-        isHovered ? 'opacity-100 h-[40%]' : 'opacity-90 h-[35%]'
-      )}>
-        <p className="text-base font-medium">{image.description}</p>
+      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-80'}`}>
+        <p className="text-base">{image.description}</p>
       </div>
       
       {isSelected && selectable && (
-        <div className="absolute top-2 right-2 bg-gradient-to-tr from-green-500 to-emerald-400 rounded-full p-1.5 shadow-lg animate-appear">
+        <div className="absolute top-2 right-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full p-1.5 shadow-lg animate-appear">
           <Check className="w-4 h-4 text-white" />
         </div>
       )}
       
-      {/* Softer shine effect on hover */}
+      {/* Add shine effect on hover */}
       <div 
         className={cn(
-          "absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full pointer-events-none",
+          "absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full",
           isHovered ? "animate-shimmer" : ""
         )}
+        style={{ pointerEvents: 'none' }}
       />
     </div>
   );

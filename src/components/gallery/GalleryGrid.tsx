@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import ImageCard from '@/components/ImageCard';
@@ -38,7 +37,7 @@ const GalleryGrid = ({
     // Better preloading with error handling
     const preloadPromises = images.map(image => {
       return new Promise((resolve, reject) => {
-        const img = new window.Image();
+        const img = new Image();
         img.src = image.source;
         img.onload = () => {
           console.log(`Successfully preloaded: ${image.source}`);
@@ -54,6 +53,7 @@ const GalleryGrid = ({
     Promise.allSettled(preloadPromises).then(results => {
       const failed = results.filter(r => r.status === 'rejected').length;
       if (failed > 0) {
+        // Remove the parameter from toast.warning as it expects no arguments
         console.log(`${failed} images failed to preload`);
       }
     });
@@ -69,22 +69,13 @@ const GalleryGrid = ({
 
   return (
     <div className={cn(
-      "grid gap-6 opacity-0 animate-fade-in", 
+      "grid gap-6", 
       campaignLaunched ? calculateGridColumns(images.length) : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'
     )}>
-      {images.map((image, index) => (
+      {images.map((image) => (
         <div
           key={image.id}
-          className={cn(
-            "relative transform transition-all duration-500",
-            // Apply staggered animation delay based on index
-            `animate-delay-${Math.min(index * 100, 500)}`
-          )}
-          style={{ 
-            animationDelay: `${Math.min(index * 100, 500)}ms`,
-            opacity: 0,
-            animation: `fade-in 0.6s ease-out ${Math.min(index * 100, 500)}ms forwards` 
-          }}
+          className="relative"
           onClick={() => campaignLaunched ? onAdClick(image.id) : undefined}
         >
           <ImageCard 
@@ -93,13 +84,13 @@ const GalleryGrid = ({
             onSelect={() => campaignLaunched ? onAdClick(image.id) : onSelectImage(image.id)}
             selectable={!campaignLaunched}
             className={cn(
-              "transition-all duration-300 hover:shadow-xl dark:hover:shadow-purple-900/20 dark:border-purple-800/30",
-              campaignLaunched && "hover:scale-103"
+              "cursor-pointer transition-all duration-200 hover:shadow-xl dark:hover:shadow-purple-900/20 dark:border-purple-800/30",
+              campaignLaunched && "hover:scale-105"
             )}
           />
           
           {campaignLaunched && image.allocatedBudget && (
-            <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full shadow-lg transform transition-all duration-300 hover:scale-105">
+            <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full shadow-lg">
               <CreditsDisplay 
                 value={image.allocatedBudget} 
                 variant="compact"
