@@ -75,7 +75,7 @@ const GalleryGrid = ({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
-          <LayoutGrid className="h-5 w-5 text-purple-500" />
+          <LayoutGrid className="h-5 w-5 text-purple-400" />
           <span>Gallery</span>
           <span className="text-sm font-normal text-gray-500 dark:text-gray-400 ml-2">
             ({images.length} {images.length === 1 ? 'image' : 'images'})
@@ -84,7 +84,7 @@ const GalleryGrid = ({
       </div>
       
       <div className={cn(
-        "grid gap-8", 
+        "grid gap-5", 
         campaignLaunched ? calculateGridColumns(images.length) : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
       )}>
         {images.map((image) => (
@@ -94,8 +94,8 @@ const GalleryGrid = ({
             onClick={() => campaignLaunched ? onAdClick(image.id) : undefined}
           >
             <div className={cn(
-              "absolute inset-0 bg-gradient-to-br from-purple-600/30 via-indigo-500/20 to-blue-400/10 opacity-0 group-hover:opacity-100 rounded-xl transition-all duration-300 -m-1 p-1",
-              campaignLaunched && "group-hover:scale-[1.02]"
+              "absolute inset-0 bg-gradient-to-br from-purple-400/10 via-indigo-400/5 to-blue-400/5 opacity-0 group-hover:opacity-100 rounded-lg transition-all duration-300 -m-0.5 p-0.5",
+              campaignLaunched && "group-hover:scale-[1.01]"
             )} />
             
             <ImageCard 
@@ -105,14 +105,14 @@ const GalleryGrid = ({
               selectable={!campaignLaunched}
               className={cn(
                 "transition-all duration-300 z-10 relative",
-                "bg-white dark:bg-gray-850 rounded-lg overflow-hidden shadow-md dark:shadow-purple-900/10",
-                "hover:shadow-xl dark:hover:shadow-purple-800/20",
+                "bg-white dark:bg-gray-850 rounded-lg overflow-hidden shadow-sm dark:shadow-none",
+                "hover:shadow-md dark:hover:shadow-purple-700/10",
                 campaignLaunched ? "group-hover:scale-[1.01] cursor-pointer" : "cursor-default"
               )}
             />
             
             {campaignLaunched && image.allocatedBudget && (
-              <div className="absolute top-3 left-3 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg z-20 transition-all duration-300 group-hover:bg-indigo-600/80">
+              <div className="absolute top-3 left-3 bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm z-20 transition-all duration-300 group-hover:bg-indigo-500/70">
                 <CreditsDisplay 
                   value={image.allocatedBudget} 
                   variant="compact"
@@ -122,9 +122,9 @@ const GalleryGrid = ({
             )}
             
             {!campaignLaunched && selectedImages.includes(image.id) && (
-              <div className="absolute -top-2 -right-2 bg-purple-600 rounded-full w-6 h-6 flex items-center justify-center z-20 shadow-lg shadow-purple-600/20 animate-appear">
+              <div className="absolute -top-2 -right-2 bg-purple-500 rounded-full w-6 h-6 flex items-center justify-center z-20 shadow-md shadow-purple-500/20 animate-appear">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
             )}

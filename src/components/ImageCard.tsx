@@ -77,7 +77,7 @@ const ImageCard = ({
     <div 
       className={cn(
         "overflow-hidden relative transition-all duration-300", 
-        isSelected && selectable ? "ring-2 ring-purple-500 dark:ring-purple-600 ring-offset-2 dark:ring-offset-gray-900" : "",
+        isSelected && selectable ? "ring-2 ring-purple-400 dark:ring-purple-500 ring-offset-1 dark:ring-offset-gray-900" : "",
         selectable && "cursor-pointer",
         className
       )}
@@ -86,12 +86,12 @@ const ImageCard = ({
       onClick={handleCardClick}
     >
       <div className="relative">
-        <AspectRatio ratio={16/9} className="w-full bg-gray-100 dark:bg-gray-800">
+        <AspectRatio ratio={16/9} className="w-full bg-gray-50 dark:bg-gray-800">
           {isLoading && (
-            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center absolute top-0 left-0 z-10">
-              <div className="relative w-12 h-12">
-                <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-purple-500 border-b-purple-500 animate-spin"></div>
-                <div className="absolute inset-1 rounded-full border-2 border-transparent border-r-indigo-400 border-l-indigo-400 animate-spin animate-reverse"></div>
+            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center absolute top-0 left-0 z-10">
+              <div className="relative w-10 h-10">
+                <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-purple-400 border-b-purple-400 animate-spin"></div>
+                <div className="absolute inset-1 rounded-full border-2 border-transparent border-r-indigo-300 border-l-indigo-300 animate-spin animate-reverse"></div>
               </div>
             </div>
           )}
@@ -101,7 +101,7 @@ const ImageCard = ({
             alt={image.description}
             className={cn(
               "w-full h-full object-cover transition-all duration-500",
-              isHovered ? "scale-105" : "scale-100",
+              isHovered ? "scale-[1.03]" : "scale-100",
               isLoading ? "opacity-0" : "opacity-100"
             )}
             onLoad={handleImageLoad}
@@ -110,15 +110,15 @@ const ImageCard = ({
           />
           
           {imageError && (
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex flex-col items-center justify-center p-4">
-              <div className="bg-white/20 dark:bg-white/5 backdrop-blur-sm w-16 h-16 rounded-full flex items-center justify-center mb-3">
-                <AlertTriangle className="w-8 h-8 text-amber-500" />
+            <div className="w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 flex flex-col items-center justify-center p-4">
+              <div className="bg-white/10 dark:bg-white/5 backdrop-blur-sm w-12 h-12 rounded-full flex items-center justify-center mb-2">
+                <AlertTriangle className="w-6 h-6 text-amber-500" />
               </div>
-              <p className="text-sm text-center dark:text-gray-300 mb-2">Image not available</p>
+              <p className="text-sm text-center dark:text-gray-400 mb-2">Image not available</p>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="mt-2 border border-amber-200 dark:border-amber-800 bg-white/50 dark:bg-gray-800/50 hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-600 dark:text-amber-400"
+                className="mt-1 border border-amber-100 dark:border-amber-900 bg-white/50 dark:bg-gray-800/50 hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-600 dark:text-amber-400"
                 onClick={handleRetry}
               >
                 <AlertTriangle className="w-3 h-3 mr-1" />
@@ -128,10 +128,10 @@ const ImageCard = ({
           )}
         </AspectRatio>
         
-        {/* Overlay gradient on hover */}
+        {/* Overlay gradient on hover - more subtle */}
         <div 
           className={cn(
-            "absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent",
+            "absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent",
             "opacity-0 transition-opacity duration-300",
             isHovered ? "opacity-100" : ""
           )}
@@ -140,12 +140,12 @@ const ImageCard = ({
         {/* Image information overlay */}
         <div 
           className={cn(
-            "absolute bottom-0 left-0 right-0 p-4 text-white transform transition-transform duration-300",
+            "absolute bottom-0 left-0 right-0 p-3 text-white transform transition-transform duration-300",
             isHovered ? "translate-y-0" : "translate-y-8 opacity-80"
           )}
         >
           <p className={cn(
-            "text-base font-medium transition-all duration-300",
+            "text-sm font-medium transition-all duration-300 text-shadow",
             isHovered ? "opacity-100" : "opacity-90"
           )}>
             {image.description}
@@ -153,10 +153,10 @@ const ImageCard = ({
         </div>
       </div>
       
-      {/* Add shine effect on hover */}
+      {/* Add more subtle shine effect on hover */}
       <div 
         className={cn(
-          "absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full",
+          "absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full",
           isHovered ? "animate-shimmer" : ""
         )}
         style={{ pointerEvents: 'none' }}

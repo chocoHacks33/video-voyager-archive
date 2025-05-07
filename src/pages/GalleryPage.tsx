@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import { useCredits } from '@/contexts/CreditsContext';
@@ -144,8 +143,8 @@ const GalleryPage = () => {
   if (!imagesLoaded) {
     return (
       <AppLayout title="Loading Gallery...">
-        <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900/30 dark:via-purple-800/20 dark:to-gray-800/30 rounded-xl p-6 flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500 dark:border-purple-400"></div>
+        <div className="w-full bg-gradient-to-br from-purple-50 via-purple-50 to-white dark:from-purple-900/20 dark:via-purple-800/10 dark:to-gray-800/20 rounded-xl p-6 flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-t-purple-400 border-r-purple-300 border-b-purple-400 border-l-purple-300 dark:border-t-purple-500 dark:border-r-purple-400 dark:border-b-purple-500 dark:border-l-purple-400"></div>
         </div>
       </AppLayout>
     );
@@ -153,18 +152,18 @@ const GalleryPage = () => {
 
   return (
     <AppLayout title={campaignLaunched ? "Your Active Campaigns" : "Choose Your Ads"}>
-      {/* Modern header section with gradient background */}
-      <div className="relative mb-8 overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 p-8">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-800/40 via-indigo-900/30 to-transparent pointer-events-none"></div>
-        <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-grid-white/10 [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+      {/* More subtle header section with lighter gradient */}
+      <div className="relative mb-6 overflow-hidden rounded-xl bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 p-6">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-600/30 via-indigo-700/20 to-transparent pointer-events-none"></div>
+        <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-grid-white/5 [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
         
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2 drop-shadow-sm">
+            <h1 className="text-2xl font-semibold text-white mb-2">
               {campaignLaunched ? "Campaign Gallery" : "Select Your Creative Assets"}
             </h1>
-            <p className="text-purple-100/90 max-w-lg">
+            <p className="text-purple-100/80 max-w-lg text-sm">
               {campaignLaunched 
                 ? "Track and optimize your campaign performance across different creative assets."
                 : "Choose the visuals that will represent your brand and connect with your target audience."
@@ -172,18 +171,18 @@ const GalleryPage = () => {
             </p>
           </div>
           
-          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg border border-white/20">
-            <LayoutGrid className="h-5 w-5 text-white" />
-            <span className="text-white font-medium">
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
+            <LayoutGrid className="h-4 w-4 text-white" />
+            <span className="text-white text-sm">
               {displayedImages.length} {displayedImages.length === 1 ? "Image" : "Images"}
             </span>
           </div>
         </div>
       </div>
       
-      {/* Main content section */}
-      <div className="w-full bg-gradient-to-br from-purple-50/50 via-indigo-50/30 to-white dark:from-purple-900/10 dark:via-indigo-900/5 dark:to-gray-900/0 rounded-xl p-6 shadow-lg backdrop-blur-sm border border-purple-100/50 dark:border-purple-900/20">
-        <div className="bg-white/70 dark:bg-gray-900/60 backdrop-blur-md rounded-lg p-6 space-y-8 border border-purple-100/50 dark:border-purple-800/30 shadow-sm">
+      {/* Main content section with softer gradients */}
+      <div className="w-full bg-gradient-to-br from-purple-50/30 via-indigo-50/20 to-white dark:from-purple-900/5 dark:via-indigo-900/3 dark:to-gray-900/0 rounded-xl p-5 shadow-sm backdrop-blur-sm border border-purple-100/30 dark:border-purple-900/10">
+        <div className="bg-white/90 dark:bg-gray-900/50 backdrop-blur-md rounded-lg p-5 border border-purple-100/20 dark:border-purple-800/20 shadow-sm">
           <GalleryGrid
             images={displayedImages}
             selectedImages={selectedImages}
@@ -207,13 +206,13 @@ const GalleryPage = () => {
       </div>
 
       <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <AlertDialogContent className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-900 dark:to-gray-900 border-purple-200 dark:border-purple-800/50 shadow-2xl dark:shadow-purple-900/20 max-w-md mx-auto p-0 overflow-visible">
-          {/* Cosmic background for dark mode */}
-          <div className="absolute inset-0 rounded-lg overflow-hidden dark:opacity-40 pointer-events-none">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-800 via-indigo-900 to-gray-900 opacity-90 animate-cosmic-drift"></div>
+        <AlertDialogContent className="bg-gradient-to-br from-white to-purple-50/50 dark:from-gray-900 dark:to-gray-900 border-purple-200/50 dark:border-purple-800/30 shadow-lg dark:shadow-purple-900/10 max-w-md mx-auto p-0 overflow-visible">
+          {/* Subtle cosmic background for dark mode */}
+          <div className="absolute inset-0 rounded-lg overflow-hidden dark:opacity-20 pointer-events-none">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-700 via-indigo-800 to-gray-900 opacity-80 animate-cosmic-drift"></div>
             
             {/* Stars */}
-            {[...Array(30)].map((_, i) => (
+            {[...Array(20)].map((_, i) => (
               <div
                 key={i}
                 className="absolute rounded-full bg-white dark:animate-sparkle"
@@ -230,30 +229,30 @@ const GalleryPage = () => {
           </div>
           
           <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
-            <div className="w-24 h-24 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-300 dark:shadow-purple-900/50 animate-morph">
-              <Check className="h-12 w-12 text-white" />
+            <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center shadow-md shadow-purple-200 dark:shadow-purple-900/30">
+              <Check className="h-10 w-10 text-white" />
             </div>
           </div>
           
-          <div className="relative pt-16 pb-8 px-6 mt-6 z-10">
+          <div className="relative pt-12 pb-6 px-5 mt-6 z-10">
             <AlertDialogHeader className="text-center">
-              <AlertDialogTitle className="text-2xl font-bold text-gradient bg-gradient-to-r from-purple-700 to-indigo-600 dark:from-purple-400 dark:to-indigo-300 bg-clip-text text-transparent dark:animate-neon-pulse text-center">
+              <AlertDialogTitle className="text-xl font-semibold text-gradient bg-gradient-to-r from-purple-600 to-indigo-500 dark:from-purple-400 dark:to-indigo-300 bg-clip-text text-transparent">
                 Ready to Launch
               </AlertDialogTitle>
-              <AlertDialogDescription className="text-gray-600 dark:text-gray-300 mt-4">
-                <div className="space-y-4">
+              <AlertDialogDescription className="text-gray-600 dark:text-gray-300 mt-3">
+                <div className="space-y-3">
                   <p className="text-center">
                     You've selected {selectedImages.length} ad{selectedImages.length !== 1 ? 's' : ''} for your campaign.
                   </p>
                   
-                  <div className="bg-white/70 dark:bg-gray-800/50 rounded-lg p-4 space-y-2 border border-purple-100 dark:border-purple-900/30 backdrop-blur-sm">
+                  <div className="bg-white/60 dark:bg-gray-800/40 rounded-lg p-3 space-y-2 border border-purple-100/50 dark:border-purple-900/20 backdrop-blur-sm">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600 dark:text-gray-400">Budget:</span>
-                      <span className="font-medium text-purple-800 dark:text-purple-300">{budget} credits</span>
+                      <span className="text-gray-600 dark:text-gray-400 text-sm">Budget:</span>
+                      <span className="font-medium text-purple-700 dark:text-purple-300 text-sm">{budget} credits</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600 dark:text-gray-400">Metrics:</span>
-                      <span className="font-medium text-purple-800 dark:text-purple-300">
+                      <span className="text-gray-600 dark:text-gray-400 text-sm">Metrics:</span>
+                      <span className="font-medium text-purple-700 dark:text-purple-300 text-sm">
                         {selectedMetrics.map(m => 
                           metricTags.find(tag => tag.id === m)?.label
                         ).join(', ')}
@@ -264,32 +263,14 @@ const GalleryPage = () => {
               </AlertDialogDescription>
             </AlertDialogHeader>
             
-            <AlertDialogFooter className="mt-6 flex flex-col space-y-2">
+            <AlertDialogFooter className="mt-4 flex flex-col space-y-2">
               <AlertDialogAction 
                 onClick={handleConfirmLaunch}
-                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium px-6 py-3 rounded-lg shadow-lg hover:shadow-xl dark:shadow-purple-900/40 transform transition-all duration-300 hover:-translate-y-1 h-auto"
+                className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-medium px-5 py-2 rounded-lg shadow-md hover:shadow-lg dark:shadow-purple-900/20 transform transition-all duration-300 hover:-translate-y-0.5 h-auto"
               >
                 Launch Campaign
               </AlertDialogAction>
             </AlertDialogFooter>
-            
-            {/* Add floating particles for an immersive feel */}
-            <div className="absolute inset-0 pointer-events-none">
-              {[...Array(10)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute rounded-full bg-gradient-to-br from-purple-400/20 to-indigo-400/20 dark:from-purple-500/20 dark:to-indigo-500/20 animate-float"
-                  style={{
-                    width: `${Math.random() * 30 + 10}px`,
-                    height: `${Math.random() * 30 + 10}px`,
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 5}s`,
-                    animationDuration: `${Math.random() * 10 + 10}s`
-                  }}
-                />
-              ))}
-            </div>
           </div>
         </AlertDialogContent>
       </AlertDialog>
