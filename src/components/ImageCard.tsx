@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Check, Image as ImageIcon } from 'lucide-react';
+import { AlertTriangle, Check } from 'lucide-react';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -32,8 +32,8 @@ const ImageCard = ({
   useEffect(() => {
     console.log(`Loading image from: ${imageSrc}`);
     
-    // Preload image - using the global HTMLImageElement constructor
-    const preloadImg = new window.Image();
+    // Preload image
+    const preloadImg = new Image();
     preloadImg.src = imageSrc;
     preloadImg.onload = handleImageLoad;
     preloadImg.onerror = handleImageError;
@@ -56,7 +56,7 @@ const ImageCard = ({
     setImageError(false);
     
     // Force reload the image by adding a timestamp to the URL
-    const img = new window.Image();
+    const img = new Image();
     img.src = `${imageSrc}?t=${new Date().getTime()}`;
     img.onload = handleImageLoad;
     img.onerror = handleImageError;
@@ -75,85 +75,63 @@ const ImageCard = ({
 
   return (
     <div 
-      className={cn(
-        "overflow-hidden relative transition-all duration-300", 
-        isSelected && selectable ? "ring-2 ring-purple-400 dark:ring-purple-500 ring-offset-1 dark:ring-offset-gray-900" : "",
-        selectable && "cursor-pointer",
-        className
-      )}
+      className={cn(`rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform ${
+        isHovered ? 'scale-105 -translate-y-2 shadow-xl dark:shadow-purple-900/30 z-10' : ''
+      } ${selectable ? 'cursor-pointer' : ''} ${
+        isSelected && selectable ? 'ring-4 ring-purple-500 dark:ring-purple-600' : ''
+      }`, className)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
     >
-      <div className="relative">
-        <AspectRatio ratio={16/9} className="w-full bg-gray-50 dark:bg-gray-800">
-          {isLoading && (
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center absolute top-0 left-0 z-10">
-              <div className="relative w-10 h-10">
-                <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-purple-400 border-b-purple-400 animate-spin"></div>
-                <div className="absolute inset-1 rounded-full border-2 border-transparent border-r-indigo-300 border-l-indigo-300 animate-spin animate-reverse"></div>
-              </div>
-            </div>
-          )}
-          
-          <img 
-            src={imageSrc}
-            alt={image.description}
-            className={cn(
-              "w-full h-full object-cover transition-all duration-500",
-              isHovered ? "scale-[1.03]" : "scale-100",
-              isLoading ? "opacity-0" : "opacity-100"
-            )}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-            style={{ display: imageError ? "none" : "block" }}
-          />
-          
-          {imageError && (
-            <div className="w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 flex flex-col items-center justify-center p-4">
-              <div className="bg-white/10 dark:bg-white/5 backdrop-blur-sm w-12 h-12 rounded-full flex items-center justify-center mb-2">
-                <AlertTriangle className="w-6 h-6 text-amber-500" />
-              </div>
-              <p className="text-sm text-center dark:text-gray-400 mb-2">Image not available</p>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="mt-1 border border-amber-100 dark:border-amber-900 bg-white/50 dark:bg-gray-800/50 hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-600 dark:text-amber-400"
-                onClick={handleRetry}
-              >
-                <AlertTriangle className="w-3 h-3 mr-1" />
-                Retry
-              </Button>
-            </div>
-          )}
-        </AspectRatio>
+      
+      <AspectRatio ratio={16/9} className="w-full">
+        {isLoading && (
+          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center absolute top-0 left-0 z-10 animate-pulse-slow">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 dark:border-purple-400"></div>
+          </div>
+        )}
         
-        {/* Overlay gradient on hover - more subtle */}
-        <div 
-          className={cn(
-            "absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent",
-            "opacity-0 transition-opacity duration-300",
-            isHovered ? "opacity-100" : ""
+        <img 
+          src={imageSrc}
+          alt={image.description}
+          className={cn("w-full h-full object-cover", 
+            isLoading ? "opacity-0" : "opacity-100",
+            "transition-all duration-500"
           )}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          style={{ display: imageError ? "none" : "block" }}
         />
         
-        {/* Image information overlay */}
-        <div 
-          className={cn(
-            "absolute bottom-0 left-0 right-0 p-3 text-white transform transition-transform duration-300",
-            isHovered ? "translate-y-0" : "translate-y-8 opacity-80"
-          )}
-        >
-          <p className={cn(
-            "text-sm font-medium transition-all duration-300 text-shadow",
-            isHovered ? "opacity-100" : "opacity-90"
-          )}>
-            {image.description}
-          </p>
-        </div>
+        {imageError && (
+          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex flex-col items-center justify-center p-4">
+            <AlertTriangle className="w-10 h-10 text-amber-500 mb-2" />
+            <p className="text-sm text-center dark:text-gray-300">Image not found or unavailable</p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="mt-4 flex items-center gap-2 bg-white/20 dark:bg-gray-800/50 hover:bg-white/30 dark:hover:bg-gray-700/50"
+              onClick={handleRetry}
+            >
+              <AlertTriangle className="w-4 h-4" />
+              Retry
+            </Button>
+          </div>
+        )}
+      </AspectRatio>
+      
+      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-80'}`}>
+        <p className="text-base">{image.description}</p>
       </div>
       
-      {/* Add more subtle shine effect on hover */}
+      {isSelected && selectable && (
+        <div className="absolute top-2 right-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full p-1.5 shadow-lg animate-appear">
+          <Check className="w-4 h-4 text-white" />
+        </div>
+      )}
+      
+      {/* Add shine effect on hover */}
       <div 
         className={cn(
           "absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full",
