@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Check, Image } from 'lucide-react';
+import { AlertTriangle, Check, Image as ImageIcon } from 'lucide-react';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -32,8 +32,8 @@ const ImageCard = ({
   useEffect(() => {
     console.log(`Loading image from: ${imageSrc}`);
     
-    // Preload image
-    const preloadImg = new Image();
+    // Preload image - using the global HTMLImageElement constructor
+    const preloadImg = new window.Image();
     preloadImg.src = imageSrc;
     preloadImg.onload = handleImageLoad;
     preloadImg.onerror = handleImageError;
@@ -56,7 +56,7 @@ const ImageCard = ({
     setImageError(false);
     
     // Force reload the image by adding a timestamp to the URL
-    const img = new Image();
+    const img = new window.Image();
     img.src = `${imageSrc}?t=${new Date().getTime()}`;
     img.onload = handleImageLoad;
     img.onerror = handleImageError;
