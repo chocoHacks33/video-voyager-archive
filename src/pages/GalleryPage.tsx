@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useCredits } from '@/contexts/CreditsContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Check } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import {
   AlertDialog,
   AlertDialogAction,
