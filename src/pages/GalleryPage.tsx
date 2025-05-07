@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { toast } from "sonner";
 import { useCredits } from '@/contexts/CreditsContext';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Check } from 'lucide-react';
+import { Check, ImageIcon, LayoutGrid } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -152,8 +153,37 @@ const GalleryPage = () => {
 
   return (
     <AppLayout title={campaignLaunched ? "Your Active Campaigns" : "Choose Your Ads"}>
-      <div className="w-full bg-gradient-to-br from-purple-100 via-purple-50 to-white dark:from-purple-900/30 dark:via-purple-800/20 dark:to-gray-900/20 rounded-xl p-6 shadow-lg dark:shadow-purple-900/10">
-        <div className="bg-white dark:bg-gray-800/90 dark:backdrop-blur-lg rounded-lg p-6 space-y-8 border border-gray-100 dark:border-purple-900/30 shadow-sm">
+      {/* Modern header section with gradient background */}
+      <div className="relative mb-8 overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 p-8">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-800/40 via-indigo-900/30 to-transparent pointer-events-none"></div>
+        <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-grid-white/10 [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2 drop-shadow-sm">
+              {campaignLaunched ? "Campaign Gallery" : "Select Your Creative Assets"}
+            </h1>
+            <p className="text-purple-100/90 max-w-lg">
+              {campaignLaunched 
+                ? "Track and optimize your campaign performance across different creative assets."
+                : "Choose the visuals that will represent your brand and connect with your target audience."
+              }
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg border border-white/20">
+            <LayoutGrid className="h-5 w-5 text-white" />
+            <span className="text-white font-medium">
+              {displayedImages.length} {displayedImages.length === 1 ? "Image" : "Images"}
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Main content section */}
+      <div className="w-full bg-gradient-to-br from-purple-50/50 via-indigo-50/30 to-white dark:from-purple-900/10 dark:via-indigo-900/5 dark:to-gray-900/0 rounded-xl p-6 shadow-lg backdrop-blur-sm border border-purple-100/50 dark:border-purple-900/20">
+        <div className="bg-white/70 dark:bg-gray-900/60 backdrop-blur-md rounded-lg p-6 space-y-8 border border-purple-100/50 dark:border-purple-800/30 shadow-sm">
           <GalleryGrid
             images={displayedImages}
             selectedImages={selectedImages}

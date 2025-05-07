@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Check } from 'lucide-react';
+import { AlertTriangle, Check, Image } from 'lucide-react';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -75,66 +75,88 @@ const ImageCard = ({
 
   return (
     <div 
-      className={cn(`rounded-lg overflow-hidden shadow-md relative group transition-all duration-300 transform ${
-        isHovered ? 'scale-105 -translate-y-2 shadow-xl dark:shadow-purple-900/30 z-10' : ''
-      } ${selectable ? 'cursor-pointer' : ''} ${
-        isSelected && selectable ? 'ring-4 ring-purple-500 dark:ring-purple-600' : ''
-      }`, className)}
+      className={cn(
+        "overflow-hidden relative transition-all duration-300", 
+        isSelected && selectable ? "ring-2 ring-purple-500 dark:ring-purple-600 ring-offset-2 dark:ring-offset-gray-900" : "",
+        selectable && "cursor-pointer",
+        className
+      )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
     >
-      
-      <AspectRatio ratio={16/9} className="w-full">
-        {isLoading && (
-          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center absolute top-0 left-0 z-10 animate-pulse-slow">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500 dark:border-purple-400"></div>
-          </div>
-        )}
-        
-        <img 
-          src={imageSrc}
-          alt={image.description}
-          className={cn("w-full h-full object-cover", 
-            isLoading ? "opacity-0" : "opacity-100",
-            "transition-all duration-500"
+      <div className="relative">
+        <AspectRatio ratio={16/9} className="w-full bg-gray-100 dark:bg-gray-800">
+          {isLoading && (
+            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center absolute top-0 left-0 z-10">
+              <div className="relative w-12 h-12">
+                <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-purple-500 border-b-purple-500 animate-spin"></div>
+                <div className="absolute inset-1 rounded-full border-2 border-transparent border-r-indigo-400 border-l-indigo-400 animate-spin animate-reverse"></div>
+              </div>
+            </div>
           )}
-          onLoad={handleImageLoad}
-          onError={handleImageError}
-          style={{ display: imageError ? "none" : "block" }}
+          
+          <img 
+            src={imageSrc}
+            alt={image.description}
+            className={cn(
+              "w-full h-full object-cover transition-all duration-500",
+              isHovered ? "scale-105" : "scale-100",
+              isLoading ? "opacity-0" : "opacity-100"
+            )}
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+            style={{ display: imageError ? "none" : "block" }}
+          />
+          
+          {imageError && (
+            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex flex-col items-center justify-center p-4">
+              <div className="bg-white/20 dark:bg-white/5 backdrop-blur-sm w-16 h-16 rounded-full flex items-center justify-center mb-3">
+                <AlertTriangle className="w-8 h-8 text-amber-500" />
+              </div>
+              <p className="text-sm text-center dark:text-gray-300 mb-2">Image not available</p>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="mt-2 border border-amber-200 dark:border-amber-800 bg-white/50 dark:bg-gray-800/50 hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-600 dark:text-amber-400"
+                onClick={handleRetry}
+              >
+                <AlertTriangle className="w-3 h-3 mr-1" />
+                Retry
+              </Button>
+            </div>
+          )}
+        </AspectRatio>
+        
+        {/* Overlay gradient on hover */}
+        <div 
+          className={cn(
+            "absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent",
+            "opacity-0 transition-opacity duration-300",
+            isHovered ? "opacity-100" : ""
+          )}
         />
         
-        {imageError && (
-          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex flex-col items-center justify-center p-4">
-            <AlertTriangle className="w-10 h-10 text-amber-500 mb-2" />
-            <p className="text-sm text-center dark:text-gray-300">Image not found or unavailable</p>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="mt-4 flex items-center gap-2 bg-white/20 dark:bg-gray-800/50 hover:bg-white/30 dark:hover:bg-gray-700/50"
-              onClick={handleRetry}
-            >
-              <AlertTriangle className="w-4 h-4" />
-              Retry
-            </Button>
-          </div>
-        )}
-      </AspectRatio>
-      
-      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-80'}`}>
-        <p className="text-base">{image.description}</p>
-      </div>
-      
-      {isSelected && selectable && (
-        <div className="absolute top-2 right-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full p-1.5 shadow-lg animate-appear">
-          <Check className="w-4 h-4 text-white" />
+        {/* Image information overlay */}
+        <div 
+          className={cn(
+            "absolute bottom-0 left-0 right-0 p-4 text-white transform transition-transform duration-300",
+            isHovered ? "translate-y-0" : "translate-y-8 opacity-80"
+          )}
+        >
+          <p className={cn(
+            "text-base font-medium transition-all duration-300",
+            isHovered ? "opacity-100" : "opacity-90"
+          )}>
+            {image.description}
+          </p>
         </div>
-      )}
+      </div>
       
       {/* Add shine effect on hover */}
       <div 
         className={cn(
-          "absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full",
+          "absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full",
           isHovered ? "animate-shimmer" : ""
         )}
         style={{ pointerEvents: 'none' }}

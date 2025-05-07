@@ -62,6 +62,9 @@ export default {
           DEFAULT: "hsl(var(--navy))",
           foreground: "hsl(var(--navy-foreground))",
         },
+        gray: {
+          850: "#1a1d23",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -128,6 +131,10 @@ export default {
         "spin-slow": {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(360deg)" }
+        },
+        "spin-reverse": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(-360deg)" }
         }
       },
       animation: {
@@ -141,7 +148,13 @@ export default {
         glow: "glow 3s infinite",
         sparkle: "sparkle 2s infinite",
         "gradient-shift": "gradient-shift 3s ease infinite",
-        "spin-slow": "spin-slow 8s linear infinite"
+        "spin-slow": "spin-slow 8s linear infinite",
+        "spin-reverse": "spin-reverse 6s linear infinite",
+        reverse: "spin-reverse 6s linear infinite"
+      },
+      backgroundImage: {
+        'grid-white': "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e\")",
+        'grid-dark': "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(0 0 0 / 0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e\")",
       },
     },
   },
